@@ -28,8 +28,8 @@ async function startApp(queue = makeQueue()) {
   )
 }
 
-describe('Campaigns API', () => {
-  it('POST / creates a campaign', async () => {
+describe('API Kampanye', () => {
+  it('POST / membuat kampanye', async () => {
     const { baseUrl, close } = await startApp()
     const res = await fetch(`${baseUrl}/v1/campaigns`, {
       method: 'POST',
@@ -49,7 +49,7 @@ describe('Campaigns API', () => {
     expect(body.platforms).toEqual(['twitter', 'threads'])
   })
 
-  it('POST / returns 400 on missing name', async () => {
+  it('POST / mengembalikan 400 saat name hilang', async () => {
     const { baseUrl, close } = await startApp()
     const res = await fetch(`${baseUrl}/v1/campaigns`, {
       method: 'POST',
@@ -60,7 +60,7 @@ describe('Campaigns API', () => {
     expect(res.status).toBe(400)
   })
 
-  it('POST / returns 400 on empty platforms', async () => {
+  it('POST / mengembalikan 400 saat platforms kosong', async () => {
     const { baseUrl, close } = await startApp()
     const res = await fetch(`${baseUrl}/v1/campaigns`, {
       method: 'POST',
@@ -71,7 +71,7 @@ describe('Campaigns API', () => {
     expect(res.status).toBe(400)
   })
 
-  it('GET / lists campaigns', async () => {
+  it('GET / mendaftar kampanye', async () => {
     const { baseUrl, close } = await startApp()
     await fetch(`${baseUrl}/v1/campaigns`, {
       method: 'POST',
