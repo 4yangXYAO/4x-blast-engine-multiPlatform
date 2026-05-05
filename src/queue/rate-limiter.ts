@@ -1,16 +1,33 @@
 ﻿export interface RateLimitQuota {
   capacity: number;
-  refillRate: number; // tokens per second
+  refillRate: number;
+  maxWaitMs?: number;
+  circuitFailureThreshold?: number;
+  circuitResetTimeoutMs?: number;
 }
 
 export const PLATFORM_QUOTAS: Record<string, RateLimitQuota> = {
   whatsapp: { capacity: 80, refillRate: 80 },
   telegram: { capacity: 30, refillRate: 30 },
-  twitter: { capacity: 15, refillRate: 1 }, // Conservative default for Twitter
+  twitter: { capacity: 15, refillRate: 1, maxWaitMs: 300000, circuitFailureThreshold: 5, circuitResetTimeoutMs: 60000 },
   threads: { capacity: 200, refillRate: 200 },
-  instagram: { capacity: 50, refillRate: 10 },
+  instagram: { capacity: 50, refillRate: 10, maxWaitMs: 180000 },
+  facebook: { capacity: 50, refillRate: 50, maxWaitMs: 300000, circuitFailureThreshold: 5, circuitResetTimeoutMs: 60000 },
   default: { capacity: 10, refillRate: 1 }
 };
+
+export enum CircuitState {
+  CLOSED = 'closed',
+  OPEN = 'open',
+  HALF_OPEN = 'half-open'
+}
+
+interface CircuitBreaker {
+  state: CircuitState;
+  failures: number;
+  lastFailure?: number;
+  nextAttempt?: number;
+}
 
 export class RateLimiter {
   private buckets: Map<string, { tokens: number; lastRefill: number; blockedUntil?: number }> = new Map();
@@ -59,23 +76,105 @@ export class RateLimiter {
   public blockFor(platform: string, seconds: number) {
     const bucket = this.getBucket(platform);
     bucket.blockedUntil = Date.now() + seconds * 1000;
-    bucket.tokens = 0; // Drain tokens when blocked
+    bucket.tokens = 0;
   }
 
   public async waitForToken(platform: string): Promise<void> {
+    const startTime = Date.now();
+    const quota = PLATFORM_QUOTAS[platform] || PLATFORM_QUOTAS.default;
+    const maxWait = quota.maxWaitMs || 300000;
+
     while (!this.consume(platform)) {
       const bucket = this.getBucket(platform);
-      let waitTime = 100; // Default poll
-      
+      let waitTime = 100;
+
       if (bucket.blockedUntil && bucket.blockedUntil > Date.now()) {
         waitTime = bucket.blockedUntil - Date.now();
       } else if (bucket.tokens < 1) {
-        const quota = PLATFORM_QUOTAS[platform] || PLATFORM_QUOTAS.default;
-        // Wait for at least 1 token to refill
+        const elapsed = (Date.now() - bucket.lastRefill) / 1000;
         waitTime = Math.ceil((1 - bucket.tokens) / quota.refillRate * 1000);
       }
-      
+
+      if (Date.now() - startTime + waitTime > maxWait) {
+        throw new Error(`Rate limit wait exceeded for ${platform} (max ${maxWait}ms)`);
+      }
+
       await new Promise(resolve => setTimeout(resolve, Math.max(10, waitTime)));
     }
+  }
+
+  public getEstimatedWaitMs(platform: string): number {
+    const bucket = this.getBucket(platform);
+    const quota = PLATFORM_QUOTAS[platform] || PLATFORM_QUOTAS.default;
+
+    if (bucket.blockedUntil && Date.now() < bucket.blockedUntil) {
+      return bucket.blockedUntil - Date.now();
+    }
+
+    if (bucket.tokens < 1) {
+      return Math.ceil((1 - bucket.tokens) / quota.refillRate * 1000);
+    }
+
+    return 0;
+  }
+
+  // Circuit breaker
+  private breakers: Map<string, CircuitBreaker> = new Map();
+
+  private getBreaker(platform: string): CircuitBreaker {
+    if (!this.breakers.has(platform)) {
+      const quota = PLATFORM_QUOTAS[platform] || PLATFORM_QUOTAS.default;
+      this.breakers.set(platform, {
+        state: CircuitState.CLOSED,
+        failures: 0
+      });
+    }
+    return this.breakers.get(platform)!;
+  }
+
+  public recordSuccess(platform: string) {
+    const breaker = this.getBreaker(platform);
+    if (breaker.state === CircuitState.HALF_OPEN) {
+      breaker.state = CircuitState.CLOSED;
+      breaker.failures = 0;
+    } else if (breaker.state === CircuitState.CLOSED) {
+      breaker.failures = 0;
+    }
+  }
+
+  public recordFailure(platform: string) {
+    const breaker = this.getBreaker(platform);
+    const quota = PLATFORM_QUOTAS[platform] || PLATFORM_QUOTAS.default;
+    breaker.failures++;
+    breaker.lastFailure = Date.now();
+
+    const threshold = quota.circuitFailureThreshold || 5;
+    if (breaker.failures >= threshold) {
+      breaker.state = CircuitState.OPEN;
+      const resetTimeout = quota.circuitResetTimeoutMs || 60000;
+      breaker.nextAttempt = Date.now() + resetTimeout;
+    }
+  }
+
+  public isAvailable(platform: string): boolean {
+    const breaker = this.getBreaker(platform);
+
+    if (breaker.state === CircuitState.OPEN) {
+      if (breaker.nextAttempt && Date.now() >= breaker.nextAttempt) {
+        breaker.state = CircuitState.HALF_OPEN;
+        return true;
+      }
+      return false;
+    }
+
+    if (breaker.state === CircuitState.HALF_OPEN) {
+      return true;
+    }
+
+    return true;
+  }
+
+  public getCircuitState(platform: string): CircuitState {
+    return this.getBreaker(platform).state;
   }
 }
