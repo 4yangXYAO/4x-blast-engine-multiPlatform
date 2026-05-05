@@ -23,7 +23,7 @@ export class TemplatesRepo {
     const id = randomUUID()
     const vars = input.variables ? JSON.stringify(input.variables) : JSON.stringify([])
     const db = this.db ?? getDb()
-    const isSqlJs = !!(db && (db as any).__isSqlJs)
+    const isSqlJs = !!(db && (db as unknown as { __isSqlJs?: boolean })?.__isSqlJs)
     if (db.prepare && !isSqlJs) {
       db.prepare(
         `INSERT INTO templates (id, name, content, variables, type) VALUES (?, ?, ?, ?, ?)`

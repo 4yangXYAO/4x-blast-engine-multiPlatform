@@ -1,90 +1,90 @@
 # joki-blast-engine
 
-Production-focused Node.js/TypeScript blast engine with a Next.js dashboard, SQLite persistence, and platform adapters for WhatsApp, Telegram, Instagram, Twitter/X, Threads, and Facebook Pages.
+Mesin blast produksi berfokus Node.js/TypeScript dengan dashboard Next.js, persistensi SQLite, dan adaptor platform untuk WhatsApp, Telegram, Instagram, Twitter/X, Threads, dan Facebook Pages.
 
 ## Runtime
 
-- Node.js `20.20.x` is the supported version for local development in this workspace.
-- If native modules such as `better-sqlite3` were installed under a different Node version, reinstall dependencies after switching Node.
+- Node.js `20.20.x` adalah versi yang didukung untuk pengembangan lokal di ruang kerja ini.
+- Jika modul native seperti `better-sqlite3` terinstal di bawah versi Node lain, instal ulang dependensi setelah beralih Node.
 
-## What works now
+## Apa yang sudah berfungsi
 
-- **Campaign Management**: Create marketing campaigns targeting multiple social platforms (Twitter, Threads, Instagram, Facebook).
-- **Link Tracking**: Generate deterministic tracking tokens per campaign/platform and record click statistics.
-- **Destination Links**: Resolve traffic correctly to WhatsApp, Telegram, or webshop destinations.
-- **Inbound Auto-Reply**: Receive messages on WhatsApp/Telegram and send deterministic welcome message, then hand off to sales.
-- **Blast Engine**: Post content to multiple platforms simultaneously with exponential backoff retry and platform-specific rate limiting.
-- **Facebook Pages**: Publish page posts through the official Graph API v19.0 with Page access tokens.
-- Health check and runtime settings from the dashboard.
-- Create accounts, templates, and jobs from the dashboard UI.
-- Trigger an immediate blast from the dashboard UI.
-- Schedule jobs through the API.
-- Store integration tokens and credentials encrypted in SQLite.
-- WhatsApp via WAHA is configured through runtime settings or `.env`.
+- **Manajemen Kampanye**: Buat kampanye pemasaran menargetkan banyak platform sosial (Twitter, Threads, Instagram, Facebook).
+- **Pelacakan Tautan**: Buat token pelacakan deterministik per kampanye/platform dan catat statistik klik.
+- **Tautan Tujuan**: Alihkan lalu lintas dengan benar ke WhatsApp, Telegram, atau tujuan toko.
+- **Balas Otomatis Masuk**: Terima pesan di WhatsApp/Telegram dan kirim pesan sambutan deterministik, lalu serahkan ke tim penjualan.
+- **Mesin Blast**: Posting konten ke banyak platform secara bersamaan dengan *exponential backoff retry* dan *rate limiting* spesifik per platform.
+- **Halaman Facebook**: Publikasi *post* halaman melalui Graph API v19.0 resmi dengan *Page access token*.
+- Pemeriksaan kesehatan dan pengaturan runtime dari dashboard.
+- Buat akun, templat, dan tugas dari UI dashboard.
+- Picu blast langsung dari UI dashboard.
+- Jadwalkan tugas melalui API.
+- Simpan token integrasi dan kredensial terenkripsi di SQLite.
+- WAHA adalah jalur WhatsApp pilihan di ruang kerja ini.
 
-## Facebook Blast
+## Blast Facebook
 
-- Facebook blast uses **cookie-based auth** via the `m.facebook.com` mobile endpoint.
-- Credential: raw browser session cookie string (`c_user=...; xs=...; datr=...`).
-- No developer app, no Page Access Token required.
-- Cookie is stored encrypted in SQLite (AES-256-GCM).
-- Rate limit errors map to `RATE_LIMIT_EXCEEDED` code.
-- Expired cookie errors map to `AUTH_EXPIRED` code.
+- Blast Facebook menggunakan **otentikasi berbasis cookie** melalui *endpoint* seluler `m.facebook.com`.
+- Kredensial: *string* sesi cookie browser mentah (misal `c_user=...; xs=...; datr=...`).
+- Tidak perlu *app* pengembang, tidak perlu *Page Access Token*.
+- Cookie disimpan terenkripsi di SQLite (AES-256-GCM).
+- Galat batas laju dipetakan ke kode `RATE_LIMIT_EXCEEDED`.
+- Galat cookie kedaluwarsa dipetakan ke kode `AUTH_EXPIRED`.
 
-**See [FACEBOOK_PAGES_BLAST.md](docs/FACEBOOK_PAGES_BLAST.md) for a complete step-by-step guide on how to:**
+Lihat [FACEBOOK_PAGES_BLAST.md](docs/FACEBOOK_PAGES_BLAST-id.md) untuk panduan langkah demi langkah lengkap cara:
 
-- Get your Facebook session cookie from a logged-in browser
-- Create a Facebook account in the dashboard
-- Create and blast campaigns to Facebook
-- Handle errors and troubleshoot issues
+- Mendapatkan cookie sesi Facebook dari browser yang sedang login
+- Membuat akun Facebook di dashboard
+- Membuat dan meluncurkan kampanye ke Facebook
+- Menangani galat dan pemecahan masalah
 
-## Campaign Workflow
+## Alur Kampanye
 
-### 1. Create Campaign
+### 1. Buat Kampanye
 
-1. Open dashboard at `http://localhost:3001`
-2. Navigate to **Campaigns** section
-3. Fill in campaign details:
-   - **Campaign Name**: Descriptive title (e.g., "Summer Sale 2024")
-   - **Campaign Content**: Message to post on platforms
-   - **CTA Link**: URL destination (WhatsApp, Telegram, webshop, etc.)
-   - **Platforms**: Select target platforms (Twitter, Threads, Instagram, Facebook)
-4. Click **Create Campaign**
+1. Buka dashboard di `http://localhost:3001`
+2. Buka bagian **Kampanye**
+3. Isi detail kampanye:
+   - **Nama Kampanye**: Judul deskriptif (misal "Penjualan Musim Panas 2024")
+   - **Konten Kampanye**: Pesan yang akan diposting ke platform
+   - **Tautan CTA**: URL tujuan (WhatsApp, Telegram, toko, dll.)
+   - **Platform**: Pilih platform target (Twitter, Threads, Instagram, Facebook)
+4. Klik **Buat Kampanye**
 
-### 2. Blast to Platforms
+### 2. Luncurkan ke Platform
 
-1. After campaign created, click **Blast Campaign**
-2. System enqueues one PostJob per selected platform
-3. Each job includes a unique tracking link per platform
-4. Jobs are processed with exponential backoff retry (Facebook uses up to 50 retries)
+1. Setelah kampanye dibuat, klik **Luncurkan Kampanye**
+2. Sistem mengantrekan satu PostJob per platform yang dipilih
+3. Setiap tugas menyertakan tautan pelacakan unik per platform
+4. Tugas diproses dengan *exponential backoff retry* (Facebook menggunakan hingga 50 percobaan)
 
-### 3. Track Link Clicks
+### 3. Lacak Klik Tautan
 
-- When user clicks the tracking link, the system records click metadata (timestamp, platform)
-- User is 302-redirected to the CTA link destination
-- View statistics with: `GET /v1/track/stats/:campaignId`
+- Saat pengguna mengklik tautan pelacakan, sistem mencatat metadata klik (stempel waktu, platform)
+- Pengguna dialihkan (302) ke URL tujuan CTA
+- Lihat statistik dengan: `GET /v1/track/stats/:campaignId`
 
-### 4. Inbound Auto-Reply
+### 4. Balas Otomatis Masuk
 
-- When user messages on WhatsApp or Telegram, the system:
-  1. Creates a lead record with contact info
-  2. Sends deterministic welcome message ("Halo! Terima kasih sudah menghubungi kami...")
-  3. Marks lead as "awaiting_handoff" for manual sales negotiation
-  4. Prevents duplicate welcome messages via idempotent lead storage
+- Saat pengguna mengirim pesan di WhatsApp/Telegram, sistem:
+  1. Membuat catatan prospek dengan info kontak
+  2. Mengirim pesan sambutan deterministik ("Halo! Terima kasih sudah menghubungi kami...")
+  3. Menandai prospek sebagai `awaiting_handoff` untuk negosiasi manual penjualan
+  4. Mencegah pesan sambutan duplikat melalui penyimpanan idempoten
 
-### 5. Facebook Mass Comment Blast
+### 5. Blast Komentar Massal Facebook
 
-Comments are posted to random Facebook post IDs loaded from `data/targets.txt`.
+Komentar diposting ke ID posting Facebook acak yang dimuat dari `data/targets.txt`.
 
-**Setup `data/targets.txt`:**
+**Siapkan `data/targets.txt`:**
 
 ```
-# One Facebook post ID per line (format: userId_postId  OR  just postId)
+# Satu ID posting Facebook per baris (format: idPengguna_idPostingan  ATAU  hanya idPostingan)
 561234567890_123456789012345
 100012345678901_987654321
 ```
 
-**Trigger mass comment blast:**
+**Picu blast komentar massal:**
 
 ```http
 POST /v1/jobs/comment-random
@@ -92,20 +92,20 @@ Content-Type: application/json
 
 {
   "message": "Produk bagus! DM kami untuk info harga 📩",
-  "accountId": "your-facebook-account-id",
+  "accountId": "id-akun-facebook-anda",
   "count": 50
 }
 ```
 
-Response:
+Respon:
 
 ```json
 { "enqueued": 50, "job_ids": ["job-...", "..."], "targets_found": 50 }
 ```
 
-### 6. Facebook Private Message (DM)
+### 6. Pesan Langsung (DM) Facebook
 
-Send direct Messenger messages via the job queue:
+Kirim pesan Messenger langsung melalui antrean tugas:
 
 ```http
 POST /v1/jobs/trigger
@@ -113,82 +113,81 @@ Content-Type: application/json
 
 {
   "template_id": "...",
-  "account_id": "your-facebook-account-id",
+  "account_id": "id-akun-facebook-anda",
   "platform": "facebook",
   "message": "Halo! Ada penawaran spesial untuk kamu 🎉"
 }
 ```
 
-For DM jobs, use `ChatJob` type which calls `sendPrivateMessage(userId, message, cookie)` on the
-`facebook` adapter. The `to` field in the job payload should be the target user's numeric Facebook ID.
+Untuk tugas DM, gunakan tipe `ChatJob` yang memanggil `sendPrivateMessage(userId, message, cookie)` pada adaptor `facebook`. Kolom `to` pada muatan tugas harus berupa ID Facebook numerik target.
 
-## Getting Started
+## Memulai
 
-These steps show a quick local setup for development and testing.
+Langkah cepat untuk pengaturan dan pengujian lokal.
 
-1. Clone the repo and install root dependencies:
+1. Kloning repo dan instal dependensi root:
 
 ```bash
-git clone <repo-url>
+git clone <url-repo>
 cd joki-blast-engine
 npm install
 ```
 
-2. Install and run the dashboard (in a separate terminal):
+2. Instal dan jalankan dashboard (di terminal terpisah):
 
 ```bash
 cd dashboard
 npm install
-npm run dev        # runs the Next.js dashboard in dev mode (port configured in dashboard/package.json)
+npm run dev        # menjalankan dashboard Next.js dalam mode dev (port diatur di dashboard/package.json)
 ```
 
-3. Initialize the database (creates local SQLite DB and runs migrations):
+3. Inisialisasi database (membuat SQLite lokal dan menjalankan migrasi):
 
 ```bash
 npm run db:init
 ```
 
-4. Start the backend API in development mode:
+4. Jalankan API backend dalam mode pengembangan:
 
 ```bash
 npm run dev:api
 ```
 
-The API entrypoint uses `src/api/server`. The `dev:api` script starts the server with `ts-node` and `dotenv`.
+Titik masuk API menggunakan `src/api/server`. Skrip `dev:api` memulai server dengan `ts-node` dan `dotenv`.
 
-5. Build the dashboard for production (optional):
+5. Build dashboard untuk produksi (opsional):
 
 ```bash
 npm --prefix dashboard run build
 ```
 
-6. Run tests and validations:
+6. Jalankan pengujian dan validasi:
 
 ```bash
-npm test                      # run backend tests (Vitest)
-npm run validate:config       # run config validation checks
+npm test                      # jalankan pengujian backend (Vitest)
+npm run validate:config       # jalankan pemeriksaan validasi konfigurasi
 ```
 
-7. Environment and runtime
+7. Lingkungan dan runtime
 
-- Create a `.env` file at the repo root for local secrets (see `Environment` below).
-- The API will read runtime settings and credentials from environment variables and from the SQLite database.
+- Buat berkas `.env` di root repo untuk rahasia lokal (lihat `Environment` di bawah).
+- API akan membaca pengaturan runtime dan kredensial dari variabel lingkungan dan dari SQLite.
 
-8. Helpful script references (root `package.json`):
+8. Referensi skrip berguna (root `package.json`):
 
-- `npm run db:init` — initialize DB + run migrations
-- `npm run dev:api` — run API in dev (ts-node)
-- `npm test` — run test suite (Vitest)
+- `npm run db:init` — inisialisasi DB + migrasi
+- `npm run dev:api` — jalankan API dalam mode dev (ts-node)
+- `npm test` — jalankan suite pengujian (Vitest)
 
-Open the dashboard in your browser (default port configured in `dashboard/package.json`), for example:
+Buka dashboard di browser (port default diatur di `dashboard/package.json`), misalnya:
 
 ```
 http://localhost:3001
 ```
 
-## Environment
+## Lingkungan
 
-Required core variables:
+Variabel inti yang diperlukan:
 
 - `DATABASE_PATH`
 - `API_PORT`
@@ -197,7 +196,7 @@ Required core variables:
 - `JWT_SECRET`
 - `LOG_LEVEL`
 
-Useful integration variables:
+Variabel integrasi yang berguna:
 
 - `WAHA_BASE_URL`
 - `WAHA_API_KEY`
@@ -213,13 +212,13 @@ Useful integration variables:
 - `INSTAGRAM_ALLOW_PRIVATE_API`
 - `WHATSAPP_WEBJS_API_KEY`
 
-## Cookie-based adapters (Facebook/Instagram/Threads/Twitter cookie paths)
+## Adaptor berbasis cookie (jalur cookie Facebook/Instagram/Threads/Twitter)
 
-- Some adapters support posting using browser session cookies instead of official platform tokens. This is "advanced" behaviour and requires a valid browser session cookie string (e.g. `c_user=...; xs=...; datr=...;`) or an exported cookie JSON array.
-- For Facebook cookie posting the adapter will extract `fb_dtsg`, `lst`, and `c_user` from the mobile site (`https://m.facebook.com/`) and submit a mobile form endpoint. If Facebook redirects to login, the adapter will report an `AUTH_EXPIRED` error.
-- Storing cookies in the dashboard `Accounts` section is allowed; credentials are encrypted at rest. Use cookies responsibly and ensure you comply with platform Terms of Service.
+- Beberapa adaptor mendukung posting menggunakan *session cookie* browser alih-alih token resmi platform. Ini adalah perilaku "lanjutan" dan memerlukan *session cookie* browser yang valid (misal `c_user=...; xs=...; datr=...;`) atau larik JSON cookie yang diekspor.
+- Untuk posting cookie Facebook, adaptor akan mengekstrak `fb_dtsg`, `lst`, dan `c_user` dari situs seluler (`https://m.facebook.com/`) dan mengirimkan *endpoint* formulir seluler. Jika Facebook mengalihkan ke login, adaptor akan melaporkan galat `AUTH_EXPIRED`.
+- Menyimpan cookie di bagian **Akun** dashboard diizinkan; kredensial dienkripsi diam-diam. Gunakan cookie secara bertanggung jawab dan pastikan mematuhi Ketentuan Layanan platform.
 
-## API routes
+## Rute API
 
 - `GET /v1/health`
 - `GET/POST/PUT/DELETE /v1/accounts`
@@ -228,31 +227,31 @@ Useful integration variables:
 - `POST /v1/jobs/schedule`
 - `GET/PUT /v1/settings/integrations`
 
-## Dashboard flow
+## Alur Dashboard
 
-1. Check API health.
-2. Save integration tokens if needed.
-3. Create an account.
-4. Create a template.
-5. Enter a recipient/target.
-6. Click `Blast now` or schedule the job.
+1. Periksa kesehatan API.
+2. Simpan token integrasi jika diperlukan.
+3. Buat akun.
+4. Buat templat.
+5. Masukkan penerima/target.
+6. Klik `Luncurkan sekarang` atau jadwalkan tugas.
 
-## Verification
+## Verifikasi
 
-- Backend tests: `npm test`
-- Dashboard build: `npm --prefix dashboard run build`
-- Config validation: `npm run validate:config`
+- Pengujian backend: `npm test`
+- Build dashboard: `npm --prefix dashboard run build`
+- Validasi konfigurasi: `npm run validate:config`
 
-## Validation Checklist
+## Daftar Periksa Validasi
 
-- Campaign can be created and triggered from the UI.
-- Links resolve correctly to WhatsApp, Telegram, or webshop destinations.
-- Auto-reply welcome is sent on inbound WhatsApp/Telegram messages.
-- Manual negotiation handoff is visible in system state.
-- Backend tests and dashboard build are green.
+- Kampanye dapat dibuat dan dipicu dari UI.
+- Tautan diarahkan dengan benar ke WhatsApp, Telegram, atau tujuan toko.
+- Sambutan otomatis terkirim pada pesan masuk WhatsApp/Telegram.
+- Serahterima manual terlihat di status sistem.
+- Pengujian backend dan build dashboard sukses.
 
-## Notes
+## Catatan
 
-- The dashboard page is a single-page admin surface in `dashboard/app/page.tsx`.
-- Job execution now resolves adapters from stored accounts and decrypts their credentials.
-- WAHA is the preferred WhatsApp path in this workspace.
+- Halaman dashboard adalah permukaan admin satu-halaman di `dashboard/app/page.tsx`.
+- Eksekusi tugas kini menyelesaikan adaptor dari akun yang disimpan dan mendekripsi kredensialnya.
+- WAHA adalah jalur WhatsApp pilihan di ruang kerja ini.

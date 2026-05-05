@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 /**
- * Shared HTTP client factory.
- * Provides a pre-configured axios instance with timeout and base URL.
- * Adapters should use this instead of raw axios to ensure consistent behavior.
+ * Pabrik klien HTTP bersama.
+ * Menyediakan instans axios yang telah dikonfigurasi dengan timeout dan base URL.
+ * Adapter harus menggunakannya alih-alih axios mentah untuk memastikan perilaku yang konsisten.
  */
 export function createHttpClient(opts: {
   baseURL?: string;
@@ -18,10 +18,10 @@ export function createHttpClient(opts: {
 }
 
 /**
- * Parse a cookie string or JSON array of {name, value} into a single Cookie header string.
- * Accepts:
- *   - Plain string: "key=val; key2=val2"
- *   - JSON string: '[{"name":"key","value":"val"}]'
+ * Parsing string cookie atau array JSON {name, value} menjadi satu string header Cookie.
+ * Menerima:
+ *   - String biasa: "key=val; key2=val2"
+ *   - String JSON: '[{"name":"key","value":"val"}]'
  */
 export function parseCookies(raw: string): string {
   if (!raw) return '';
