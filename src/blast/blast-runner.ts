@@ -38,7 +38,7 @@ import { sendInstagramDM } from './actions/instagram-dm'
 
 // ── Finder imports ──────────────────────────────────────────────────
 
-import { findFacebookTargets } from '../adapters/providers/meta/facebook/facebook-finnder'
+import { findFacebookTargets } from '../adapters/providers/meta/facebook/facebook-finder'
 import { findInstagramTargets } from './finders/instagram-finder'
 import { findTwitterTargets } from './finders/twitter-finder'
 import { findThreadsTargets } from './finders/threads-finder'
