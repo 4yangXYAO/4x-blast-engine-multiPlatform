@@ -21,8 +21,8 @@ async function startApp() {
   })
 }
 
-describe('Accounts crypto', () => {
-  it('should encrypt and decrypt correctly', async () => {
+describe('Kripto Akun', () => {
+  it('harus enkripsi dan dekripsi dengan benar', async () => {
     process.env.JWT_SECRET = 'test-secret'
     const { encrypt, decrypt } = await import('../utils/crypto')
     const original = 'my-credential'
@@ -33,8 +33,8 @@ describe('Accounts crypto', () => {
   })
 })
 
-describe('Accounts API', () => {
-  it('GET / returns empty array initially', async () => {
+describe('API Akun', () => {
+  it('GET / mengembalikan array kosong awalnya', async () => {
     const { baseUrl, close } = await startApp()
     const res = await fetch(`${baseUrl}/v1/accounts`)
     const body = await res.json()
@@ -43,7 +43,7 @@ describe('Accounts API', () => {
     expect(Array.isArray(body)).toBe(true)
   })
 
-  it('POST / creates account and returns id', async () => {
+  it('POST / membuat akun dan mengembalikan id', async () => {
     const { baseUrl, close } = await startApp()
     const res = await fetch(`${baseUrl}/v1/accounts`, {
       method: 'POST',
