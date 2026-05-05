@@ -16,8 +16,8 @@ import {
   NotebookText,
 } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { PlatformIcon } from './PlatformIcon'
-import type { PlatformName } from './PlatformIcon'
+import { PlatformIcon } from '../ui/PlatformIcon'
+import type { PlatformName } from '../ui/PlatformIcon'
 
 interface SidebarProps {
   open?: boolean

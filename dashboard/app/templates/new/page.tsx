@@ -60,7 +60,6 @@ export default function NewTemplatePage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 label="Name"
-                name="name"
                 placeholder="Summer Promo"
                 error={errors.name?.message as string}
                 {...register('name')}
@@ -68,7 +67,6 @@ export default function NewTemplatePage() {
 
               <FormField
                 label="Content"
-                name="content"
                 type="textarea"
                 placeholder="Check this out {link}"
                 helperText="Use {link} for CTA, {name} for recipient name"
@@ -78,7 +76,6 @@ export default function NewTemplatePage() {
 
               <FormField
                 label="Variables"
-                name="variables"
                 placeholder="link, name"
                 helperText="Comma-separated list of variables"
                 error={errors.variables?.message as string}

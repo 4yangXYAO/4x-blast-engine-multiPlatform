@@ -29,3 +29,5 @@ export function maskCredential(value: string, visibleChars = 4): string {
   if (value.length <= visibleChars) return '*'.repeat(value.length)
   return value.slice(0, visibleChars) + '*'.repeat(value.length - visibleChars)
 }
+
+export type { AxiosError }
