@@ -239,7 +239,7 @@ export function useBlastCampaign() {
       toast.success('Blast started')
       queryClient.invalidateQueries({ queryKey: ['campaigns'] })
     },
-    onError: (e: any) => toast.error(e?.message ?? 'Blast failed'),
+    onError: (e: ApiError) => toast.error(e?.message ?? 'Blast failed'),
   })
 
   return { blastMutation }

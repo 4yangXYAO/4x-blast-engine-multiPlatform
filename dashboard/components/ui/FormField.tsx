@@ -1,5 +1,7 @@
 'use client'
 
+import { type ReactEventHandler } from 'react'
+
 export interface FormFieldProps {
   label: string
   name: string
@@ -9,7 +11,7 @@ export interface FormFieldProps {
   options?: { value: string; label: string }[]
   error?: string
   className?: string
-  onChange?: (e: any) => void
+  onChange?: ReactEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
 }
 
 export function FormField({

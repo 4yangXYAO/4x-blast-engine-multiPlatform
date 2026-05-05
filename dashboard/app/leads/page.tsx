@@ -12,13 +12,13 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Download, Send } from 'lucide-react'
-import type { Campaign } from '@/lib/hooks'
+import type { Lead } from '@/lib/types'
 
 export default function LeadsPage() {
   const queryClient = useQueryClient()
   const [statusFilter, setStatusFilter] = useState('')
 
-  const { data: leads, isLoading } = useQuery({
+  const { data: leads, isLoading } = useQuery<Lead[]>({
     queryKey: ['leads'],
     queryFn: async () => (await api.get('/v1/webhooks/leads')).data,
   })
@@ -31,7 +31,7 @@ export default function LeadsPage() {
     },
   })
 
-  const filtered = (leads ?? []).filter((l: any) => {
+  const filtered = (leads ?? []).filter((l: Lead) => {
     if (statusFilter && l.status !== statusFilter) return false
     return true
   })
@@ -43,12 +43,11 @@ export default function LeadsPage() {
     {
       key: 'status' as const,
       header: 'Status',
-      render: (row: any) => <StatusBadge status={row.status === 'new' ? 'info' : row.status === 'handoff' ? 'success' : 'warning'} text={row.status} />,
+      render: (row: Lead) => <StatusBadge status={row.status === 'new' ? 'info' : row.status === 'handoff' ? 'success' : 'warning'} text={row.status} />,
     },
-    { key: 'first_contact' as const, header: 'First Contact' },
   ]
 
-  const actions = (row: any) => (
+  const actions = (row: Lead) => (
     <div className="flex gap-1">
       {row.status !== 'handoff' && (
         <Button variant="outline" size="sm" onClick={() => handoffMutation.mutate(row.id)}>

@@ -55,7 +55,7 @@ export function getPlatformHealth(
   platform: string
 ): boolean | null {
   if (!adapters?.adapters) return null
-  const found = adapters.adapters.find((a: any) => a.platform === platform)
+  const found = adapters.adapters.find((a: { name: string; platform: string; healthy: boolean }) => a.platform === platform)
   return found?.healthy ?? null
 }
 

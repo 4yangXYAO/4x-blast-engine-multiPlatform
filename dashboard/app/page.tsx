@@ -7,26 +7,41 @@ import { LayoutDashboard, Send, MessageSquare, Users, BarChart3, Plus } from 'lu
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { StatusBadge } from '@/components/ui/StatusBadge'
+import type { StatusType } from '@/components/ui/StatusBadge'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import type { PlatformName } from '@/components/ui/PlatformIcon'
 import { PlatformIcon } from '@/components/ui/PlatformIcon'
+import type { Campaign, Job, PlatformHealthStatus } from '@/lib/types'
+
+const mapJobStatusToType = (status?: string): StatusType => {
+  switch (status) {
+    case 'completed':
+      return 'success'
+    case 'running':
+      return 'warning'
+    case 'failed':
+      return 'error'
+    default:
+      return 'neutral'
+  }
+}
 
 const platformKeys: PlatformName[] = ['twitter', 'facebook', 'instagram', 'threads', 'whatsapp', 'telegram']
 
 export default function OverviewPage() {
-  const { data: campaigns, isLoading: cLoad } = useQuery({
+  const { data: campaigns, isLoading: cLoad } = useQuery<Campaign[]>({
     queryKey: ['campaigns'],
     queryFn: async () => (await api.get('/v1/campaigns')).data,
   })
 
-  const { data: jobs, isLoading: jLoad } = useQuery({
+  const { data: jobs, isLoading: jLoad } = useQuery<Job[]>({
     queryKey: ['jobs'],
     queryFn: async () => (await api.get('/v1/jobs')).data,
     refetchInterval: 3000,
   })
 
-  const { data: adapters, isLoading: aLoad } = useQuery({
+  const { data: adapters, isLoading: aLoad } = useQuery<PlatformHealthStatus>({
     queryKey: ['adapters'],
     queryFn: async () => (await api.get('/v1/adapters')).data,
   })
@@ -35,17 +50,17 @@ export default function OverviewPage() {
 
   if (isLoading) return <LoadingSkeleton count={5} />
 
-  const activeCampaigns = campaigns?.filter((c: any) => c.status === 'active')?.length ?? 0
-  const runningJobs = jobs?.filter((j: any) => j.status === 'running')?.length ?? 0
-  const completedToday = jobs?.filter((j: any) => {
-    const d = new Date(j.created_at)
+  const activeCampaigns = campaigns?.filter((c: Campaign) => c.status === 'active')?.length ?? 0
+  const runningJobs = jobs?.filter((j: Job) => j.status === 'running')?.length ?? 0
+  const completedToday = jobs?.filter((j: Job) => {
+    const d = new Date(j.created_at ?? '')
     const today = new Date()
     return d.toDateString() === today.toDateString() && j.status === 'completed'
   })?.length ?? 0
-  const failedJobs = jobs?.filter((j: any) => j.status === 'failed')?.length ?? 0
+  const failedJobs = jobs?.filter((j: Job) => j.status === 'failed')?.length ?? 0
 
   const recentActivity = [...(jobs ?? [])]
-    .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .sort((a: Job, b: Job) => new Date(b.created_at ?? '').getTime() - new Date(a.created_at ?? '').getTime())
     .slice(0, 10)
 
   return (
@@ -94,13 +109,13 @@ export default function OverviewPage() {
             <EmptyState icon="message" title="No activity yet" description="Jobs will appear here when campaigns run" />
           ) : (
             <div className="space-y-2">
-              {recentActivity.map((job: any) => (
+              {recentActivity.map((job: Job) => (
                 <div key={job.id} className="flex items-center justify-between p-3 bg-slate-800 rounded-lg border border-slate-700">
                   <div className="flex items-center gap-2">
-                    <PlatformIcon platform={job.platform} />
+                    <PlatformIcon platform={job.platform ?? ''} />
                     <span className="text-sm">{job.type || 'job'}</span>
                   </div>
-                  <StatusBadge status={job.status} />
+                  <StatusBadge status={mapJobStatusToType(job.status)} />
                 </div>
               ))}
             </div>
@@ -138,7 +153,7 @@ export default function OverviewPage() {
         <h2 className="text-lg font-medium mb-3">Platform Health</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {platformKeys.map((platform) => {
-            const adapter = adapters?.adapters?.find((a: any) => a.platform === platform)
+            const adapter = adapters?.adapters?.find((a) => a.platform === platform)
             return (
               <Card key={platform} className="bg-slate-800 border-slate-700 p-4">
                 <div className="flex items-center gap-2 mb-2">

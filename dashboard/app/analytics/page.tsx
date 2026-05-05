@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
                   outerRadius={100}
                   fill="#10b981"
                 >
-                  {(stats?.lead_sources || []).map((_: any, i: number) => (
+                  {(stats?.lead_sources || []).map((_: unknown, i: number) => (
                     <Cell key={i} fill={['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444'][i % 5]} />
                   ))}
                 </Pie>

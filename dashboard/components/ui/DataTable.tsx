@@ -35,7 +35,7 @@ export interface DataTableProps<T> {
 
 type SortDirection = 'asc' | 'desc' | null
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T = Record<string, unknown>>({
   columns,
   data,
   isLoading,
@@ -52,13 +52,13 @@ export function DataTable<T extends Record<string, unknown>>({
   const [sortKey, setSortKey] = useState<string | null>(null)
   const [sortDir, setSortDir] = useState<SortDirection>(null)
 
-  const filtered = useMemo(() => {
-    if (!search) return data
-    const q = search.toLowerCase()
-    return data.filter((row) =>
-      Object.values(row).some((v) => String(v ?? '').toLowerCase().includes(q))
-    )
-  }, [data, search])
+   const filtered = useMemo(() => {
+     if (!search) return data
+     const q = search.toLowerCase()
+     return data.filter((row) =>
+       Object.values(row as Record<string, unknown>).some((v) => String(v ?? '').toLowerCase().includes(q))
+     )
+   }, [data, search])
 
   const sorted = useMemo(() => {
     if (!sortKey || !sortDir) return filtered

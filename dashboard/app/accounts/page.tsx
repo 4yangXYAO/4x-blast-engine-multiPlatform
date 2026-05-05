@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api, maskCredential } from '@/lib/api'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import DataTable from '@/components/ui/DataTable'
+import DataTable, { type Column } from '@/components/ui/DataTable'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -15,13 +15,14 @@ import { useState } from 'react'
 import { Plus, Eye, Trash2, Key } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import type { Account } from '@/lib/types'
 
 export default function AccountsPage() {
   const queryClient = useQueryClient()
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [revealId, setRevealId] = useState<string | null>(null)
 
-  const { data: accounts, isLoading } = useQuery({
+  const { data: accounts, isLoading } = useQuery<Account[]>({
     queryKey: ['accounts'],
     queryFn: async () => (await api.get('/v1/accounts')).data,
   })
@@ -39,7 +40,7 @@ export default function AccountsPage() {
     {
       key: 'platform' as const,
       header: 'Platform',
-      render: (row: any) => (
+      render: (row: Account) => (
         <div className="flex items-center gap-2">
           <PlatformIcon platform={row.platform} />
           <span className="capitalize">{row.platform}</span>
@@ -49,17 +50,17 @@ export default function AccountsPage() {
     {
       key: 'username' as const,
       header: 'Username',
-      render: (row: any) => row.username ?? '-',
+      render: (row: Account) => row.username ?? '-',
     },
     {
       key: 'credentials_encrypted' as const,
       header: 'Credentials',
-      render: (row: any) => (
+      render: (row: Account) => (
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs">
-            {revealId === row.id ? row.credentials_encrypted : maskCredential(row.credentials_encrypted)}
+            {revealId === row.id ? row.username : maskCredential(row.username ?? '')}
           </span>
-          <CopyButton text={row.credentials_encrypted} displayText="copy" />
+          <CopyButton text={row.username ?? ''} displayText="copy" />
           <Button variant="ghost" size="sm" onClick={() => setRevealId(revealId === row.id ? null : row.id)}>
             {revealId === row.id ? 'Hide' : 'Reveal'}
           </Button>
@@ -69,16 +70,16 @@ export default function AccountsPage() {
     {
       key: 'status' as const,
       header: 'Status',
-      render: (row: any) => <StatusBadge status={row.status === 'active' ? 'success' : row.status === 'auth_expired' ? 'error' : 'warning'} text={row.status} />,
+      render: (row: Account) => <StatusBadge status={row.status === 'active' ? 'success' : row.status === 'auth_expired' ? 'error' : 'warning'} text={row.status} />,
     },
     {
       key: 'last_used' as const,
       header: 'Last Used',
-      render: (row: any) => row.last_used ?? '-',
+      render: (row: Account) => row.last_used ?? '-',
     },
-  ]
+   ] as Column<Account>[]
 
-  const actions = (row: any) => (
+  const actions = (row: Account) => (
     <div className="flex gap-1">
       <Button variant="ghost" size="icon" asChild>
         <Link href={`/accounts/${row.id}`}>

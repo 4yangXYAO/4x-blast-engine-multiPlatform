@@ -49,10 +49,19 @@
       "task_key": "todo:4",
       "task_label": "4",
       "task_title": "**Replace `any` types in src/routes/**",
-      "session_id": "ses_206f1f3e0ffeyXXVyP1YfxopLC",
+      "session_id": "ses_206f001c7ffeE7zKjJjl0HIj43",
       "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-05-05T16:53:26.320Z"
+      "category": "quick",
+      "updated_at": "2026-05-05T17:04:08.104Z"
+    },
+    "todo:6": {
+      "task_key": "todo:6",
+      "task_label": "6",
+      "task_title": "**Replace `any` types in dashboard**",
+      "session_id": "ses_206a947ffffeqctEY4X4XsFp2U",
+      "agent": "Sisyphus-Junior",
+      "category": "visual-engineering",
+      "updated_at": "2026-05-05T18:12:08.765Z"
     }
   }
 }

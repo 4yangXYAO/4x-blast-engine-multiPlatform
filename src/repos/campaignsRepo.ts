@@ -90,7 +90,7 @@ export class CampaignsRepo {
     const db = this.getDatabase()
     return db
       .prepare(`SELECT * FROM campaign_posts WHERE campaign_id = ? ORDER BY created_at ASC`)
-      .all() as CampaignPost[]
+      .all(campaignId) as CampaignPost[]
   }
 
   markPostStatus(postId: string, status: string): void {

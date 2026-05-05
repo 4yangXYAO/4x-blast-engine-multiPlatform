@@ -12,6 +12,7 @@ import { api } from '@/lib/api'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import type { ErrorResponse } from '@/lib/types'
 
 const schema = z.object({
   name: z.string().min(1, 'Name required'),
@@ -25,13 +26,16 @@ export default function NewTemplatePage() {
   const queryClient = useQueryClient()
 
   const { mutate: create, isPending } = useMutation({
-    mutationFn: async (data: any) => api.post('/v1/templates', data),
+    mutationFn: async (data: { name: string; content: string; variables: string[]; type: string }) => api.post('/v1/templates', data),
     onSuccess: () => {
       toast.success('Template created!')
       queryClient.invalidateQueries({ queryKey: ['templates'] })
       router.push('/templates')
     },
-    onError: (e: any) => toast.error(e?.message ?? 'Failed'),
+    onError: (e: ErrorResponse | Error) => {
+      const message = e instanceof Error ? e.message : (e?.message ?? e?.error ?? 'Failed')
+      toast.error(message)
+    },
   })
 
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -39,7 +43,7 @@ export default function NewTemplatePage() {
     defaultValues: { name: '', content: '', variables: '', type: 'template' },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { name: string; content: string; variables: string; type: string }) => {
     const payload = {
       ...data,
       variables: data.variables.split(',').map((v: string) => v.trim()).filter(Boolean),
