@@ -645,7 +645,10 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
     Evidence: .sisyphus/evidence/task-13-whatsapp-message-delivered.json
   ```
 
-- [ ] 14. **Add NotImplementedError for missing adapter methods**
+- [x] 14. **Add NotImplementedError for missing adapter methods**
+  - Created: src/errors.ts with NotImplementedError class
+  - Created: src/errors.test.ts (1 test passing)
+  - All adapters already implement IAdapter fully
 
   **What to do**:
   - Create a standard `NotImplementedError` class
