@@ -1,13 +1,14 @@
 import express, { Router } from "express";
 import { getDb } from "../db/sqlite";
-import { TemplatesRepo } from "../repos/templatesRepo";
+import { TemplatesRepo, Template } from "../repos/templatesRepo";
+import type { Database } from "better-sqlite3";
 
 const router = Router();
 
 // Avoid initializing DB at module import. Tests or server should call initDatabase
 // prior to using these routes. Provide a lazy getter for the repo.
 let templatesRepo: TemplatesRepo | null = null;
-export function getTemplatesRepo(db?: any) {
+export function getTemplatesRepo(db?: Database) {
   if (templatesRepo) return templatesRepo;
   templatesRepo = new TemplatesRepo(db);
   return templatesRepo;
@@ -29,26 +30,26 @@ function validateVariables(content: string, variables: string[]): boolean {
 type TemplateInput = { name?: string; content?: string; variables?: string[]; type?: string }
 
 function parseCsv(csvText: string): TemplateInput[] {
-  const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
-  if (lines.length < 2) return [];
-
-  const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-  const results: any[] = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(",").map(v => v.trim());
-    const obj: any = {};
-    headers.forEach((h, index) => {
-      if (h === "variables") {
-        obj[h] = values[index] ? values[index].split(";").map(v => v.trim()) : [];
-      } else {
-        obj[h] = values[index];
-      }
-    });
-    results.push(obj);
-  }
-  return results;
-}
+   const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
+   if (lines.length < 2) return [];
+ 
+   const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+   const results: TemplateInput[] = [];
+ 
+   for (let i = 1; i < lines.length; i++) {
+     const values = lines[i].split(",").map(v => v.trim());
+     const obj: Record<string, string | string[]> = {};
+     headers.forEach((h, index) => {
+       if (h === "variables") {
+         obj[h] = values[index] ? values[index].split(";").map(v => v.trim()) : []
+       } else {
+         obj[h] = values[index]
+       }
+     });
+     results.push(obj as TemplateInput);
+   }
+   return results;
+ }
 
 router.get("/", (req, res) => {
   const repo = getTemplatesRepo();
@@ -72,23 +73,23 @@ router.post("/", (req, res) => {
 });
 
 router.post("/import", express.text({ type: "text/csv" }), (req, res) => {
-  try {
-    const parsed = parseCsv(req.body);
-    const repo = getTemplatesRepo();
-    const imported: any[] = [];
-
-    for (const item of parsed) {
-      if (!item.name || !item.content || !item.type) continue;
-      if (!validateVariables(item.content, item.variables || [])) continue;
-      const created = repo.create({ name: item.name, content: item.content, variables: item.variables || [], type: item.type });
-      imported.push(created);
-    }
-
-    res.status(201).json({ count: imported.length, templates: imported });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to parse CSV" });
-  }
-});
+   try {
+     const parsed = parseCsv(req.body);
+     const repo = getTemplatesRepo();
+     const imported: Template[] = [];
+ 
+     for (const item of parsed) {
+       if (!item.name || !item.content || !item.type) continue;
+       if (!validateVariables(item.content, item.variables || [])) continue;
+       const created = repo.create({ name: item.name, content: item.content, variables: item.variables || [], type: item.type });
+       imported.push(created);
+     }
+ 
+     res.status(201).json({ count: imported.length, templates: imported });
+   } catch (err) {
+     res.status(500).json({ error: "Failed to parse CSV" });
+   }
+ });
 
 router.put("/:id", (req, res) => {
   const { id } = req.params;

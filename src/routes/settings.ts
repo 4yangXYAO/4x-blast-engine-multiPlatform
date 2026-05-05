@@ -1,11 +1,12 @@
 import { Router } from 'express'
 import { RuntimeSettingsRepo } from '../repos/runtimeSettingsRepo'
+import type { DB } from '../db/sqlite'
 
 const router = Router()
 
 let runtimeSettingsRepo: RuntimeSettingsRepo | null = null
 
-export function getRuntimeSettingsRepo(db?: any) {
+export function getRuntimeSettingsRepo(db?: DB) {
   if (runtimeSettingsRepo) return runtimeSettingsRepo
   runtimeSettingsRepo = new RuntimeSettingsRepo(db)
   return runtimeSettingsRepo

@@ -61,9 +61,10 @@ export function createBlastRouter() {
       })
 
       return res.status(200).json(result)
-    } catch (e: any) {
-      return res.status(500).json({ error: e?.message ?? 'Blast execution failed' })
-    }
+     } catch (e: unknown) {
+       const errorMsg = e instanceof Error ? e.message : 'Blast execution failed'
+       return res.status(500).json({ error: errorMsg })
+     }
   })
 
   /**
