@@ -15,7 +15,7 @@ vi.mock('../adapters/providers/twitter/dm', () => ({
 vi.mock('./actions/instagram-dm', () => ({
   sendInstagramDM: vi.fn().mockResolvedValue({ success: true }),
 }))
-vi.mock('../adapters/providers/meta/facebook/facebook-finnder', () => ({
+vi.mock('../adapters/providers/meta/facebook/facebook-finder', () => ({
   findFacebookTargets: vi.fn().mockResolvedValue({ postIds: [], userIds: [] }),
 }))
 vi.mock('./finders/instagram-finder', () => ({
