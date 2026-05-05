@@ -1,4 +1,5 @@
 // Unit tests for TelegramMTProtoAdapter (gramjs)
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 // Uses clientFactory injection (DI) to avoid module-registry battles with vi.mock + lazy require.
 import { TelegramMTProtoAdapter } from './telegram-mtproto';
 

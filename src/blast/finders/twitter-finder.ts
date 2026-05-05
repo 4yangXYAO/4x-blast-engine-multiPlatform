@@ -112,8 +112,8 @@ export async function findTwitterTargets(
       tweetIds: tweetIds.slice(0, limit),
       userIds: userIds.slice(0, limit),
     }
-  } catch (e: any) {
-    console.error('[TwitterFinder] Search error:', e?.message)
+  } catch (err: unknown) {
+    console.error('[TwitterFinder] Search error:', err instanceof Error ? err.message : String(err))
     return { tweetIds: [], userIds: [] }
   }
 }

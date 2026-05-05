@@ -1,4 +1,5 @@
 // Unit tests for ThreadsCookieAdapter — mocks axios
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { ThreadsCookieAdapter } from './threads-cookie';
 
 vi.mock('axios', () => {

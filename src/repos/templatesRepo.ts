@@ -52,15 +52,15 @@ export class TemplatesRepo {
       .prepare(
         'SELECT id, name, content, variables, created_at, type FROM templates ORDER BY created_at DESC'
       )
-      .all()
-    return rows.map((r: any) => ({
-      id: r.id,
-      name: r.name,
-      content: r.content,
-      variables: r.variables ? JSON.parse(r.variables) : [],
-      type: r.type,
-      created_at: r.created_at,
-      updated_at: r.updated_at,
+      .all() as Record<string, unknown>[]
+    return rows.map((r) => ({
+      id: r.id as string,
+      name: r.name as string,
+      content: r.content as string,
+      variables: r.variables ? JSON.parse(r.variables as string) : [],
+      type: r.type as string,
+      created_at: r.created_at as string | undefined,
+      updated_at: r.updated_at as string | undefined,
     }))
   }
 
@@ -70,16 +70,16 @@ export class TemplatesRepo {
       .prepare(
         'SELECT id, name, content, variables, created_at, type FROM templates WHERE id = ? LIMIT 1'
       )
-      .get(id)
+      .get(id) as Record<string, unknown> | undefined
     if (!r) return null
     return {
-      id: r.id,
-      name: r.name,
-      content: r.content,
-      variables: r.variables ? JSON.parse(r.variables) : [],
-      type: r.type,
-      created_at: r.created_at,
-      updated_at: r.updated_at,
+      id: r.id as string,
+      name: r.name as string,
+      content: r.content as string,
+      variables: r.variables ? JSON.parse(r.variables as string) : [],
+      type: r.type as string,
+      created_at: r.created_at as string | undefined,
+      updated_at: r.updated_at as string | undefined,
     }
   }
 

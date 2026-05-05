@@ -1,3 +1,4 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { JobQueue } from './job-queue';
 import { initializeJobWorker } from '../workers/job-worker';
 

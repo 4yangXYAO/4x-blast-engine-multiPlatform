@@ -1,7 +1,8 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import axios from "axios";
 import { ThreadsAdapter } from "./threads";
 
-jest.mock("axios");
+vi.mock("axios");
 
 // Helper to set required env vars for config loader
 function setEnv() {
@@ -28,8 +29,8 @@ describe("ThreadsAdapter", () => {
 
   beforeEach(() => {
     // Clear mocks between tests to avoid cross-test contamination
-    jest.clearAllMocks();
-    jest.resetModules();
+    vi.clearAllMocks();
+    vi.resetModules();
     // Re-import after env setup to pick config
     adapter = new ThreadsAdapter({});
   });

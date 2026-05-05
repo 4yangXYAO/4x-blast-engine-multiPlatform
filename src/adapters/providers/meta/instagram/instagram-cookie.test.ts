@@ -1,4 +1,5 @@
 // Unit tests for InstagramCookieAdapter — mocks axios
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { InstagramCookieAdapter } from './instagram-cookie';
 
 vi.mock('axios', () => {

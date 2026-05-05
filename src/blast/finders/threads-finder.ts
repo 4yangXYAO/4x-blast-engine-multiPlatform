@@ -91,8 +91,8 @@ export async function findThreadsTargets(
       postIds: postIds.slice(0, limit),
       userIds: userIds.slice(0, limit),
     }
-  } catch (e: any) {
-    console.error('[ThreadsFinder] Search error:', e?.message)
+  } catch (err: unknown) {
+    console.error('[ThreadsFinder] Search error:', err instanceof Error ? err.message : String(err))
     return { postIds: [], userIds: [] }
   }
 }

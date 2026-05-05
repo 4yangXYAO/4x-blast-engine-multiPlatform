@@ -121,3 +121,39 @@ export class FacebookCookieAdapter implements IAdapter {
         upload_id: String(Date.now()),
       })
       const res = await client.post(
+        '/api/v1/media/configure_text_post_app_feed/',
+        params.toString()
+      )
+      const ok = res?.data?.status === 'ok' || res?.status === 200
+      this.log(`Reply result: ${res?.data?.status}`)
+      return { success: ok, code: ok ? undefined : 'FACEBOOK_COOKIE_REPLY_ERROR' }
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : String(e)
+      return {
+        success: false,
+        error: errorMessage,
+        code: 'FACEBOOK_COOKIE_REPLY_ERROR',
+      }
+    }
+  }
+
+  async getRateLimitStatus(): Promise<RateLimitStatus | null> {
+    this.maybeDrainRate()
+    return {
+      remaining: this.rateRemaining,
+      reset: this.rateReset,
+      limit: 30,
+    }
+  }
+
+  private maybeDrainRate() {
+    const now = Date.now()
+    if (now > this.rateReset) {
+      this.rateRemaining = 30
+      this.rateReset = now + 60_000
+    } else {
+      this.rateRemaining--
+    }
+  }
+}
+

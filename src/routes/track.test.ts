@@ -1,3 +1,4 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import express from 'express'
 import { trackRouter } from './track'
 import { CampaignsRepo } from '../repos/campaignsRepo'

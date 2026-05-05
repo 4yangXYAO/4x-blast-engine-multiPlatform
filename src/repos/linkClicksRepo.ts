@@ -33,12 +33,12 @@ export class LinkClicksRepo {
 
   countByCampaign(campaignId: string): ClickCount[] {
     const db = this.getDatabase()
-    const rows: any[] = db
+    const rows = db
       .prepare(
         `SELECT platform, COUNT(*) as count FROM link_clicks WHERE campaign_id = ? GROUP BY platform`
       )
-      .all(campaignId)
-    return rows.map((r) => ({ platform: r.platform ?? 'unknown', count: r.count }))
+      .all(campaignId) as Record<string, unknown>[]
+    return rows.map((r) => ({ platform: (r.platform ?? 'unknown') as string, count: r.count as number }))
   }
 
   listRecent(campaignId: string, limit = 50): LinkClickRow[] {

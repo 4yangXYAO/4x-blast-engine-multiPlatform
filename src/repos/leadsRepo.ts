@@ -29,9 +29,9 @@ export class LeadsRepo {
    */
   findOrCreate(platform: string, contact: string, campaignId?: string): Lead {
     const db = this.getDatabase()
-    const existing: any = db
+    const existing = db
       .prepare(`SELECT * FROM leads WHERE inbound_platform = ? AND contact = ? LIMIT 1`)
-      .get(platform, contact)
+      .get(platform, contact) as Lead | undefined
     if (existing) return existing
 
     const id = randomUUID()
@@ -57,20 +57,21 @@ export class LeadsRepo {
 
   markAwaitingHandoff(id: string): void {
     const db = this.getDatabase()
-    db.prepare(
-      `UPDATE leads SET status = 'awaiting_handoff', updated_at = datetime('now') WHERE id = ?`
-    ).run(id)
+    db.prepare(`UPDATE leads SET status = 'awaiting_handoff', updated_at = datetime('now') WHERE id = ?`).run(id)
   }
 
   list(limit = 100): Lead[] {
     const db = this.getDatabase()
     return db
       .prepare(`SELECT * FROM leads ORDER BY created_at DESC LIMIT ?`)
-      .all(limit)
+      .all(limit) as Lead[]
   }
 
   findById(id: string): Lead | null {
     const db = this.getDatabase()
-    return (db.prepare(`SELECT * FROM leads WHERE id = ? LIMIT 1`).get(id) as Lead) ?? null
+    const row = db
+      .prepare(`SELECT * FROM leads WHERE id = ? LIMIT 1`)
+      .get(id) as Lead | undefined
+    return row ?? null
   }
 }
