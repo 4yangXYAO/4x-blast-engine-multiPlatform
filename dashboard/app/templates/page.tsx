@@ -9,6 +9,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { CopyButton, maskCredential } from '@/components/ui/CopyButton'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { useState } from 'react'
 import { Plus, Eye, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -107,7 +108,9 @@ export default function TemplatesPage() {
         confirmText="Delete"
         variant="danger"
         loading={deleteMutation.isPending}
-        onConfirm={() => deleteId && deleteMutation.mutate(deleteId)}
+         onConfirm={() => {
+           if (deleteId) deleteMutation.mutate(deleteId)
+         }}
       />
     </div>
   )

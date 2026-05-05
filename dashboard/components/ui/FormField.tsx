@@ -1,9 +1,5 @@
 'use client'
 
-import { ZodSchema, ZodError } from 'zod'
-import { useForm, Controller, type Control, type FieldValues } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-
 export interface FormFieldProps {
   label: string
   name: string
@@ -62,17 +58,6 @@ export function FormField({
       {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
     </div>
   )
-}
-
-export function useZodForm<T extends FieldValues>(
-  schema: ZodSchema<T>,
-  defaultValues?: Partial<T>
-) {
-  return useForm<T>({
-    resolver: zodResolver(schema),
-    defaultValues: defaultValues as T,
-    mode: 'onBlur',
-  })
 }
 
 export default FormField

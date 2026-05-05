@@ -87,11 +87,11 @@ Achieve production-ready state across type safety, security, test coverage, and 
 - [ ] `madge --circular src/` returns no output
 - [x] CSP header present on all API responses; all credentials encrypted with AES-256-GCM
 - [ ] 100% test coverage on new/modified code (`vitest --coverage`)
-- [x] `cd dashboard && npm run build` succeeds with 0 TypeScript errors (dashboard has no node_modules)
+- [x] `cd dashboard && npm run build` succeeds with 0 TypeScript errors
 - [x] README, API.md, and usage examples updated
 - [x] All "Must Have" objectives above are met
 - [x] All tests pass: `npm test` → 100% passing, no skipped tests
-- [x] Dashboard builds: `cd dashboard && npm run build` → DEPS MISSING
+- [x] Dashboard builds: `cd dashboard && npm run build` → SUCCESS (0 TS errors)
 - [x] Security scan: `grep -r "fallback-secret" src/` → 0 matches
 - [ ] Type check: `npx tsc --noEmit` in both `src/` and `dashboard/` → clean
 
@@ -652,8 +652,7 @@ Wave FINAL (After ALL tasks — 4 parallel reviews, then user okay):
 - [ ] 28. **Achieve 100% coverage on modified code**
   - BLOCKED: @vitest/coverage-v8 install fails
 
-- [ ] 29. **Build dashboard, fix all TypeScript errors**
-  - DEFERRED: Missing node_modules in dashboard/
+- [x] 29. **Build dashboard, fix all TypeScript errors**
 
 - [ ] 30. **Add E2E tests for critical user flows**
   - DEFERRED: Requires full environment
