@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useCreateCampaign } from '@/lib/hooks'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import type { ErrorResponse } from '@/lib/types'
 
 const schema = z.object({
   name: z.string().min(3),
@@ -28,11 +29,11 @@ export default function NewCampaignPage() {
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { name: string; content: string; cta_link: string; platforms?: string[] }) => {
     create(
       { ...data, platforms: selectedPlatforms },
       {
-        onSuccess: (result: any) => {
+        onSuccess: (result: { id: string }) => {
           toast.success('Campaign dibuat')
           router.push(`/campaigns/${result.id}`)
         },

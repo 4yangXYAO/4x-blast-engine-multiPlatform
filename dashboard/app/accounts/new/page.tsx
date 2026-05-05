@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useCreateAccount } from '@/lib/hooks'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import type { ErrorResponse } from '@/lib/types'
 
 const schema = z.object({
   platform: z.string().min(1),
@@ -37,15 +38,18 @@ export default function NewAccountPage() {
     defaultValues: { platform: 'twitter', username: '', credentials: '' },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { platform: string; username: string; credentials: string }) => {
     create(
       { platform: data.platform, username: data.username, credentials: data.credentials },
       {
-        onSuccess: (result: any) => {
+        onSuccess: () => {
           toast.success('Account created!')
           router.push('/accounts')
         },
-        onError: (e: any) => toast.error(e?.message ?? 'Failed to create account'),
+        onError: (e: ErrorResponse | Error) => {
+          const message = e instanceof Error ? e.message : (e?.message ?? e?.error ?? 'Failed to create account')
+          toast.error(message)
+        },
       }
     )
   }
@@ -76,7 +80,7 @@ export default function NewAccountPage() {
               ]}
               error={errors.platform?.message as string}
               {...register('platform')}
-              onChange={(e) => handlePlatformChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handlePlatformChange(e.target.value)}
             />
             <FormField
               label="Username"

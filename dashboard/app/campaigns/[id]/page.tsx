@@ -15,6 +15,7 @@ import { useBlastCampaign } from '@/lib/hooks'
 import { toast } from 'sonner'
 import { Send, BarChart3 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import type { ErrorResponse } from '@/lib/types'
 
 export default function CampaignDetailPage() {
   const { id } = useParams()
@@ -39,7 +40,10 @@ export default function CampaignDetailPage() {
       { campaignId: id as string, accountIds: { twitter: '' } },
       {
         onSuccess: () => toast.success('Blast started'),
-        onError: (e: any) => toast.error(e?.message ?? 'Blast failed'),
+        onError: (e: ErrorResponse | Error) => {
+          const message = e instanceof Error ? e.message : (e?.message ?? e?.error ?? 'Blast failed')
+          toast.error(message)
+        },
         onSettled: () => setBlastLoading(false),
       }
     )

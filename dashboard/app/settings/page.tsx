@@ -11,6 +11,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { toast } from 'sonner'
 import { Save, Trash2 } from 'lucide-react'
 import { INTEGRATION_FIELDS, CONFIG_FIELDS } from '@/lib/constants'
+import type { ErrorResponse } from '@/lib/types'
 
 export default function SettingsPage() {
   const [clearConfirm, setClearConfirm] = useState(false)
@@ -21,9 +22,12 @@ export default function SettingsPage() {
   })
 
   const saveMutation = useMutation({
-    mutationFn: async (payload: any) => api.put('/v1/settings/integrations', payload),
+    mutationFn: async (payload: Record<string, string>) => api.put('/v1/settings/integrations', payload),
     onSuccess: () => toast.success('Settings saved!'),
-    onError: (e: any) => toast.error(e?.message ?? 'Failed'),
+    onError: (e: ErrorResponse | Error) => {
+      const message = e instanceof Error ? e.message : (e?.message ?? e?.error ?? 'Failed')
+      toast.error(message)
+    },
   })
 
   if (isLoading) return <LoadingSkeleton count={4} variant="card" />
@@ -43,7 +47,7 @@ export default function SettingsPage() {
             onSubmit={(e) => {
               e.preventDefault()
               const form = new FormData(e.target as HTMLFormElement)
-              const payload: any = {}
+              const payload: Record<string, string> = {}
               INTEGRATION_FIELDS.forEach((f) => {
                 const val = form.get(f.key) as string
                 if (val) payload[f.key] = val

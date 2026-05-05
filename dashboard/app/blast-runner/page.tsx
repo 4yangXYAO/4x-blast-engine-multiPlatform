@@ -54,9 +54,10 @@ export default function BlastRunnerPage() {
       }
 
       setStatusMessage(`Blast started successfully! ${data?.message ? `(${data.message})` : ''}`)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error)
-      setStatusMessage(`Error: ${error?.message ?? 'Unknown error'}`)
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      setStatusMessage(`Error: ${message}`)
     } finally {
       setIsLoading(false)
     }

@@ -8,11 +8,13 @@ import { api } from '@/lib/api'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import DataTable from '@/components/ui/DataTable'
+import type { Column } from '@/components/ui/DataTable'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { PlatformIcon } from '@/components/ui/PlatformIcon'
-import type { Campaign } from '@/lib/hooks'
+import type { Campaign, ErrorResponse } from '@/lib/types'
+import { getStatusBadgeVariant } from '@/lib/utils'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
@@ -24,7 +26,7 @@ export default function CampaignsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const { data: campaigns, isLoading, refetch } = useQuery({
+  const { data: campaigns, isLoading, refetch } = useQuery<Campaign[]>({
     queryKey: ['campaigns'],
     queryFn: async () => (await api.get('/v1/campaigns')).data,
   })
@@ -38,12 +40,13 @@ export default function CampaignsPage() {
       refetch()
       setDeleteId(null)
     },
-    onError: (e: any) => {
-      toast.error(e?.message ?? 'Failed to delete')
+    onError: (e: ErrorResponse | Error) => {
+      const message = e instanceof Error ? e.message : (e?.message ?? e?.error ?? 'Failed to delete')
+      toast.error(message)
     },
   })
 
-  const filtered = (campaigns ?? []).filter((c: any) => {
+  const filtered = (campaigns ?? []).filter((c: Campaign) => {
     if (search && !c.name?.toLowerCase().includes(search.toLowerCase())) return false
     if (platformFilter && !(c.platforms?.includes(platformFilter))) return false
     if (statusFilter && c.status !== statusFilter) return false
@@ -56,7 +59,7 @@ export default function CampaignsPage() {
     {
       key: 'platforms' as keyof Campaign,
       header: 'Platforms',
-      render: (row: any) => (
+      render: (row: Campaign) => (
         <div className="flex gap-1">
           {(row.platforms ?? []).map((p: string) => (
             <span key={p} className="inline-flex items-center gap-1 px-2 py-1 bg-slate-700 rounded text-xs">
@@ -69,16 +72,19 @@ export default function CampaignsPage() {
     {
       key: 'cta_link' as keyof Campaign,
       header: 'CTA Link',
-      render: (row: any) => (
-        <a href={row.cta_link} target="_blank" className="text-emerald-400 hover:underline text-sm">
-          {row.cta_link?.slice(0, 30)}{row.cta_link?.length > 30 ? '...' : ''}
-        </a>
-      ),
+      render: (row: Campaign) => {
+        if (!row.cta_link) return '-'
+        return (
+          <a href={row.cta_link} target="_blank" className="text-emerald-400 hover:underline text-sm">
+            {row.cta_link.slice(0, 30)}{row.cta_link.length > 30 ? '...' : ''}
+          </a>
+        )
+      },
     },
-    { key: 'status' as keyof Campaign, header: 'Status', render: (row: any) => <StatusBadge status={row.status} text={row.status} /> },
+    { key: 'status' as keyof Campaign, header: 'Status', render: (row: Campaign) => <StatusBadge status={getStatusBadgeVariant(row.status)} text={row.status} /> },
   ]
 
-  const actions = (row: any) => (
+  const actions = (row: Campaign) => (
     <div className="flex gap-1">
       <Button variant="ghost" size="icon" asChild>
         <Link href={`/campaigns/${row.id}`}>

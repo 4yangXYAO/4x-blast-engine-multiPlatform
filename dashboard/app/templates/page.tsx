@@ -14,12 +14,13 @@ import { useState } from 'react'
 import { Plus, Eye, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import type { Template } from '@/lib/types'
 
 export default function TemplatesPage() {
   const queryClient = useQueryClient()
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const { data: templates, isLoading } = useQuery({
+  const { data: templates, isLoading } = useQuery<Template[]>({
     queryKey: ['templates'],
     queryFn: async () => (await api.get('/v1/templates')).data,
   })
@@ -41,7 +42,7 @@ export default function TemplatesPage() {
     {
       key: 'content' as const,
       header: 'Preview',
-      render: (row: any) => (
+      render: (row: Template) => (
         <span className="text-sm text-slate-300 max-w-[300px] truncate block">
           {row.content}
         </span>
@@ -50,16 +51,16 @@ export default function TemplatesPage() {
     {
       key: 'type' as const,
       header: 'Type',
-      render: (row: any) => <StatusBadge status="info" text={row.type} showIcon={false} />,
+      render: (row: Template) => <StatusBadge status="info" text={row.type} showIcon={false} />,
     },
     {
       key: 'variables' as const,
       header: 'Variables',
-      render: (row: any) => (row.variables ?? []).join(', '),
+      render: (row: Template) => (row.variables ?? []).join(', '),
     },
   ]
 
-  const actions = (row: any) => (
+  const actions = (row: Template) => (
     <div className="flex gap-1">
       <Button variant="ghost" size="icon" asChild>
         <Link href={`/templates/${row.id}`}>
