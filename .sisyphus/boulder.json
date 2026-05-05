@@ -2,10 +2,18 @@
   "active_plan": "/home/openclaw/projects/joki-blast-engine/.sisyphus/plans/100-percent-completion.md",
   "started_at": "2026-05-05T14:14:45.388Z",
   "session_ids": [
-    "ses_2078d2665ffeFjSAj8vHOetwRq"
+    "ses_2078d2665ffeFjSAj8vHOetwRq",
+    "ses_207326a98ffeSt0hgn6fPKWcdO",
+    "ses_207326945ffeAitx49WJpxlLbp",
+    "ses_20732681bffeyukT5hWyc5aK3D",
+    "ses_2073266cdffeEMBwfARgBhci0a"
   ],
   "session_origins": {
-    "ses_2078d2665ffeFjSAj8vHOetwRq": "direct"
+    "ses_2078d2665ffeFjSAj8vHOetwRq": "direct",
+    "ses_207326a98ffeSt0hgn6fPKWcdO": "appended",
+    "ses_207326945ffeAitx49WJpxlLbp": "appended",
+    "ses_20732681bffeyukT5hWyc5aK3D": "appended",
+    "ses_2073266cdffeEMBwfARgBhci0a": "appended"
   },
   "plan_name": "100-percent-completion",
   "agent": "atlas",
@@ -22,11 +30,29 @@
     "todo:2": {
       "task_key": "todo:2",
       "task_label": "2",
-      "task_title": "**Fix `as any` in repos** - 2 instances found",
-      "session_id": "ses_20779b950ffe5pH0QL9FaP4AQr",
+      "task_title": "**Replace `any` types in src/repos/**",
+      "session_id": "ses_2073266cdffeEMBwfARgBhci0a",
+      "agent": "explore",
+      "category": "deep",
+      "updated_at": "2026-05-05T16:30:29.194Z"
+    },
+    "todo:3": {
+      "task_key": "todo:3",
+      "task_label": "3",
+      "task_title": "**Replace `any` types in src/blast/**",
+      "session_id": "ses_206f81ee7ffeg0H9wo8GGxpSd0",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "updated_at": "2026-05-05T14:24:04.011Z"
+      "updated_at": "2026-05-05T16:50:53.311Z"
+    },
+    "todo:4": {
+      "task_key": "todo:4",
+      "task_label": "4",
+      "task_title": "**Replace `any` types in src/routes/**",
+      "session_id": "ses_206f1f3e0ffeyXXVyP1YfxopLC",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-05-05T16:53:26.320Z"
     }
   }
 }

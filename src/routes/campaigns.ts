@@ -3,9 +3,11 @@ import { CampaignsRepo } from '../repos/campaignsRepo'
 import type { JobQueue } from '../queue/job-queue'
 import { generateTrackingToken } from '../utils/tracking'
 import { getConfig } from '../config/secrets'
+import type { DB } from '../db/sqlite'
+import type { PostJob } from '../types/jobs'
 
 let campaignsRepo: CampaignsRepo | null = null
-export function getCampaignsRepo(db?: any): CampaignsRepo {
+export function getCampaignsRepo(db?: DB): CampaignsRepo {
   if (campaignsRepo) return campaignsRepo
   campaignsRepo = new CampaignsRepo(db)
   return campaignsRepo
@@ -95,18 +97,19 @@ export function createCampaignsRouter(queue: Pick<JobQueue, 'enqueuePostJob'>) {
           ? `${campaign.content}\n\n${trackUrl}`
           : campaign.content
 
-        const jobId = await queue.enqueuePostJob({
-          platform,
-          to: accountId,
-          message,
-          account_id: accountId,
-        } as any)
+         const jobId = await queue.enqueuePostJob({
+           platform,
+           to: accountId,
+           message,
+           account_id: accountId,
+         } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
 
-        repo.addPost(campaign.id, platform, jobId)
-        posts.push({ platform, job_id: jobId })
-      } catch (e: any) {
-        errors.push({ platform, error: e?.message ?? 'enqueue failed' })
-      }
+         repo.addPost(campaign.id, platform, jobId)
+         posts.push({ platform, job_id: jobId })
+       } catch (e: unknown) {
+         const errorMsg = e instanceof Error ? e.message : 'enqueue failed'
+         errors.push({ platform, error: errorMsg })
+       }
     }
 
     repo.updateStatus(campaign.id, 'scheduled')

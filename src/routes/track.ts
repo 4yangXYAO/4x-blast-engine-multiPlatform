@@ -2,16 +2,17 @@ import { Router } from 'express'
 import { CampaignsRepo } from '../repos/campaignsRepo'
 import { LinkClicksRepo } from '../repos/linkClicksRepo'
 import { parseTrackingToken } from '../utils/tracking'
+import type { DB } from '../db/sqlite'
 
 let linkClicksRepo: LinkClicksRepo | null = null
-export function getLinkClicksRepo(db?: any): LinkClicksRepo {
+export function getLinkClicksRepo(db?: DB): LinkClicksRepo {
   if (linkClicksRepo) return linkClicksRepo
   linkClicksRepo = new LinkClicksRepo(db)
   return linkClicksRepo
 }
 
 let campaignsRepo: CampaignsRepo | null = null
-function getRepo(db?: any): CampaignsRepo {
+function getRepo(db?: DB): CampaignsRepo {
   if (campaignsRepo) return campaignsRepo
   campaignsRepo = new CampaignsRepo(db)
   return campaignsRepo

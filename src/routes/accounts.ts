@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { encrypt, sha256Hex } from '../utils/crypto'
 import { getDb } from '../db/sqlite'
 import { AccountsRepo, Account } from '../repos/accountsRepo'
+import type { DB } from '../db/sqlite'
 
 const router = Router()
 
@@ -9,13 +10,13 @@ const router = Router()
 // vitest.setup or the server entrypoint. Provide a factory to obtain a repo
 // instance lazily so importing this route doesn't force DB init.
 let accountsRepo: AccountsRepo | null = null
-export function getAccountsRepo(db?: any) {
+export function getAccountsRepo(db?: DB) {
   if (accountsRepo) return accountsRepo
   accountsRepo = new AccountsRepo(db)
   return accountsRepo
 }
 
-;(getAccountsRepo as any)._reset = () => {
+;(getAccountsRepo as unknown as { _reset?: () => void })._reset = () => {
   accountsRepo = null
 }
 
@@ -25,11 +26,11 @@ export function getAccountsRepo(db?: any) {
 router.get('/', async (req, res) => {
   const repo = getAccountsRepo()
   const rows = repo.list()
-  const out = rows.map((acc: any) => ({
+  const out = rows.map((acc: Account) => ({
     id: acc.id,
     platform: acc.platform,
-    username: acc.username ?? acc.display_name,
-    status: acc.status ?? 'active',
+    username: acc.display_name,
+    status: 'active',
     created_at: acc.created_at,
   }))
   res.json(out)

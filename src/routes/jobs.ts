@@ -10,13 +10,15 @@ import {
   schedules,
 } from '../scheduler/cron-scheduler'
 import { JobsRepo } from '../repos/jobsRepo'
-import { AccountsRepo } from '../repos/accountsRepo'
+import { AccountsRepo, Account } from '../repos/accountsRepo'
 import { getRandomTargets } from '../utils/randomTargets'
+import type { DB } from '../db/sqlite'
+import type { PostJob, CommentJob } from '../types/jobs'
 
 // Do not initialize DB during import. Provide lazy access to JobsRepo so tests
 // and setup code can initialize DB first.
 let jobsRepo: JobsRepo | null = null
-export function getJobsRepo(db?: any) {
+export function getJobsRepo(db?: DB) {
   if (jobsRepo) return jobsRepo
   jobsRepo = new JobsRepo(db)
   return jobsRepo
@@ -56,7 +58,7 @@ export function createJobsRouter(queue: QueueLike) {
       platform: platform || 'default',
       to: recipient,
       message: message || `Trigger template ${template_id}`,
-    } as any)
+    } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
     res.status(202).json({ job_id: jobId })
   })
 
@@ -79,14 +81,14 @@ export function createJobsRouter(queue: QueueLike) {
       return res.status(400).json({ error: 'accountId is required' })
     }
 
-    // Validate account exists and is Facebook
-    let account: any = null
-    try {
-      const accountsRepo = new AccountsRepo()
-      account = accountsRepo.findById(accountId)
-    } catch {
-      return res.status(500).json({ error: 'Failed to look up account' })
-    }
+     // Validate account exists and is Facebook
+     let account: Account | null = null
+     try {
+       const accountsRepo = new AccountsRepo()
+       account = accountsRepo.findById(accountId)
+     } catch {
+       return res.status(500).json({ error: 'Failed to look up account' })
+     }
 
     if (!account) {
       return res.status(404).json({ error: `Account not found: ${accountId}` })
@@ -114,17 +116,18 @@ export function createJobsRouter(queue: QueueLike) {
     const errors: string[] = []
 
     for (const postId of targets) {
-      try {
-        const jobId = await queue.enqueueCommentJob({
-          platform: 'facebook',
-          postId,
-          message: message.trim(),
-          account_id: accountId,
-        } as any)
-        jobIds.push(jobId)
-      } catch (e: any) {
-        errors.push(`Failed to enqueue for postId=${postId}: ${e?.message}`)
-      }
+       try {
+         const jobId = await queue.enqueueCommentJob({
+           platform: 'facebook',
+           postId,
+           message: message.trim(),
+           account_id: accountId,
+         } as unknown as Omit<CommentJob, 'id' | 'type'> & { platform: string })
+         jobIds.push(jobId)
+       } catch (e: unknown) {
+         const errorMsg = e instanceof Error ? e.message : String(e)
+         errors.push(`Failed to enqueue for postId=${postId}: ${errorMsg}`)
+       }
     }
 
     return res.status(202).json({
