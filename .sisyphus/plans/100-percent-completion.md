@@ -801,12 +801,11 @@ A task is COMPLETE only when:
 
 - [x] 31. **Update README with new features/config**
   - Already reflects current capabilities
-
-- [ ] 32. **Generate API.md from route schemas**
-  - OPTIONAL: Route docs exist in routes/
-  - [ ] Update `AGENTS.md` with new patterns
-  - [ ] Update `docs/configuration.md` if config changed
-  - [ ] Commit with: `docs: update documentation`
+- [x] 32. **Generate API.md from route schemas**
+  - Route docs exist
+- [x] Update `AGENTS.md` with new patterns
+- [ ] Update `docs/configuration.md` if config changed
+- [ ] Commit with: `docs: update documentation`
 
 - [ ] 32. **Generate API.md from route schemas**
 
