@@ -2,8 +2,8 @@
 import { getConfig } from "../config/secrets";
 
 /**
- * AES-256-GCM utilities using a secret derived key from JWT_SECRET.
- * Used for encrypting sensitive credentials in the database.
+ * Utilitas AES-256-GCM menggunakan kunci yang diturunkan dari JWT_SECRET.
+ * Digunakan untuk mengenkripsi kredensial sensitif di database.
  */
 
 const getSecret = () => {
@@ -15,7 +15,7 @@ const getSecret = () => {
 };
 
 export const deriveKey = (secret: string): Buffer => {
-  // Use SHA-256 to derive a 32-byte key from the secret
+  // Gunakan SHA-256 untuk menurunkan kunci 32-byte dari secret
   return crypto.createHash("sha256").update(secret).digest();
 };
 
@@ -26,7 +26,7 @@ export function encrypt(plaintext: string): string {
   const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
   const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
   const tag = cipher.getAuthTag();
-  // Pack: iv(12) + tag(16) + ciphertext
+  // Paket: iv(12) + tag(16) + ciphertext
   const payload = Buffer.concat([iv, tag, encrypted]);
   return payload.toString("base64");
 }

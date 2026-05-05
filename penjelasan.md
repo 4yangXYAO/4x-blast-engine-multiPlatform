@@ -1,222 +1,249 @@
 # Penjelasan Super Sederhana: Joki Blast Engine
 
-Dokumen ini dibuat dengan bahasa yang sangat mudah.
-Tujuannya: supaya Anda bisa langsung paham, langsung jalan, dan langsung cek hasil.
+Dokumen ini ditulis dengan bahasa yang sangat mudah dipahami.
+Tujuan: agar Anda langsung paham, langsung jalan, dan langsung lihat hasil.
 
 ## 1) Program ini untuk apa?
 
-Program ini untuk membantu promosi otomatis:
+Program ini membantu **promosi otomatis** di media sosial:
 
-- Anda membuat 1 campaign marketing.
-- Sistem kirim konten ke beberapa platform (Twitter, Threads, Instagram, Facebook Pages).
-- Link di konten diarahkan ke WhatsApp / Telegram / Webshop.
-- Saat ada chat masuk dari WhatsApp atau Telegram, sistem kirim pesan welcome otomatis.
+- Anda buat 1 **kampanye pemasaran** (campaign).
+- Sistem kirim konten ke beberapa platform sekaligus (Twitter, Threads, Instagram, Facebook Pages).
+- Link di konten diarahkan ke WhatsApp / Telegram / Toko Online.
+- Kalau ada chat masuk dari WhatsApp atau Telegram, sistem kirim **pesan welcome otomatis**.
 - Setelah itu, negosiasi dilanjutkan manual oleh admin/sales.
 
-Singkatnya: otomatis di awal, manual di tahap closing.
+**Singkatnya**: Otomatis di awal, manual di tahap closing (negosiasi).
 
 ## 2) Bagian utama sistem
 
 Ada 2 bagian besar:
 
-1. Backend API (otak sistem)
+### 2.1 Backend API (otak sistem)
 
-- Mengatur campaign, queue job, tracking klik, webhook inbound, auto-reply.
+- Mengatur: kampanye, antrian pekerjaan (job queue), pelacakan klik, webhook inbound, auto-reply.
 
-2. Dashboard (UI admin)
+### 2.2 Dashboard (UI admin)
 
-- Tempat isi data, buat campaign, pilih platform, dan trigger blast.
+- Tempat isi data, buat kampanye, pilih platform, dan picu blast.
 
 ## 3) Alur kerja paling gampang dipahami
 
-Urutan normalnya seperti ini:
+Urutan normal:
 
-1. Admin buat campaign di dashboard.
-2. Admin pilih platform target.
-3. Admin isi CTA link (contoh: link WhatsApp).
-4. Admin klik blast.
-5. Sistem membuat job posting per platform.
-6. User klik link dari posting.
-7. Sistem catat klik link.
-8. Kalau user chat via WA/Telegram, sistem kirim welcome otomatis.
-9. Status lead masuk ke state handoff untuk ditangani manusia.
+1. **Admin buat kampanye** di dashboard.
+2. **Admin pilih platform** target (Twitter, FB, IG, Threads).
+3. **Admin isi CTA link** (contoh: link WhatsApp atau toko online).
+4. **Admin klik "Blast"**.
+5. Sistem buat **job posting** per platform.
+6. **User klik link** dari posting yang sudah dikirim.
+7. Sistem **catat klik link** (tracking).
+8. **Kalau user chat** via WhatsApp/Telegram, sistem kirim **welcome otomatis** (hanya 1 kali).
+9. Lead masuk ke status **"menunggu_handoff"** untuk ditangani manusia (sales).
 
 ## 4) Cara menjalankan project (lokal)
 
-Jalankan perintah ini:
+Jalankan perintah berikut dalam terminal:
 
 ```bash
+# Step 1: Install dependencies
 npm install
+
+# Step 2: Inisialisasi database (SQLite)
 npm run db:init
+
+# Step 3: Start backend API (development mode)
 npm run dev:api
 ```
 
-Terminal lain:
+Di **terminal lain**:
 
 ```bash
+# Start dashboard Next.js
 cd dashboard
 npm install
 npm run dev
 ```
 
-Lalu buka dashboard:
+Lalu buka dashboard di browser:
 
-- http://localhost:3001
+- **Dashboard**: http://localhost:3001
+- **API**: http://localhost:3456
 
 ## 5) Cara test cepat dari dashboard
 
 Ikuti langkah ini satu per satu:
 
-1. Buka halaman campaign di dashboard.
-2. Isi:
+1. Buka halaman **Kampanye** di dashboard.
+2. Isi form:
+   - Nama Kampanye
+   - Konten Kampanye (pesan yang ingin diposting)
+   - CTA Link (contoh: https://wa.me/628123456789)
+   - Pilih platform (minimal 1)
+3. Klik **"Buat Kampanye"**.
+4. Setelah kampanye terbuat, klik **"Blast Kampanye"**.
+5. Perhatikan status:harus muncul "Berhasil" atau "Sedang berjalan".
 
-- Campaign name
-- Campaign content
-- CTA link
-- Pilih platform
+## 6) Cara cek 3 poin penting (validasi akhir)
 
-3. Klik "Create Campaign".
-4. Klik "Blast Campaign".
-5. Pastikan muncul status sukses.
+Tiga poin ini adalah inti apakah sistem bekerja dengan baik.
 
-## 6) Cara cek 3 poin penting di plan
+### 6.A. Link resolve ke WhatsApp / Telegram / Toko Online
 
-Tiga poin ini adalah inti validasi akhir.
+Yang perlu dicek:
 
-### A. Link resolve ke WA/Telegram/Webshop
+- Tracking link bisa dibuka di browser.
+- Setelah dibuka, otomatis redirect ke CTA link tujuan.
+- Klik tercatat di database (bisa lihat di stats).
 
-Yang dicek:
+**Endpoint yang dipakai**:
+- `GET /v1/track/:token` (redirect)
+- `GET /v1/track/stats/:campaignId` (statistik)
 
-- Link tracking bisa dibuka.
-- Sistem redirect ke CTA link tujuan.
+**Hasil yang diharapkan**:
+- Redirect berjalan lancar.
+- Data klik tersimpan.
 
-Endpoint yang dipakai:
+### 6.B. Auto-reply welcome terkirim saat ada inbound WhatsApp/Telegram
 
-- `GET /v1/track/:token`
-- `GET /v1/track/stats/:campaignId`
+Yang perlu dicek:
 
-Hasil yang benar:
+- Ada pesan masuk ke webhook WAHA atau Telegram.
+- Sistem kirim welcome message otomatis (hanya 1 kali per nomor).
+- Welcome message sesuai format yang diharapkan.
 
-- Redirect berjalan.
-- Data klik tercatat.
+**Endpoint webhook**:
+- `POST /v1/webhooks/waha` (WhatsApp)
+- `POST /v1/webhooks/telegram` (Telegram)
 
-### B. Auto-reply welcome terkirim saat inbound WA/Telegram
+**Hasil yang diharapkan**:
+- Record lead dibuat di database.
+- Welcome terkirim ke nomor tujuan.
+- Tidak ada spam ( Welcome tidak terkirim dua kali untuk nomor yang sama).
 
-Yang dicek:
+### 6.C. Handoff manual terlihat di state sistem
 
-- Ada inbound message ke webhook.
-- Sistem kirim welcome message otomatis 1 kali (idempotent).
+Yang perlu dicek:
 
-Endpoint webhook:
+- Setelah welcome terkirim, lead status berubah ke `"menunggu_handoff"` atau `"awaiting_handoff"`.
+- Admin/sales bisa lihat leads ini di dashboard untuk proses manual.
 
-- `POST /v1/webhooks/waha`
-- `POST /v1/webhooks/telegram`
+**Endpoint cek leads**:
+- `GET /v1/webhooks/leads` (atau via dashboard UI)
 
-Hasil yang benar:
+**Hasil yang diharapkan**:
+- Status lead jelas terlihat.
+- Bisa difilter berdasarkan status.
 
-- Lead dibuat.
-- Welcome terkirim.
-- Tidak spam welcome berulang untuk kontak yang sama.
+## 7) Checklist akhir (production readiness)
 
-### C. Handoff manual terlihat di state sistem
+Sebelum menyatakan sistem siap dipakai, pastikan:
 
-Yang dicek:
+- [ ] Campaign bisa dibuat dan di-blast dari dashboard.
+- [ ] Link tracking redirect dengan benar ke WhatsApp/Telegram/webshop.
+- [ ] Auto-reply welcome terkirim saat ada inbound WhatsApp/Telegram message.
+- [ ] Manual negotiation handoff terlihat di system state.
+- [ ] Backend tests dan dashboard build **hijau** (no errors).
+- [ ] Database `data/app.db` sudah diinisialisasi.
+- [ ] Semua platform credentials sudah dikonfigurasi dengan benar.
 
-- Setelah welcome, lead status berubah ke state handoff/awaiting_handoff.
-- Tim manusia bisa lanjut negosiasi manual.
+**Yang tetap perlu uji di dunia nyata**:
 
-Endpoint cek lead:
+- Uji live dengan kredensial platform asli (Facebook cookie, Instagram session, dll).
+- Browser validation end-to-end dengan skenario nyata (buat campaign → blast → klik → chat → lead).
 
-- `GET /v1/webhooks/leads`
+## 8) Daftar endpoint penting (ringkas)
 
-Hasil yang benar:
+### Kampanye (Campaigns)
+```
+POST   /v1/campaigns          Buat kampanye baru
+GET    /v1/campaigns          List semua kampanye
+GET    /v1/campaigns/:id      Detail kampanye
+POST   /v1/campaigns/:id/blast  Picu blast ke platform
+```
 
-- Status lead terlihat jelas di data.
+### Pelacakan (Tracking)
+```
+GET   /v1/track/:token          Redirect ke CTA + catat klik
+GET   /v1/track/stats/:id       Statistik klik per kampanye
+```
 
-## 7) Checklist akhir
+### Webhook Inbound (Pesan Masuk)
+```
+POST   /v1/webhooks/waha       WhatsApp WAHA webhook
+POST   /v1/webhooks/telegram    Telegram bot webhook
+GET    /v1/webhooks/leads      List leads (untuk admin)
+```
 
-Kalau mau menyatakan fitur ini sudah siap dipakai, pastikan:
+### Akun & Jobs
+```
+GET/POST/PUT/DELETE /v1/accounts    CRUD akun platform
+POST   /v1/jobs/trigger             Picu job manual
+POST   /v1/jobs/schedule            Jadwalkan job
+GET    /v1/jobs                     List semua jobs
+```
 
-- Campaign bisa dibuat dan di-blast dari dashboard.
-- Link resolve dengan benar ke WA/Telegram/webshop.
-- Auto-reply welcome terkirim saat inbound WA/Telegram message.
-- Manual negotiation handoff terlihat di system state.
-- Backend tests dan dashboard build hijau.
-
-Yang tetap perlu dicek di dunia nyata:
-
-- Uji live pakai kredensial platform asli.
-- Browser validation end-to-end dengan skenario real.
-
-## 8) Daftar endpoint penting (versi ringkas)
-
-Campaign:
-
-- `POST /v1/campaigns`
-- `GET /v1/campaigns`
-- `GET /v1/campaigns/:id`
-- `POST /v1/campaigns/:id/blast`
-
-Tracking:
-
-- `GET /v1/track/:token`
-- `GET /v1/track/stats/:campaignId`
-
-Webhook inbound:
-
-- `POST /v1/webhooks/waha`
-- `POST /v1/webhooks/telegram`
-- `GET /v1/webhooks/leads`
+### Settings
+```
+GET/PUT /v1/settings/integrations   Simpan token integrasi
+```
 
 ## 9) Jika ada error, cek ini dulu
 
-1. Pastikan backend hidup.
-2. Pastikan dashboard hidup.
-3. Pastikan database sudah init.
-4. Pastikan env/token integrasi benar.
-5. Cek log backend saat klik blast / webhook.
+**Urutan troubleshooting**:
+
+1. Pastikan **backend API** hidup (terminal `npm run dev:api` masih running?).
+2. Pastikan **dashboard** hidup (terminal `npm run dev` di folder dashboard?).
+3. Pastikan **database sudah di-init**: file `data/app.db` ada.
+4. Pastikan **environment variables** (`.env` atau di terminal) sudah di-set dengan benar.
+5. Cek **log backend** quando klik blast atau ada webhook — biasanya ada error message jelas.
+6. Cek **log dashboard** (browser console) jika UI error.
+
+**Error umum & solusi**:
+
+| Error | Kemungkinan Penyebab | Solusi |
+|-------|---------------------|--------|
+| `Auth expired` (Facebook) | Cookie Facebook kadaluarsa | Login ulang Facebook, ambil cookie baru |
+| `Rate limit exceeded` | Terlalu banyak request dalam waktu singkat | Tunggu beberapa menit, sistem auto-retry |
+| `Network error` | API server down | Restart `npm run dev:api` |
+| `Database locked` | SQLite conflict | Pastikan hanya satu instance yang akses DB |
 
 ## 10) Kesimpulan super singkat
 
-Project ini fokus ke alur blast + tracking + auto-reply + handoff manual.
-Target akhirnya adalah memastikan checklist akhir di atas lolos dengan akun platform asli dan uji browser end-to-end real scenario.
+**Fokus alur**: blast → tracking → auto-reply → handoff manual.
+
+Tujuan akhir: memastikan 3 poin validasi (link berjalan, auto-reply bekerja, handoff terlihat) berjalan dengan akun platform asli dan uji browser end-to-end skenario nyata.
 
 ## 11) Detail teknis: bagaimana "blast" bekerja (ringkas)
 
-- **Auth / Credentials**: untuk beberapa platform (khususnya Facebook) sistem menggunakan
-  browser session cookie yang disimpan terenkripsi di tabel `accounts`. Adapter Facebook
-  yang dipakai mengemulasikan request web (scrape halaman untuk `fb_dtsg`/lsd lalu POST ke
-  `/api/graphql/`). Lihat adapter: src/adapters/providers/meta/facebook/facebook.ts
+### 11.1 Autentikasi / Kredensial
+Untuk beberapa platform (khususnya Facebook), sistem menggunakan **browser session cookie** yang disimpan terenkripsi di tabel `accounts`. Adapter Facebook mengemulasi request web (scrape halaman untuk `fb_dtsg`/`lsd` lalu POST ke `/api/graphql/`). Lihat adapter: `src/adapters/providers/meta/facebook/facebook.ts`
 
-- **Pembuatan job**: saat admin klik "Blast" dashboard memanggil endpoint `POST /v1/campaigns/:id/blast`.
-  Endpoint ini membuat job per platform (satu job = satu kiriman/post/comment/chat) dan
-  mengantri job tersebut ke queue internal.
+### 11.2 Pembuatan Job
+Saat admin klik **"Blast"** di dashboard, dipanggil endpoint `POST /v1/campaigns/:id/blast`. Endpoint ini membuat **job per platform** (satu job = satu kiriman/post/komentar/chat) dan masukkan ke **queue internal** (BullMQ).
 
-- **Worker & eksekusi**: ada worker (job worker) yang mengambil job dari queue, membuat
-  adapter sesuai platform (factory) lalu memanggil method adapter seperti `sendMessage` atau
-  `postComment`. Jika adapter melaporkan kegagalan, worker mencatat log dan mengikuti
-  mekanisme retry/error handling.
+### 11.3 Worker & Eksekusi
+Ada **worker** (job worker) yang ambil job dari queue, buat adapter sesuai platform (factory pattern), lalu panggil method adapter seperti `sendMessage` atau `postComment`. Kalau adapter gagal, worker catat log dan ikuti mekanisme **retry / error handling**.
 
-- **Targeting**: ada beberapa cara target dipakai saat blast:
-  - langsung ke `account_id` atau `to` yang diberikan saat trigger (mis. post ke timeline akun)
-  - batch komentar: route `POST /v1/jobs/comment-random` membaca `data/targets.txt` dan
-    mengacak sejumlah target, lalu men-enqueue CommentJob per postId
-  - (eksperimental) beberapa helper di repo bisa mencoba mengambil posting dari feed akun
-    yang login (scraping GraphQL), tapi ini tidak stabil dan bukan fitur pencarian umum.
+### 11.4 Targeting (siapa yang dikirimi?)
 
-- **Tidak ada fitur "search user/post" global**: kode saat ini tidak menyediakan endpoint
-  yang melakukan pencarian arbitrary user atau posts di Facebook (mis. search API). Jika
-  ingin fitur seperti itu, perlu implementasi tambahan (scrape/GraphQL query + UI + rate-limiting).
+Beberapa cara targeting saat blast:
+- **Langsung ke `account_id`** yang diberikan saat trigger (post ke timeline sendiri).
+- **Batch komentar**: route `POST /v1/jobs/comment-random` baca `data/targets.txt` dan acak target, lalu enqueue CommentJob per postId.
+- **Target otomatis** (eksperimental): beberapa helper di `repos/` mencoba ambil posting dari feed akun yang login (scraping GraphQL), tapi ini tidak stabil dan bukan fitur pencarian umum.
 
-- **Rate limit**: adapter/adalah worker mengandung batasan sederhana (contoh: 30 kiriman/menit
-  untuk adapter Facebook di beberapa implementasi). Sistem juga menolak enqueued jobs jika
-  kredensial tidak valid.
+**Tidak ada fitur "search user/post" global**: kode saat ini tidak sediakan endpoint pencarian arbitrary user atau posts di Facebook (mis. search API). Untuk itu perlu implementasi tambahan (scrape/GraphQL query + UI + rate-limiting).
 
-- **Keamanan & operasi**:
-  - Cookie disimpan terenkripsi; jangan pernah menaruh cookie akun produksi bersama tim.
-  - Selalu pakai akun yang berdedikasi untuk blast (jika memungkinkan) karena sesi/cookie
-    adalah kredensial setara login.
-  - Tes end-to-end pada akun nyata untuk memastikan doc_id/GraphQL yang dipakai masih valid.
+### 11.5 Rate Limit
+Adapter/worker mengandung batasan sederhana. Contoh: 30 kiriman/menit untuk Facebook di beberapa implementasi. Sistem juga tolak enqueued jobs jika kredensial tidak valid.
 
-Dengan penjelasan ini Anda dapat memahami di mana menambahkan fitur pencarian target, atau
-mengubah mekanisme target agar lebih otomatis (mis. crawler, integrasi API resmi bila tersedia).
+### 11.6 Keamanan & Operasi
+- **Cookie disimpan terenkripsi**; jangan pernah beri cookie akun produksi bersama tim.
+- **Gunakan akun dedicated untuk blast** (jika memungkinkan) karena sesi/cookie adalah kredensial setara login.
+- **Test end-to-end** pada akun nyata untuk memastikan `doc_id`/GraphQL yang dipakai masih valid.
+
+Dengan penjelasan ini Anda pahami di mana menambahkan fitur pencarian target, atau mengubah mekanisme target agar lebih otomatis (mis. crawler, integrasi API resmi bila tersedia).
+
+---
+
+**Joki Blast Engine** dibuat untuk membantu pemasaran otomatis di media sosial dengan **keamanan, keandalan, dan kemudahan penggunaan** sebagai prioritas.

@@ -24,7 +24,7 @@ export class AccountsRepo {
       display_name: a.display_name,
     })
     const db = this.db ?? getDb()
-    const isSqlJs = !!(db && (db as any).__isSqlJs)
+    const isSqlJs = !!(db && (db as unknown as { __isSqlJs?: boolean })?.__isSqlJs)
     const stmt =
       !isSqlJs &&
       db.prepare?.(
