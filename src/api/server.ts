@@ -67,7 +67,7 @@ export async function startServer() {
   } catch (err) {
     // Log warning and silently fall back to sql.js
     // eslint-disable-next-line no-console
-    console.warn('better-sqlite3 unavailable, falling back to sql.js (WASM):', err?.message ?? err)
+    console.warn('better-sqlite3 unavailable, falling back to sql.js (WASM):', err instanceof Error ? err.message : String(err))
     // Await async sql.js initialization
     // If this throws, we let it propagate to the caller
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

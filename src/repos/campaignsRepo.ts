@@ -48,15 +48,15 @@ export class CampaignsRepo {
 
   findById(id: string): Campaign | null {
     const db = this.getDatabase()
-    const row: any = db.prepare(`SELECT * FROM campaigns WHERE id = ? LIMIT 1`).get(id)
+    const row = db.prepare(`SELECT * FROM campaigns WHERE id = ? LIMIT 1`).get(id) as Record<string, unknown> | undefined
     if (!row) return null
-    return { ...row, platforms: this.parsePlatforms(row.platforms) }
+    return { ...row as Campaign, platforms: this.parsePlatforms(row.platforms as string) }
   }
 
   list(): Campaign[] {
     const db = this.getDatabase()
-    const rows: any[] = db.prepare(`SELECT * FROM campaigns ORDER BY created_at DESC`).all()
-    return rows.map((r) => ({ ...r, platforms: this.parsePlatforms(r.platforms) }))
+    const rows = db.prepare(`SELECT * FROM campaigns ORDER BY created_at DESC`).all() as Record<string, unknown>[]
+    return rows.map((r) => ({ ...r as Campaign, platforms: this.parsePlatforms(r.platforms as string) }))
   }
 
   updateStatus(id: string, status: string): void {
@@ -90,7 +90,7 @@ export class CampaignsRepo {
     const db = this.getDatabase()
     return db
       .prepare(`SELECT * FROM campaign_posts WHERE campaign_id = ? ORDER BY created_at ASC`)
-      .all(campaignId)
+      .all() as CampaignPost[]
   }
 
   markPostStatus(postId: string, status: string): void {
@@ -100,26 +100,26 @@ export class CampaignsRepo {
 
   getPostByJobId(jobId: string): CampaignPost | null {
     const db = this.getDatabase()
-    const row: any = db.prepare(`SELECT * FROM campaign_posts WHERE job_id = ? LIMIT 1`).get(jobId)
+    const row = db.prepare(`SELECT * FROM campaign_posts WHERE job_id = ? LIMIT 1`).get(jobId) as Record<string, unknown> | undefined
     if (!row) return null
     return row as CampaignPost
   }
 
   markPostStatusByJobId(jobId: string, status: string): CampaignPost | null {
     const db = this.getDatabase()
-    const row: any = db.prepare(`SELECT * FROM campaign_posts WHERE job_id = ? LIMIT 1`).get(jobId)
+    const row = db.prepare(`SELECT * FROM campaign_posts WHERE job_id = ? LIMIT 1`).get(jobId) as Record<string, unknown> | undefined
     if (!row) return null
     db.prepare(`UPDATE campaign_posts SET status = ? WHERE job_id = ?`).run(status, jobId)
-    return { ...row, status }
+    return { ...(row as CampaignPost), status }
   }
 
   hasPendingPosts(campaignId: string): boolean {
     const db = this.getDatabase()
-    const row: any = db
+    const row = db
       .prepare(
         `SELECT COUNT(1) AS count FROM campaign_posts WHERE campaign_id = ? AND status = 'pending'`
       )
-      .get(campaignId)
+      .get(campaignId) as Record<string, unknown> | undefined
     return Number(row?.count ?? 0) > 0
   }
 
@@ -138,9 +138,9 @@ export class CampaignsRepo {
       db.exec('BEGIN TRANSACTION')
 
       // Get existing post
-      const row: any = db
+      const row = db
         .prepare(`SELECT * FROM campaign_posts WHERE job_id = ? LIMIT 1`)
-        .get(jobId)
+        .get(jobId) as Record<string, unknown> | undefined
       if (!row) {
         db.exec('ROLLBACK')
         return { post: null, campaignUpdated: false }
@@ -152,11 +152,11 @@ export class CampaignsRepo {
       db.prepare(`UPDATE campaign_posts SET status = ? WHERE job_id = ?`).run(postStatus, jobId)
 
       // Check if any pending posts remain for this campaign
-      const pending: any = db
+      const pending = db
         .prepare(
           `SELECT COUNT(1) AS count FROM campaign_posts WHERE campaign_id = ? AND status = 'pending'`
         )
-        .get(post.campaign_id)
+        .get(post.campaign_id) as Record<string, unknown> | undefined
 
       // If no pending posts, mark campaign as completed
       if (Number(pending?.count ?? 0) === 0) {

@@ -1,3 +1,4 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 ﻿import express from "express";
 import { createJobsRouter, createSchedulesRouter, resetSchedules } from "./jobs";
 import { runSchedulerTick } from "../scheduler/cron-scheduler";
@@ -24,7 +25,7 @@ describe("Jobs API", () => {
   it("creates schedules with valid cron", async () => {
     const app = express();
     app.use(express.json());
-    const queue = { enqueuePostJob: jest.fn().mockResolvedValue("job_1") };
+    const queue = { enqueuePostJob: vi.fn().mockResolvedValue("job_1") };
     app.use("/v1/jobs", createJobsRouter(queue as any));
     app.use("/v1/schedules", createSchedulesRouter());
     const server = app.listen(0);
@@ -44,7 +45,7 @@ describe("Jobs API", () => {
   it("rejects invalid cron", async () => {
     const app = express();
     app.use(express.json());
-    const queue = { enqueuePostJob: jest.fn().mockResolvedValue("job_1") };
+    const queue = { enqueuePostJob: vi.fn().mockResolvedValue("job_1") };
     app.use("/v1/jobs", createJobsRouter(queue as any));
     app.use("/v1/schedules", createSchedulesRouter());
     const server = app.listen(0);
@@ -60,7 +61,7 @@ describe("Jobs API", () => {
   });
 
   it("enqueues manual trigger job", async () => {
-    const queue = { enqueuePostJob: jest.fn().mockResolvedValue("job_123") };
+    const queue = { enqueuePostJob: vi.fn().mockResolvedValue("job_123") };
     const app = express();
     app.use(express.json());
     app.use("/v1/jobs", createJobsRouter(queue as any));
@@ -80,7 +81,7 @@ describe("Jobs API", () => {
   });
 
   it("fires scheduler tick for matching cron", async () => {
-    const queue = { enqueuePostJob: jest.fn().mockResolvedValue("job_999") };
+    const queue = { enqueuePostJob: vi.fn().mockResolvedValue("job_999") };
     const app = express();
     app.use(express.json());
     app.use("/v1/jobs", createJobsRouter(queue as any));

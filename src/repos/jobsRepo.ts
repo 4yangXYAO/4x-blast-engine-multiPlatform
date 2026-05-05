@@ -23,7 +23,7 @@ export class JobsRepo {
     this.db = db;
   }
 
-  create(input: { account_id?: string; platform?: string; type?: string; payload?: any; max_attempts?: number; next_run_at?: string | null }): JobRow {
+  create(input: { account_id?: string; platform?: string; type?: string; payload?: unknown; max_attempts?: number; next_run_at?: string | null }): JobRow {
     const id = randomUUID();
     const payload = input.payload ? JSON.stringify(input.payload) : null;
     const db = this.db ?? getDb();
@@ -47,8 +47,9 @@ export class JobsRepo {
     return db.prepare(`SELECT * FROM jobs WHERE status = 'pending' ORDER BY created_at ASC`).all();
   }
 
-  markFailed(id: string, err: any) {
+  markFailed(id: string, err: unknown) {
     const db = this.db ?? getDb();
+    const errorMessage = err instanceof Error ? err.message : String(err);
     db.prepare(`UPDATE jobs SET status = 'failed' WHERE id = ?`).run(id);
   }
 }

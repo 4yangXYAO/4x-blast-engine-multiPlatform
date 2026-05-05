@@ -1,3 +1,4 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { EventEmitter } from 'events'
 import { wireCampaignStatusSync } from './server'
 

@@ -1,4 +1,4 @@
-﻿import { afterEach, beforeEach, vi } from 'vitest'
+﻿import { afterEach, beforeEach, vi, describe, it, expect } from 'vitest'
 import { JobQueue } from './job-queue'
 import { initializeJobWorker } from '../workers/job-worker'
 
@@ -9,8 +9,8 @@ describe('JobQueue Retry Logic', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     mockAdapter = {
-      sendMessage: jest.fn(),
-      replyToMessage: jest.fn(),
+      sendMessage: vi.fn(),
+      replyToMessage: vi.fn(),
     }
     const adapterFactory = () => mockAdapter
     queue = new JobQueue({ adapterFactory })

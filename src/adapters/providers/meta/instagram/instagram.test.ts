@@ -1,10 +1,11 @@
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { InstagramAdapter } from "./instagram";
 import axios from "axios";
 
 // Mock axios
-jest.mock("axios");
+vi.mock("axios");
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 // Helper to set required env vars for config loader (mirrors Threads tests)
 function setEnv() {
@@ -30,7 +31,7 @@ describe("InstagramAdapter (Graph API primary path)", () => {
   const ORIGINAL_ENV = process.env;
 
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
     process.env = { ...ORIGINAL_ENV };
   });
 

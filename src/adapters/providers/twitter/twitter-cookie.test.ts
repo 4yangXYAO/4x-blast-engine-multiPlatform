@@ -1,4 +1,5 @@
 // Unit tests for TwitterCookieAdapter — mocks axios
+import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { TwitterCookieAdapter } from './twitter-cookie';
 
 vi.mock('axios', () => {
