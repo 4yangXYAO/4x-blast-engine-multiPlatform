@@ -58,7 +58,7 @@ export function getRandomTargets(count: number): string[] {
   }
 
   // Deduplicate
-  const unique = [...new Set(entries)]
+  const unique = Array.from(new Set(entries))
 
   // Fisher-Yates shuffle
   for (let i = unique.length - 1; i > 0; i--) {
