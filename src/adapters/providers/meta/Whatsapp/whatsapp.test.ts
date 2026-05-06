@@ -1,45 +1,37 @@
-// Lightweight unit tests for WhatsAppAdapter using mocks
+// Unit tests for WhatsAppAdapter (WAHA-only)
 import { describe, test, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
-import WhatsAppAdapter from "./whatsapp";
+import { WhatsAppAdapter } from './whatsapp';
 
-describe("WhatsAppAdapter", () => {
+describe('WhatsAppAdapter', () => {
   beforeAll(() => {
     // Provide required config via environment variable for loader
-    process.env.DATABASE_PATH = "/tmp/db.sqlite";
-    process.env.API_PORT = "3000";
-    process.env.API_HOST = "localhost";
-    process.env.DASHBOARD_PORT = "4000";
-    process.env.JWT_SECRET = "secret";
-    process.env.LOG_LEVEL = "info";
-    // Keep legacy token so connect() guard passes; WAHA_BASE_URL not set → mock path active
-    process.env.WHATSAPP_CLOUD_API_TOKEN = "test-token";
+    process.env.DATABASE_PATH = '/tmp/db.sqlite';
+    process.env.API_PORT = '3000';
+    process.env.API_HOST = 'localhost';
+    process.env.DASHBOARD_PORT = '4000';
+    process.env.JWT_SECRET = 'secret';
+    process.env.LOG_LEVEL = 'info';
+    process.env.WAHA_BASE_URL = 'http://localhost:3001';
+    process.env.WAHA_API_KEY = 'test-key';
+    process.env.WAHA_SESSION = 'test-session';
   });
 
-  test("initializes and reports rate limit status", async () => {
-    const adapter = new WhatsAppAdapter({ mode: "cloud-api" });
-    await adapter.connect();
+  test('initializes with WAHA config and reports rate limit status', async () => {
+    const adapter = new WhatsAppAdapter();
     const status = await adapter.getRateLimitStatus();
     expect(status).toBeDefined();
-    expect(typeof status?.limit).toBe("number");
-    await adapter.disconnect();
+    expect(typeof status?.limit).toBe('number');
+    expect(typeof status?.remaining).toBe('number');
+    expect(typeof status?.reset).toBe('number');
   });
 
-  test("sends a message successfully via cloud path (mocked)", async () => {
-    const adapter = new WhatsAppAdapter({ mode: "cloud-api" });
-    await adapter.connect();
-    const res = await adapter.sendMessage("+1234567890", "Hello world");
-    expect(res.success).toBe(true);
-    await adapter.disconnect();
-  });
-
-  test("returns rate limit error when exhausted", async () => {
-    const adapter = new WhatsAppAdapter({ mode: "cloud-api" });
-    // Manually exhaust rate
-    // @ts-ignore
-    (adapter as any).rateRemaining = 0;
-    await adapter.connect();
-    const res = await adapter.sendMessage("+15551234567", "Test");
-    expect(res.success).toBe(false);
-    expect(res.code).toBe("RATE_LIMIT_EXCEEDED");
+  test('constructor accepts explicit options', () => {
+    const adapter = new WhatsAppAdapter({
+      baseUrl: 'http://waha.local',
+      apiKey: 'my-key',
+      session: 'custom-session',
+    });
+    // Adapter created without error
+    expect(adapter).toBeDefined();
   });
 });

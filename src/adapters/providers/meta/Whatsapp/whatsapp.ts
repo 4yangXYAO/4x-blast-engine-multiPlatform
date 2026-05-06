@@ -1,132 +1,108 @@
-import { IAdapter, RateLimitStatus } from '../../../IAdapter'
-import { getConfig } from '../../../../config/secrets'
-
-type Protocol = 'cloud-api' | 'webjs'
+import { IAdapter, RateLimitStatus } from '../../../IAdapter';
+import { getConfig } from '../../../../config/secrets';
 
 export interface WhatsAppAdapterOptions {
-  mode?: Protocol
-  // Optional logger
-  logger?: (msg: string) => void
+  baseUrl?: string;
+  apiKey?: string;
+  session?: string;
+  logger?: (msg: string) => void;
 }
 
-type SendResult = { success: boolean; error?: string; code?: string }
+type SendResult = { success: boolean; error?: string; code?: string };
 
 export class WhatsAppAdapter implements IAdapter {
-  private mode: Protocol
-  private logger?: (msg: string) => void
-  private rateRemaining: number
-  private rateLimit: number
-  private rateReset: number
-  private webClient: any // whatsapp-web.js client
+  private baseUrl: string;
+  private apiKey: string;
+  private session: string;
+  private logger?: (msg: string) => void;
+  private rateRemaining: number;
+  private rateLimit: number;
+  private rateReset: number;
 
   constructor(opts?: WhatsAppAdapterOptions) {
-    const o = opts ?? {}
-    this.mode = o.mode ?? ('cloud-api' as Protocol)
-    this.logger = o.logger
-    // Simple in-memory rate limiter for tests
-    this.rateLimit = 100 // arbitrary
-    this.rateRemaining = this.rateLimit
-    this.rateReset = Date.now() + 60_000 // reset in 60s
+    const config = getConfig();
+    this.baseUrl = ((opts?.baseUrl || config.WAHA_BASE_URL || '').replace(/\/$/, ''));
+    this.apiKey = opts?.apiKey ?? (config.WAHA_API_KEY ?? '');
+    this.session = opts?.session ?? (config.WAHA_SESSION ?? 'default');
+    this.logger = opts?.logger;
+
+    this.rateLimit = 100;
+    this.rateRemaining = this.rateLimit;
+    this.rateReset = Date.now() + 60_000;
   }
 
   private log(msg: string) {
-    this.logger?.(`[WhatsAppAdapter] ${msg}`)
+    this.logger?.(`[WhatsAppAdapter] ${msg}`);
   }
 
   async connect(): Promise<void> {
-    if (this.mode === 'webjs') {
-      // Lazy require to avoid hard dependency during tests
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const WA = require('whatsapp-web.js')
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        // Minimal initialization; actual QR handling is out-of-scope for tests
-        this.webClient = new WA.Client({ puppeteer: { headless: true } })
-        this.webClient.on('ready', () => this.log('WhatsApp Web client ready'))
-        this.webClient.initialize()
-      } catch (e: any) {
-        // If library not installed in test env, allow tests to mock this path
-        this.log('webjs path not available in runtime: ' + (e?.message ?? String(e)))
-        // Do not throw to keep test compatibility; subsequent calls should be mocked
+    const url = `${this.baseUrl}/api/sessions/${this.session}`;
+    const headers = { 'X-WAHA-API-KEY': this.apiKey };
+
+    let sessionActive = false;
+    for (let i = 0; i < 15; i++) {
+      const res = await fetch(url, { headers });
+      if (res.ok) {
+        const data = (await res.json()) as { status?: string };
+        if (data.status === 'WORKING') {
+          sessionActive = true;
+          this.log('Connected to WAHA session.');
+          break;
+        }
       }
-    } else {
-      // Cloud API path: ensure token via getConfig
-      const cfg = getConfig()
-      if (!cfg.WHATSAPP_CLOUD_API_TOKEN && !cfg.WAHA_BASE_URL) {
-        throw new Error('WhatsApp Cloud API token or WAHA_BASE_URL not configured')
-      }
-      this.log('Connected via Cloud API')
+      this.log('Waiting for session to become active...');
+      await new Promise((r) => setTimeout(r, 2000));
     }
+
+    if (!sessionActive) {
+      this.log('Starting a new WAHA session...');
+      const startRes = await fetch(`${this.baseUrl}/api/sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ name: this.session, startNew: true })
+      });
+      if (!startRes.ok) {
+        throw new Error(`Failed to start session: ${startRes.statusText}`);
+      }
+      this.log('Session started.');
+    }
+  }
+
+  async sendMessage(to: string, message: string): Promise<SendResult> {
+    const url = `${this.baseUrl}/api/sendText`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WAHA-API-KEY': this.apiKey
+      },
+      body: JSON.stringify({ session: this.session, chatId: to, text: message })
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      this.log(`Failed to send message: ${error}`);
+      return { success: false, error, code: res.status.toString() };
+    }
+
+    this.log('Message sent successfully.');
+    return { success: true };
   }
 
   async disconnect(): Promise<void> {
-    // If webjs client exists, politely close
-    if (this.webClient?.destroy) {
-      try {
-        await this.webClient.destroy()
-      } catch {
-        // ignore
-      }
-    }
-    this.log('Disconnected')
-  }
-
-  async sendMessage(
-    to: string,
-    message: string
-  ): Promise<{ success: boolean; error?: string; code?: string }> {
-    // Simple rate-limit guard
-    this.maybeDrainRate()
-    if (this.rateRemaining <= 0) {
-      return { success: false, code: 'RATE_LIMIT_EXCEEDED', error: 'Rate limit exceeded' }
-    }
-
-    // Route depending on mode
-    try {
-      if (this.mode === 'webjs' && this.webClient) {
-        // @ts-ignore
-        const waChat = this.webClient?.getContactById(to) || null
-        // In tests, this will be mocked; we simulate a success
-        this.log(`Mock send via webjs to ${to}: ${message.substring(0, 40)}`)
-        return { success: true }
-      } else {
-        const cfg = getConfig()
-        if (cfg.WAHA_BASE_URL) {
-          const baseUrl = cfg.WAHA_BASE_URL.replace(/\/+$/, '')
-          const url = `${baseUrl}/api/sendText`
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-WAHA-API-KEY': cfg.WAHA_API_KEY || '',
-            },
-            body: JSON.stringify({
-              session: cfg.WAHA_SESSION || 'default',
-              chatId: to,
-              text: message,
-            }),
-          })
-          if (!response.ok) {
-            throw new Error(`WAHA API error: ${response.statusText}`)
-          }
-          return { success: true }
-        } else {
-          // Fallback to legacy mock
-          const token = cfg.WHATSAPP_CLOUD_API_TOKEN
-          if (!token) throw new Error('Missing token')
-          this.log(`Mock send via Cloud API to ${to}: ${message.substring(0, 40)}`)
-          return { success: true }
-        }
-      }
-    } catch (err: any) {
-      const code = 'WHATSAPP_SEND_ERROR'
-      const error = err?.message ?? 'Unknown error'
-      return { success: false, code, error }
+    const url = `${this.baseUrl}/api/sessions/${this.session}/logout`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'X-WAHA-API-KEY': this.apiKey }
+    });
+    if (res.ok) {
+      this.log('Session logged out successfully.');
+    } else {
+      this.log(`Failed to disconnect session: ${res.statusText}`);
     }
   }
 
   async getRateLimitStatus(): Promise<RateLimitStatus | null> {
-    // Return current status; if reset time passed, refresh
     const now = Date.now()
     if (now > this.rateReset) {
       this.rateRemaining = this.rateLimit
@@ -139,15 +115,69 @@ export class WhatsAppAdapter implements IAdapter {
     }
   }
 
-  // Helper to decrement rate
-  private maybeDrainRate() {
-    const now = Date.now()
-    if (now > this.rateReset) {
-      this.rateRemaining = this.rateLimit
-      this.rateReset = now + 60_000
+  async checkSession(): Promise<{ status: string; name: string } | null> {
+    const url = `${this.baseUrl}/api/sessions/${this.session}`;
+    const res = await fetch(url, {
+      headers: { 'X-WAHA-API-KEY': this.apiKey }
+    });
+    if (res.ok) {
+      const data = await res.json() as { status: string; name: string };
+      return data;
     }
-    if (this.rateRemaining > 0) this.rateRemaining--
+    return null;
+  }
+
+  async getChats(limit?: number): Promise<any[]> {
+    const url = `${this.baseUrl}/api/chats?session=${this.session}&limit=${limit || 50}`;
+    const res = await fetch(url, {
+      headers: { 'X-WAHA-API-KEY': this.apiKey }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch chats: ${res.statusText}`);
+    }
+    const data = await res.json() as any[];
+    return data;
+  }
+
+  async sendImage(to: string, imageUrl: string, caption?: string): Promise<SendResult> {
+    const url = `${this.baseUrl}/api/sendImage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WAHA-API-KEY': this.apiKey
+      },
+      body: JSON.stringify({ session: this.session, chatId: to, file: { url: imageUrl }, caption })
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      this.log(`Failed to send image: ${error}`);
+      return { success: false, error, code: res.status.toString() };
+    }
+
+    this.log('Image sent successfully.');
+    return { success: true };
+  }
+
+  async onMessage(callback: (msg: any) => void): Promise<void> {
+    const callbackUrl = 'YOUR_WEBHOOK_URL';
+    const url = `${this.baseUrl}/api/sessions/${this.session}/webhook`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WAHA-API-KEY': this.apiKey
+      },
+      body: JSON.stringify({ url: callbackUrl })
+    });
+
+    if (res.ok) {
+      this.log('Webhook registered successfully.');
+    } else {
+      this.log(`Failed to register webhook: ${res.statusText}`);
+    }
   }
 }
-
-export default WhatsAppAdapter

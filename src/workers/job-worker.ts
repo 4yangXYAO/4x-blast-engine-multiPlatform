@@ -70,9 +70,8 @@ function createDefaultAdapterFactory() {
 
     switch (platform) {
       case 'whatsapp':
-        return new WhatsAppAdapter({ mode: 'cloud-api' })
       case 'whatsapp-webjs':
-        return new WhatsAppAdapter({ mode: 'webjs' })
+        return new WhatsAppAdapter()
       case 'telegram':
         return new TelegramAdapter(rawCredentials || cfg.TELEGRAM_BOT_TOKEN || '')
       case 'telegram-mtproto':
