@@ -85,8 +85,8 @@ export class TelegramAdapter implements IAdapter {
   }
 
   async getRateLimitStatus(): Promise<RateLimitStatus | null> {
-    // Telegraf does not expose a straightforward rate-limit; expose placeholder
-    return this.rateLimit
+    // Telegraf does not expose a straightforward rate-limit; return Telegram's default rate: 30 msgs/sec per chat
+    return { limit: 30, remaining: 30, reset: Date.now() + 60_000 }
   }
 }
 

@@ -1,4 +1,4 @@
-import { FacebookAdapter } from '../src/adapters/providers/meta/facebook/facebook-playwright';
+import { FacebookPlaywrightAdapter } from '../src/adapters/providers/meta/facebook/facebook-playwright';
 
 // Validate environment variable for JSON cookies
 if (!process.env.FB_COOKIE) {
@@ -7,7 +7,7 @@ if (!process.env.FB_COOKIE) {
 
 (async () => {
   // Initialize the Facebook adapter
-  const adapter = new FacebookAdapter(process.env.FB_COOKIE, { logger: console.log });
+  const adapter = new FacebookPlaywrightAdapter(process.env.FB_COOKIE, { logger: console.log });
 
   try {
     // Connect to Facebook
