@@ -229,7 +229,7 @@ async function executeAction(
         const { WhatsAppAdapter } = await import(
           '../adapters/providers/meta/Whatsapp/whatsapp'
         )
-        const adapter = new WhatsAppAdapter({ mode: 'cloud-api' })
+        const adapter = new WhatsAppAdapter()
         await adapter.connect()
         const result = await adapter.sendMessage(targetId, message)
         await adapter.disconnect()
