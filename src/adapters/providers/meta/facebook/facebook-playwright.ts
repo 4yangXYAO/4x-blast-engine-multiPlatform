@@ -8,7 +8,7 @@ import { getNotifications, FacebookNotification } from './facebook-notif';
 
 chromium.use(stealth());
 
-export class FacebookAdapter implements IAdapter {
+export class FacebookPlaywrightAdapter implements IAdapter {
     private browser: Browser | null = null;
     private context: BrowserContext | null = null;
     private page: Page | null = null;
