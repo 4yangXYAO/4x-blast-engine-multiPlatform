@@ -10,7 +10,14 @@
     "ses_206890489ffeFNIudV1a6cxv31",
     "ses_20688db09ffeo1Hlg28RtabmSn",
     "ses_20685b581ffe8jOyH0tqw1I104",
-    "ses_206859acbffeECk6bX8Oj47e0s"
+    "ses_206859acbffeECk6bX8Oj47e0s",
+    "ses_2066266e9ffecGBrjoqARE434h",
+    "ses_206624b68ffepKgGNYigomFOX2",
+    "ses_2066193f9ffeL44KWLIaxcDRNk",
+    "ses_206617b60ffe3G2h8DnV5tIjv9",
+    "ses_206616299ffeP6n81jTv1u0ott",
+    "ses_2042d1bf4ffebWx2vf9GSfpBEA",
+    "ses_2042d038dffei4DJ4vArYT73zn"
   ],
   "session_origins": {
     "ses_2078d2665ffeFjSAj8vHOetwRq": "direct",
@@ -21,7 +28,14 @@
     "ses_206890489ffeFNIudV1a6cxv31": "appended",
     "ses_20688db09ffeo1Hlg28RtabmSn": "appended",
     "ses_20685b581ffe8jOyH0tqw1I104": "appended",
-    "ses_206859acbffeECk6bX8Oj47e0s": "appended"
+    "ses_206859acbffeECk6bX8Oj47e0s": "appended",
+    "ses_2066266e9ffecGBrjoqARE434h": "appended",
+    "ses_206624b68ffepKgGNYigomFOX2": "appended",
+    "ses_2066193f9ffeL44KWLIaxcDRNk": "appended",
+    "ses_206617b60ffe3G2h8DnV5tIjv9": "appended",
+    "ses_206616299ffeP6n81jTv1u0ott": "appended",
+    "ses_2042d1bf4ffebWx2vf9GSfpBEA": "appended",
+    "ses_2042d038dffei4DJ4vArYT73zn": "appended"
   },
   "plan_name": "100-percent-completion",
   "agent": "atlas",
