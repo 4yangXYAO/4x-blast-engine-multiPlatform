@@ -1,34 +1,38 @@
 import { IAdapter, RateLimitStatus } from '../../../IAdapter';
 import { getConfig } from '../../../../config/secrets';
+import { WAHAClient, WAHAConfig } from '@1ai/waha-client';
 
 export interface WhatsAppAdapterOptions {
   baseUrl?: string;
   apiKey?: string;
   session?: string;
+  /** Hub-routed mode: route WAHA calls through 1ai-hub */
+  hubUrl?: string;
+  hubApiKey?: string;
+  /** 'direct' (default) hits WAHA directly; 'hub' routes through 1ai-hub */
+  mode?: 'direct' | 'hub';
   logger?: (msg: string) => void;
 }
 
 type SendResult = { success: boolean; error?: string; code?: string };
 
+/** Wraps @1ai/waha-client to implement IAdapter. Supports direct and hub-routed modes. */
 export class WhatsAppAdapter implements IAdapter {
-  private baseUrl: string;
-  private apiKey: string;
-  private session: string;
+  private client: WAHAClient;
   private logger?: (msg: string) => void;
-  private rateRemaining: number;
-  private rateLimit: number;
-  private rateReset: number;
 
   constructor(opts?: WhatsAppAdapterOptions) {
     const config = getConfig();
-    this.baseUrl = ((opts?.baseUrl || config.WAHA_BASE_URL || '').replace(/\/$/, ''));
-    this.apiKey = opts?.apiKey ?? (config.WAHA_API_KEY ?? '');
-    this.session = opts?.session ?? (config.WAHA_SESSION ?? 'default');
+    const wahaConfig: WAHAConfig = {
+      baseUrl: (opts?.baseUrl || config.WAHA_BASE_URL || '').replace(/\/$/, ''),
+      apiKey: opts?.apiKey || config.WAHA_API_KEY || '',
+      defaultSession: opts?.session || config.WAHA_SESSION || 'default',
+      mode: opts?.mode || 'direct',
+      hubUrl: opts?.hubUrl,
+      hubApiKey: opts?.hubApiKey,
+    };
+    this.client = new WAHAClient(wahaConfig);
     this.logger = opts?.logger;
-
-    this.rateLimit = 100;
-    this.rateRemaining = this.rateLimit;
-    this.rateReset = Date.now() + 60_000;
   }
 
   private log(msg: string) {
@@ -36,148 +40,75 @@ export class WhatsAppAdapter implements IAdapter {
   }
 
   async connect(): Promise<void> {
-    const url = `${this.baseUrl}/api/sessions/${this.session}`;
-    const headers = { 'X-WAHA-API-KEY': this.apiKey };
-
-    let sessionActive = false;
-    for (let i = 0; i < 15; i++) {
-      const res = await fetch(url, { headers });
-      if (res.ok) {
-        const data = (await res.json()) as { status?: string };
-        if (data.status === 'WORKING') {
-          sessionActive = true;
-          this.log('Connected to WAHA session.');
-          break;
-        }
-      }
-      this.log('Waiting for session to become active...');
-      await new Promise((r) => setTimeout(r, 2000));
-    }
-
-    if (!sessionActive) {
-      this.log('Starting a new WAHA session...');
-      const startRes = await fetch(`${this.baseUrl}/api/sessions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ name: this.session, startNew: true })
-      });
-      if (!startRes.ok) {
-        throw new Error(`Failed to start session: ${startRes.statusText}`);
-      }
-      this.log('Session started.');
-    }
+    this.log('Starting/ensuring WAHA session...');
+    await this.client.startSession();
+    this.log('WAHA session ready.');
   }
 
   async sendMessage(to: string, message: string): Promise<SendResult> {
-    const url = `${this.baseUrl}/api/sendText`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WAHA-API-KEY': this.apiKey
-      },
-      body: JSON.stringify({ session: this.session, chatId: to, text: message })
-    });
-
-    if (!res.ok) {
-      const error = await res.text();
-      this.log(`Failed to send message: ${error}`);
-      return { success: false, error, code: res.status.toString() };
+    try {
+      const result = await this.client.sendText(to, message);
+      if (result.success) {
+        this.log('Message sent successfully.');
+        return { success: true };
+      }
+      return { success: false, error: result.error, code: result.code };
+    } catch (e: any) {
+      const msg = e?.message || String(e);
+      this.log(`Failed to send message: ${msg}`);
+      return { success: false, error: msg, code: e?.status?.toString() };
     }
-
-    this.log('Message sent successfully.');
-    return { success: true };
   }
 
   async disconnect(): Promise<void> {
-    const url = `${this.baseUrl}/api/sessions/${this.session}/logout`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'X-WAHA-API-KEY': this.apiKey }
-    });
-    if (res.ok) {
-      this.log('Session logged out successfully.');
-    } else {
-      this.log(`Failed to disconnect session: ${res.statusText}`);
+    try {
+      await this.client.stopSession();
+      this.log('Session stopped successfully.');
+    } catch (e: any) {
+      this.log(`Failed to stop session: ${e?.message || e}`);
     }
   }
 
   async getRateLimitStatus(): Promise<RateLimitStatus | null> {
-    const now = Date.now()
-    if (now > this.rateReset) {
-      this.rateRemaining = this.rateLimit
-      this.rateReset = now + 60_000
-    }
+    const status = this.client.getRateLimitStatus();
     return {
-      limit: this.rateLimit,
-      remaining: this.rateRemaining,
-      reset: this.rateReset,
-    }
+      limit: status.limit,
+      remaining: status.remaining,
+      reset: status.reset,
+    };
   }
 
   async checkSession(): Promise<{ status: string; name: string } | null> {
-    const url = `${this.baseUrl}/api/sessions/${this.session}`;
-    const res = await fetch(url, {
-      headers: { 'X-WAHA-API-KEY': this.apiKey }
-    });
-    if (res.ok) {
-      const data = await res.json() as { status: string; name: string };
-      return data;
+    try {
+      const session = await this.client.getSession();
+      if (!session) return null;
+      return { status: session.status, name: session.name };
+    } catch {
+      return null;
     }
-    return null;
   }
 
   async getChats(limit?: number): Promise<any[]> {
-    const url = `${this.baseUrl}/api/chats?session=${this.session}&limit=${limit || 50}`;
-    const res = await fetch(url, {
-      headers: { 'X-WAHA-API-KEY': this.apiKey }
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch chats: ${res.statusText}`);
-    }
-    const data = await res.json() as any[];
-    return data;
+    const chats = await this.client.getChats(undefined, limit || 50);
+    return chats as any[];
   }
 
   async sendImage(to: string, imageUrl: string, caption?: string): Promise<SendResult> {
-    const url = `${this.baseUrl}/api/sendImage`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WAHA-API-KEY': this.apiKey
-      },
-      body: JSON.stringify({ session: this.session, chatId: to, file: { url: imageUrl }, caption })
-    });
-
-    if (!res.ok) {
-      const error = await res.text();
-      this.log(`Failed to send image: ${error}`);
-      return { success: false, error, code: res.status.toString() };
+    try {
+      const result = await this.client.sendImage(to, imageUrl, caption);
+      if (result.success) {
+        this.log('Image sent successfully.');
+        return { success: true };
+      }
+      return { success: false, error: result.error, code: result.code };
+    } catch (e: any) {
+      const msg = e?.message || String(e);
+      this.log(`Failed to send image: ${msg}`);
+      return { success: false, error: msg, code: e?.status?.toString() };
     }
-
-    this.log('Image sent successfully.');
-    return { success: true };
   }
 
   async onMessage(callback: (msg: any) => void): Promise<void> {
-    const callbackUrl = 'YOUR_WEBHOOK_URL';
-    const url = `${this.baseUrl}/api/sessions/${this.session}/webhook`;
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WAHA-API-KEY': this.apiKey
-      },
-      body: JSON.stringify({ url: callbackUrl })
-    });
-
-    if (res.ok) {
-      this.log('Webhook registered successfully.');
-    } else {
-      this.log(`Failed to register webhook: ${res.statusText}`);
-    }
+    this.log('Note: webhook registration requires a callback URL — configure externally via WAHA dashboard or set up a webhook endpoint.');
   }
 }

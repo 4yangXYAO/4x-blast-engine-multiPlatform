@@ -31,7 +31,8 @@
     "sql.js": "^1.14.1",
     "telegram": "^2.26.22",
     "winston": "^3.9.0",
-    "zod": "^3.22.0"
+    "zod": "^3.22.0",
+    "@1ai/waha-client": "file:../1ai/packages/waha-client"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
