@@ -99,10 +99,12 @@ install_dependencies() {
     log_info "Installing dependencies..."
 
     # Update package lists
-    apt-get update -qq
+    if ! apt-get update -q 2>/dev/null; then
+        log_warn "apt-get update had warnings or minor issues, continuing..."
+    fi
 
-    # Check if openssh-server is installed
-    if ! dpkg -l | grep -q openssh-server; then
+    # Check if openssh-server is installed using dpkg-query for reliability
+    if ! dpkg-query -W -f='${Status}' openssh-server 2>/dev/null | grep -q 'install ok installed'; then
         log_info "Installing openssh-server..."
         apt-get install -y openssh-server openssh-sftp-server
     fi
@@ -246,9 +248,16 @@ setup_cross_user_permissions() {
 
     log_info "Setting up cross-user file access permissions..."
 
-    # Ensure ACL support is enabled on the filesystem
+    # Ensure directory exists before checking mount point
+    if [[ ! -d "$upload_dir" ]]; then
+        log_warn "Upload directory does not exist yet, skipping ACL check"
+        return
+    fi
+
+    # Ensure ACL support is enabled on the filesystem (more specific check)
     local mount_point=$(df -P "$upload_dir" | tail -1 | awk '{print $NF}')
-    if ! mount | grep -q "$mount_point.*acl"; then
+    # Use more specific pattern to avoid false positives
+    if ! mount | grep "^[^ ]* on $(printf '%s\n' "$mount_point" | sed 's/[[\.*^$/]/\\&/g') " | grep -q "acl"; then
         log_warn "ACL may not be enabled on $mount_point"
         log_info "To enable ACL, add 'acl' option to mount point in /etc/fstab"
     fi

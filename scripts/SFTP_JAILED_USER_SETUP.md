@@ -304,16 +304,30 @@ To use this jailed user for file uploads to the Joki Blast Engine:
 # 1. Set up jailed user
 sudo ./scripts/setup-sftp-jailed-user.sh blast_uploader /opt/blast/uploads
 
-# 2. Create a symlink to application data directory
-sudo mkdir -p /opt/blast/uploads/blast_templates
-sudo ln -s /opt/blast/data /opt/blast/uploads/blast_data
+# 2. Note: Files inside the chroot jail are isolated from the system
+# The jailed user sees /opt/blast/uploads as their root directory
+# To share files with the Joki application, either:
+
+# Option A: Have the Joki app read directly from the jail directory
+#           (recommended for security)
+# In your env config, set: UPLOAD_DIR=/opt/blast/uploads/uploads
+
+# Option B: Set up a cron job to copy/process files from jail to app directory
+# Example crontab entry:
+# */5 * * * * cp -r /opt/blast/uploads/uploads/* /var/lib/joki/data/ 2>/dev/null
 
 # 3. Grant access to the blast engine service user
-sudo usermod -aG blast_uploader blast_service
+sudo usermod -aG blast_uploader joki_service_user
 
-# 4. Configure the app to watch the uploads directory
-# In your env config, set: UPLOAD_DIR=/opt/blast/uploads/blast_templates
+# 4. The service user can now read files from the uploads directory
+# List available uploads: ls -la /opt/blast/uploads/uploads/
 ```
+
+**Important Note on Chroot Jails:**
+- Symlinks don't cross chroot boundaries (security feature)
+- Inside the jail, `/opt/blast/uploads` appears as `/` to the jailed user
+- Any absolute paths in configs must account for the jail perspective
+- Best practice: have external processes read from the jail directory directly
 
 ## Cleanup
 
