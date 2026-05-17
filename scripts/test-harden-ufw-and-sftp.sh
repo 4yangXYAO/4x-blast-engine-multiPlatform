@@ -11,6 +11,10 @@
 
 set -euo pipefail
 
+# Get the directory where this test script is located
+readonly TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_UNDER_TEST="${TEST_DIR}/harden-ufw-and-sftp.sh"
+
 # Colors for output
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -45,7 +49,7 @@ test_result() {
 
 # Test 1: Script existence and permissions
 test_script_exists() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if [[ -f "$script" ]] && [[ -x "$script" ]]; then
         test_result "Script exists and is executable" "PASS"
@@ -56,7 +60,7 @@ test_script_exists() {
 
 # Test 2: Bash syntax validation
 test_bash_syntax() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if bash -n "$script" 2>/dev/null; then
         test_result "Bash syntax is valid" "PASS"
@@ -67,7 +71,7 @@ test_bash_syntax() {
 
 # Test 3: Shebang line
 test_shebang() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     local shebang=$(head -1 "$script")
     
     if [[ "$shebang" == "#!/bin/bash" ]]; then
@@ -79,7 +83,7 @@ test_shebang() {
 
 # Test 4: Script has proper comments and documentation
 test_script_documentation() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     local doc_lines=$(grep -c "^#" "$script" || true)
     
     # Check if script has reasonable documentation (>30 comment lines)
@@ -93,7 +97,7 @@ test_script_documentation() {
 
 # Test 5: Check for required functions
 test_required_functions() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     local required_functions=(
         "check_root"
         "check_ubuntu_version"
@@ -125,7 +129,7 @@ test_required_functions() {
 
 # Test 6: Error handling with set -euo pipefail
 test_error_handling() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "set -euo pipefail" "$script"; then
         test_result "Error handling flags are present" "PASS"
@@ -136,7 +140,7 @@ test_error_handling() {
 
 # Test 7: Logging functionality
 test_logging_function() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "^log()" "$script"; then
         test_result "Logging function is defined" "PASS"
@@ -147,7 +151,7 @@ test_logging_function() {
 
 # Test 8: Color output functions
 test_color_functions() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     local color_funcs=(
         "print_status"
         "print_success"
@@ -172,7 +176,7 @@ test_color_functions() {
 
 # Test 9: Configuration variables
 test_configuration_variables() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "SFTP_CHROOT_DIR=" "$script" && \
        grep -q "SFTP_HOME_DIR=" "$script"; then
@@ -217,7 +221,7 @@ test_examples_file() {
 
 # Test 12: Script handles arguments
 test_argument_handling() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "if \[\[ \$# -lt 1 \]\]" "$script"; then
         test_result "Script validates required arguments" "PASS"
@@ -228,7 +232,7 @@ test_argument_handling() {
 
 # Test 13: Usage information
 test_usage_information() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "^usage()" "$script"; then
         test_result "Usage information function exists" "PASS"
@@ -239,7 +243,7 @@ test_usage_information() {
 
 # Test 14: Main function exists
 test_main_function() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "^main()" "$script"; then
         test_result "Main function is defined" "PASS"
@@ -250,7 +254,7 @@ test_main_function() {
 
 # Test 15: Script calls main function
 test_main_execution() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "^main \"\$@\"" "$script"; then
         test_result "Main function is called" "PASS"
@@ -261,7 +265,7 @@ test_main_execution() {
 
 # Test 16: UFW configuration present
 test_ufw_configuration() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "configure_ufw" "$script" && \
        grep -q "ufw.*enable" "$script" && \
@@ -274,7 +278,7 @@ test_ufw_configuration() {
 
 # Test 17: SFTP jailing implementation
 test_sftp_jailing() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "ChrootDirectory" "$script" && \
        grep -q "ForceCommand internal-sftp" "$script"; then
@@ -286,7 +290,7 @@ test_sftp_jailing() {
 
 # Test 18: Permission configuration
 test_permission_configuration() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q "chown root:root" "$script" && \
        grep -q "chmod 755" "$script"; then
@@ -298,7 +302,7 @@ test_permission_configuration() {
 
 # Test 19: SSH configuration backup
 test_ssh_backup() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     
     if grep -q ".orig" "$script"; then
         test_result "SSH config backup is implemented" "PASS"
@@ -309,7 +313,7 @@ test_ssh_backup() {
 
 # Test 20: Script completeness check
 test_script_size() {
-    local script="/home/runner/work/joki-blast-engine/joki-blast-engine/scripts/harden-ufw-and-sftp.sh"
+    local script="${SCRIPT_UNDER_TEST}"
     local size=$(wc -l < "$script")
     
     if [[ $size -gt 400 ]]; then
