@@ -1,4 +1,4 @@
-# ADR-001: Perbaiki cookie-based adapters, DB locking, dan worker observability
+﻿# ADR-001: Perbaiki cookie-based adapters, DB locking, dan worker observability
 
 **Tanggal:** 30 April 2026
 
@@ -49,3 +49,4 @@ Jika cookie-based posting proves brittle atau jadi maintenance burden, revert da
 ---
 
 **Diperbarui**: 30 April 2026
+

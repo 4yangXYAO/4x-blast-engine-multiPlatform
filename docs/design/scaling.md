@@ -1,4 +1,4 @@
-# Scaling
+﻿# Scaling
 
 ## Current Behavior
 
@@ -18,3 +18,4 @@
 - Spread campaigns over time instead of firing large bursts.
 - Retry only after the operator fixes the credential issue when code `190` appears.
 - Stop retrying immediately when rate limit code `4` is returned.
+

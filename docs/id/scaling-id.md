@@ -1,4 +1,4 @@
-# Skalabilitas (Scaling)
+﻿# Skalabilitas (Scaling)
 
 ## Perilaku Saat Ini
 
@@ -22,3 +22,4 @@
 ---
 
 **Diperbarui**: Mei 2026
+

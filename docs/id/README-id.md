@@ -1,4 +1,4 @@
-# joki-blast-engine
+﻿# 4x-blast-engine
 
 Mesin blast produksi fokus pada Node.js/TypeScript dengan dashboard Next.js, persistensi SQLite, dan adaptor platform untuk WhatsApp, Telegram, Instagram, Twitter/X, Threads, dan Facebook Pages.
 
@@ -91,7 +91,7 @@ POST /v1/jobs/comment-random
 Content-Type: application/json
 
 {
-  "message": "Produk bagus! DM kami untuk info harga 📩",
+  "message": "Produk bagus! DM kami untuk info harga ðŸ“©",
   "accountId": "your-facebook-account-id",
   "count": 50
 }
@@ -115,7 +115,7 @@ Content-Type: application/json
   "template_id": "...",
   "account_id": "your-facebook-account-id",
   "platform": "facebook",
-  "message": "Halo! Ada penawaran spesial untuk kamu 🎉"
+  "message": "Halo! Ada penawaran spesial untuk kamu ðŸŽ‰"
 }
 ```
 
@@ -129,7 +129,7 @@ Langkah-langkah ini menunjukkan setup lokal cepat untuk development dan testing.
 
 ```bash
 git clone <repo-url>
-cd joki-blast-engine
+cd 4x-blast-engine
 npm install
 ```
 
@@ -175,9 +175,9 @@ npm run validate:config       # jalankan config validation checks
 
 8. Referensi script yang berguna (root `package.json`):
 
-- `npm run db:init` — inisialisasi DB + jalankan migrations
-- `npm run dev:api` — jalankan API dalam dev (ts-node)
-- `npm test` — jalankan test suite (Vitest)
+- `npm run db:init` â€” inisialisasi DB + jalankan migrations
+- `npm run dev:api` â€” jalankan API dalam dev (ts-node)
+- `npm test` â€” jalankan test suite (Vitest)
 
 Buka dashboard di browser Anda (default port dikonfigurasi di `dashboard/package.json`), contoh:
 
@@ -255,3 +255,4 @@ Useful integration variables:
 - Dashboard page adalah single-page admin surface di `dashboard/app/page.tsx`.
 - Job execution sekarang resolve adapters dari stored accounts dan decrypt credentials.
 - WAHA adalah pilihan WhatsApp path di workspace ini.
+

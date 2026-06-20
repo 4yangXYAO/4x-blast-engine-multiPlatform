@@ -1,12 +1,12 @@
-# Glossarium Istilah Teknis - Joki Blast Engine
+﻿# Glossarium Istilah Teknis - 4x-blast-engine
 
-Dokumen ini berisi daftar istilah teknis yang digunakan dalam codebase Joki Blast Engine beserta terjemahan dan pedoman penggunaannya dalam bahasa Indonesia.
+Dokumen ini berisi daftar istilah teknis yang digunakan dalam codebase 4x-blast-engine beserta terjemahan dan pedoman penggunaannya dalam bahasa Indonesia.
 
 ## **Prinsip Terjemahan**
 
 - **Konsistensi**: Gunakan terjemahan yang sama di seluruh codebase, dokumentasi, dan UI
 - **Naturalitas**: Pilih kata yang alami dalam konteks Indonesia, bukan literal translation
-- **Standard**: Beberapa istilah teknis tetap英文 karena sudah menjadi standar industri
+- **Standard**: Beberapa istilah teknis tetapè‹±æ–‡ karena sudah menjadi standar industri
 
 ---
 
@@ -85,7 +85,7 @@ Dokumen ini berisi daftar istilah teknis yang digunakan dalam codebase Joki Blas
 |---------|------------|-------------|
 | Generate | Hasilkan / Buat | "Hasilkan" untuk output, "buat" untuk create |
 | Graph API | Graph API | Tetap (Facebook Graph API) |
-| Guide | Panduan | "Panduan" untuk docs, "panduan" untuk指引 |
+| Guide | Panduan | "Panduan" untuk docs, "panduan" untukæŒ‡å¼• |
 
 ### H
 
@@ -119,7 +119,7 @@ Dokumen ini berisi daftar istilah teknis yang digunakan dalam codebase Joki Blas
 
 | English | Indonesian | Usage Note |
 |---------|------------|-------------|
-| Lead | Prospek | "Prospek" untuk sales context, "lead" bisa dipakai også. Rekomendasi: "Prospek" lebih natural Indonesia |
+| Lead | Prospek | "Prospek" untuk sales context, "lead" bisa dipakai ogsÃ¥. Rekomendasi: "Prospek" lebih natural Indonesia |
 | Link | Tautan / Link | "Tautan" untuk user, "link" untuk teknis/URL |
 | Load | Muat / Load | "Muat" untuk data, "load" untuk performance |
 
@@ -253,24 +253,24 @@ Dokumen ini berisi daftar istilah teknis yang digunakan dalam codebase Joki Blas
 [Format]: [Apa yang terjadi] karena [alasan singkat]. [Solusi/langkah perbaikan].
 
 Contoh 1 (Success):
-✓ Kampanye berhasil dibuat!
+âœ“ Kampanye berhasil dibuat!
 
 Contoh 2 (Validation):
-✗ Gagal membuat kampanye: Nama kampanye minimal 3 karakter.
+âœ— Gagal membuat kampanye: Nama kampanye minimal 3 karakter.
 Silakan periksa kembali isian Anda.
 
 Contoh 3 (API Error):
-✗ Tidak dapat terhubung ke Facebook.
+âœ— Tidak dapat terhubung ke Facebook.
 Penyebab: Cookie tidak valid atau sudah kedaluwarsa.
 Solusi: Periksa kredensial Akun Facebook di menu Pengaturan.
 
 Contoh 4 (Rate Limit):
-✗ Terlalu banyak permintaan.
+âœ— Terlalu banyak permintaan.
 Sistem sedang membatasi agar tidak terjadi spam.
 Silakan tunggu 1 menit sebelum mencoba kembali.
 
 Contoh 5 (Network):
-✗ Koneksi terputus.
+âœ— Koneksi terputus.
 Periksa koneksi internet Anda, lalu coba lagi.
 
 ```
@@ -288,7 +288,7 @@ Periksa koneksi internet Anda, lalu coba lagi.
 3. **Clear & Actionable**:
    - Always include "what to do next"
    - Never say just "Error occurred"
-   - Example: "Gagal—cek log untuk detail" vs "Gagal. Cek log di bagian atas halaman untuk melihat detail errornya, lalu perbaiki kredensial."
+   - Example: "Gagalâ€”cek log untuk detail" vs "Gagal. Cek log di bagian atas halaman untuk melihat detail errornya, lalu perbaiki kredensial."
 
 ---
 
@@ -305,3 +305,4 @@ Periksa koneksi internet Anda, lalu coba lagi.
 **Document Version**: 1.0  
 **Last Updated**: 2026-05-05  
 **Maintained By**: Sisyphus (OhMyOpenCode)
+

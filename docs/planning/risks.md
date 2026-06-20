@@ -1,4 +1,4 @@
-# Risks
+﻿# Risks
 
 ## Dashboard Access Risks
 
@@ -31,3 +31,4 @@
 - Keep the adapter isolated and covered by tests.
 - Pin the Graph API version in code.
 - Document the Page access token requirements in README.
+

@@ -1,4 +1,4 @@
-# Keputusan 0001: Pertahankan blast flow di satu dashboard page
+﻿# Keputusan 0001: Pertahankan blast flow di satu dashboard page
 
 ## Status
 
@@ -31,3 +31,4 @@ Single page membuat blast workflow pendek dan mengurangi coupling antara form st
 ---
 
 **Diperbarui**: Mei 2026
+

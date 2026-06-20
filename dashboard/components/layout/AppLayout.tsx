@@ -25,19 +25,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen bg-[#0a0f18] relative">
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
-        
-        <Sidebar 
-          open={sidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
+
+        <Sidebar
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
           collapsed={collapsed}
         />
-        
+
         <div className={`flex-1 flex flex-col transition-all duration-300 ${collapsed ? 'md:pl-20' : 'md:pl-64'}`}>
           <Header
             onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
             breadcrumb="Overview"
           />
-          
+
           <main className="flex-1 p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               {children}

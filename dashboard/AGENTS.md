@@ -1,29 +1,29 @@
-# dashboard/ - Next.js Dashboard
+﻿# dashboard/ - Next.js Dashboard
 
 **Purpose:** Next.js (app router) dashboard for managing campaigns, accounts, jobs, and analytics.
 
 ## STRUCTURE
 ```
 dashboard/
-├── app/                  # Next.js pages (app router)
-│   ├── layout.tsx        # Root layout with Sidebar + Header
-│   ├── page.tsx          # Home / overview
-│   ├── accounts/         # Account management (list + create)
-│   ├── campaigns/        # Campaign CRUD + detail view
-│   ├── blast-runner/     # Manual blast trigger UI
-│   ├── jobs/             # Job queue monitoring
-│   ├── leads/            # Lead capture view
-│   ├── settings/         # Runtime settings
-│   ├── templates/        # Template CRUD
-│   └── analytics/        # Dashboard analytics
-├── components/
-│   ├── layout/           # Header, Sidebar
-│   └── ui/               # Reusable UI components (17 components)
-├── lib/                  # Shared utilities, API client, types, hooks
-├── public/               # Static assets
-├── next.config.mjs
-├── tailwind.config.ts
-└── tsconfig.json
+â”œâ”€â”€ app/                  # Next.js pages (app router)
+â”‚   â”œâ”€â”€ layout.tsx        # Root layout with Sidebar + Header
+â”‚   â”œâ”€â”€ page.tsx          # Home / overview
+â”‚   â”œâ”€â”€ accounts/         # Account management (list + create)
+â”‚   â”œâ”€â”€ campaigns/        # Campaign CRUD + detail view
+â”‚   â”œâ”€â”€ blast-runner/     # Manual blast trigger UI
+â”‚   â”œâ”€â”€ jobs/             # Job queue monitoring
+â”‚   â”œâ”€â”€ leads/            # Lead capture view
+â”‚   â”œâ”€â”€ settings/         # Runtime settings
+â”‚   â”œâ”€â”€ templates/        # Template CRUD
+â”‚   â””â”€â”€ analytics/        # Dashboard analytics
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ layout/           # Header, Sidebar
+â”‚   â””â”€â”€ ui/               # Reusable UI components (17 components)
+â”œâ”€â”€ lib/                  # Shared utilities, API client, types, hooks
+â”œâ”€â”€ public/               # Static assets
+â”œâ”€â”€ next.config.mjs
+â”œâ”€â”€ tailwind.config.ts
+â””â”€â”€ tsconfig.json
 ```
 
 ## KEY FILES

@@ -1,4 +1,4 @@
-# Research
+﻿# Research
 
 ## Pertanyaan
 
@@ -26,7 +26,7 @@ Gunakan local default `http://127.0.0.1:3456` dan pertahankan `NEXT_PUBLIC_API_B
 
 ## Pertanyaan (Bagian 2)
 
-Bagaimana `joki-blast-engine` harus publish ke Facebook agar stabil, production-friendly, dan bisa di-test?
+Bagaimana `4x-blast-engine` harus publish ke Facebook agar stabil, production-friendly, dan bisa di-test?
 
 ## Opsi
 
@@ -49,3 +49,4 @@ Path paling reliable adalah **official Pages Graph API**. Ini jaga blast flow in
 ---
 
 **Tanggal**: April 2026
+

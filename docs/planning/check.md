@@ -1,4 +1,4 @@
-# Detailed Project Diagram
+﻿# Detailed Project Diagram
 
 ```mermaid
 flowchart TD
@@ -104,3 +104,4 @@ flowchart TD
 4. The worker loads encrypted credentials, resolves the adapter or helper, and executes the action.
 5. The adapter fetches tokens from Facebook, sends the request, and returns success or failure.
 6. The worker writes logs and updates job/campaign status in the database.
+

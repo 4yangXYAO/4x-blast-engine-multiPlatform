@@ -1,4 +1,4 @@
-# migrations - Database Migrations
+﻿# migrations - Database Migrations
 
 **Purpose:** SQL schema migrations for SQLite database using sequential numbered files.
 
@@ -23,6 +23,6 @@
 
 ## NOTES
 
-- Two `001_` files exist — `db-init.ts` determines which to apply
+- Two `001_` files exist â€” `db-init.ts` determines which to apply
 - Schema is still evolving; new migrations added as features require
 - Test DB uses same migration set via `db:init`

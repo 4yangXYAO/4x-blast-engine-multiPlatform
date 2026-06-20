@@ -1,4 +1,4 @@
-# docs/id - Dokumentasi Indonesia
+﻿# docs/id - Dokumentasi Indonesia
 
 **Purpose:** Indonesian-language project documentation.
 

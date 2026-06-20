@@ -1,4 +1,4 @@
-# Perbandingan (Comparison)
+﻿# Perbandingan (Comparison)
 
 ## Dashboard API Base Resolution
 
@@ -19,7 +19,7 @@ Gunakan local default `3456` dan pertahankan env override untuk non-local deploy
 | Pendekatan | Kelebihan | Kekurangan | Risiko | Skor |
 |------------|-----------|------------|--------|------|
 | Pages Graph API v19.0 | Resmi, stabil, mudah test, pakai access token | Butuh Page access token & permission, hanya Pages | Medium | 9/10 |
-| Browser automation cookies | Bisa mimic human browser | Fragile selectors, login挑战, hard to test | High | 2/10 |
+| Browser automation cookies | Bisa mimic human browser | Fragile selectors, loginæŒ‘æˆ˜, hard to test | High | 2/10 |
 | Manual-assisted posting | Aman, sederhana, tidak fully auto | Operator kerja lebih | Low | 6/10 |
 
 ## Keputusan
@@ -29,3 +29,4 @@ Gunakan **Facebook Pages Graph API** untuk posting otomatis. Group/forum posting
 ---
 
 **Diperbarui**: Mei 2026
+

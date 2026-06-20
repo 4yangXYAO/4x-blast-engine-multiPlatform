@@ -1,4 +1,4 @@
-# data/ - Data Files & Targets
+﻿# data/ - Data Files & Targets
 
 **Purpose:** Static data files and test database artifacts.
 

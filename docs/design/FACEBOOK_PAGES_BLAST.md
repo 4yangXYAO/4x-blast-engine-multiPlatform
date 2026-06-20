@@ -1,4 +1,4 @@
-# Facebook Blast — Cookie Guide
+﻿# Facebook Blast â€” Cookie Guide
 
 **Auth method:** Browser session cookie via `m.facebook.com`  
 **Adapter:** `FacebookAdapter` in `src/adapters/providers/meta/facebook/facebook.ts`
@@ -22,8 +22,8 @@ You need to copy your browser's cookie from an active Facebook session.
 
 **Using Chrome / Edge:**
 1. Log in to [facebook.com](https://www.facebook.com) in your browser
-2. Open **DevTools** → F12
-3. Go to **Application** tab → **Cookies** → `https://www.facebook.com`
+2. Open **DevTools** â†’ F12
+3. Go to **Application** tab â†’ **Cookies** â†’ `https://www.facebook.com`
 4. Copy the values you need (or use a cookie-export extension)
 
 **Key cookies required:**
@@ -66,15 +66,15 @@ CTA Link:         https://wa.me/628123456789
 Platform:         facebook
 ```
 
-→ Click **Create Facebook Campaign**
+â†’ Click **Create Facebook Campaign**
 
 ---
 
 ### 4. Blast
 
-→ Select your Facebook account from the dropdown  
-→ Click **Blast Facebook Campaign**  
-→ The post will appear on your Facebook account
+â†’ Select your Facebook account from the dropdown  
+â†’ Click **Blast Facebook Campaign**  
+â†’ The post will appear on your Facebook account
 
 ---
 
@@ -135,7 +135,7 @@ Content-Type: application/json
 **Post not appearing:**
 - Check that `c_user` and `xs` cookies are present in your string
 - Make sure you are still logged in on Facebook in your browser
-- The cookie may have expired — re-export from browser
+- The cookie may have expired â€” re-export from browser
 
 **AUTH_EXPIRED immediately:**
 - Your Facebook session is expired or logged out
@@ -150,6 +150,7 @@ Content-Type: application/json
 ## Security Notes
 
 - Cookies are stored **encrypted** (AES-256-GCM) in `data/app.db`
-- Never share your cookie string — it acts like a password
+- Never share your cookie string â€” it acts like a password
 - Cookie expires when you log out of Facebook on that browser
 - Use a dedicated account for blasting, not your personal account
+

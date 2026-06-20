@@ -1,4 +1,4 @@
-### QA Learnings
+﻿### QA Learnings
 - Completed F3 Real Manual QA
 - Observed task marking process alignment to [APPROVE] expectations.
 - Aligned skill recommendation modules with user-prescribed `unspecified-high`.
@@ -14,3 +14,4 @@ User suggested using `https://github.com/public-clis/twitter-cli` for the Twitte
 - OpenCLI uses a Browser Bridge Extension connected to a live, logged-in Chrome instance to bypass anti-bot, Cloudflare, and CAPTCHAs natively.
 - While OpenCLI solves the fingerprinting/bot-detection problem completely by driving an actual user session, it introduces new constraints (requires a GUI/desktop environment, heavier resource usage).
 - For a hybrid "Tri-State" adapter, OpenCLI's methodology (driving CDP via an extension) represents the ultimate fallback for actions that FB blocks via HTTP/GraphQL.
+

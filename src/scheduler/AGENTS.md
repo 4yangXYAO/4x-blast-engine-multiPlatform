@@ -1,4 +1,4 @@
-# src/scheduler - Cron & Facebook Scheduler
+﻿# src/scheduler - Cron & Facebook Scheduler
 
 **Purpose:** Scheduled job execution and Facebook-specific post scheduling.
 

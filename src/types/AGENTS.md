@@ -1,4 +1,4 @@
-# src/types - Shared Type Definitions
+﻿# src/types - Shared Type Definitions
 
 **Purpose:** Centralized TypeScript type definitions shared across modules.
 
@@ -22,6 +22,6 @@
 
 ## NOTES
 
-- `DB` type is `any` — better-sqlite3 doesn't ship proper TypeScript types
+- `DB` type is `any` â€” better-sqlite3 doesn't ship proper TypeScript types
 - New platform-specific types should be added to `jobs.ts` or a new file in this directory
 - `targets.ts` defines `Target` (phone number, username, etc.) used by blast runner

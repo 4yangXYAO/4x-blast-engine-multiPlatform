@@ -1,4 +1,4 @@
-# KNOWLEDGE BASE PROYEK
+﻿# KNOWLEDGE BASE PROYEK
 
 **Dibuat:** 5 Mei 2026  
 **Commit:** [TIDAK TERSEDIA]  
@@ -16,17 +16,17 @@ Mesin blast production-focused Node.js/TypeScript dengan dashboard Next.js, pers
 
 ```
 root/
-├ src/                    # Backend API, queue, workers, repos
-│ ├ api/                  # Server entry point
-│ ├ routes/               # Express endpoints
-│ ├ repos/                # Data access layer
-│ ├ queue/                # Job queue (bullmq-based)
-│ ├ scheduler/            # Cron scheduling
-│ ├ blast/                # Core blast engine
-│ ├ workers/              # Background job workers
-│ └ db/                   # SQLite configuration
-├ dashboard/              # Next.js UI (port 3001)
-└ tests/                  # Integration & unit tests
+â”œ src/                    # Backend API, queue, workers, repos
+â”‚ â”œ api/                  # Server entry point
+â”‚ â”œ routes/               # Express endpoints
+â”‚ â”œ repos/                # Data access layer
+â”‚ â”œ queue/                # Job queue (bullmq-based)
+â”‚ â”œ scheduler/            # Cron scheduling
+â”‚ â”œ blast/                # Core blast engine
+â”‚ â”œ workers/              # Background job workers
+â”‚ â”” db/                   # SQLite configuration
+â”œ dashboard/              # Next.js UI (port 3001)
+â”” tests/                  # Integration & unit tests
 ```
 
 ---
@@ -74,3 +74,4 @@ npm run validate:config # Config validation
 ---
 
 **Terakhir update**: Mei 2026
+

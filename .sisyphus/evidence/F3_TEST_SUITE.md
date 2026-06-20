@@ -1,4 +1,4 @@
-# F3: Full Test Suite Report
+﻿# F3: Full Test Suite Report
 
 **Date**: 2026-05-11
 **Auditor**: Atlas (orchestrator)
@@ -18,3 +18,4 @@ Duration:    3.54s
 - Includes new tests: JWT auth integration, blast e2e, rate limiter
 
 ## Verdict: APPROVE
+

@@ -1,4 +1,4 @@
-# Decision 0001: Keep blast flow on a single dashboard page
+﻿# Decision 0001: Keep blast flow on a single dashboard page
 
 ## Status
 
@@ -27,3 +27,4 @@ A single page keeps the blast workflow short and reduces coupling between form s
 - The dashboard remains simple to operate.
 - The blast flow is explicit and visible.
 - The page must stay synchronized with backend route changes.
+

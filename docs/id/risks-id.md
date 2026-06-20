@@ -1,4 +1,4 @@
-# Risiko
+﻿# Risiko
 
 ## Risiko Akses Dashboard
 
@@ -35,3 +35,4 @@
 ---
 
 **Last updated**: May 2026
+

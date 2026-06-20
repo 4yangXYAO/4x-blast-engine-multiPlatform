@@ -1,8 +1,8 @@
-# 100% Completion Implementation Plan
+﻿# 100% Completion Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task
 
-**Goal:** Bring joki-blast-engine to production-ready state: type safety (no `any`), full adapter contracts, rate limiting with circuit breaker, security hardening, 100% test coverage
+**Goal:** Bring 4x-blast-engine to production-ready state: type safety (no `any`), full adapter contracts, rate limiting with circuit breaker, security hardening, 100% test coverage
 
 **Architecture:** 5-wave execution with parallel batches. Wave 1 fixes types (foundation for all). Wave 2 enforces adapter contracts. Wave 3 adds rate limiting. Wave 4 hardening. Wave 5 tests + build + docs.
 
@@ -15,8 +15,8 @@
 ### Task 1: Fix DB types in sqlite.ts
 
 **Files:**
-- Modify: `src/db/sqlite.ts:7` — `export type DB = any`
-- Modify: `src/db/sqlite.ts:16` — `BetterSqlite3 = require(...)`
+- Modify: `src/db/sqlite.ts:7` â€” `export type DB = any`
+- Modify: `src/db/sqlite.ts:16` â€” `BetterSqlite3 = require(...)`
 
 - [ ] **Step 1: Read current sqlite.ts to see exact context**
 

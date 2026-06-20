@@ -1,4 +1,4 @@
-# src/middleware - Express Middleware
+﻿# src/middleware - Express Middleware
 
 **Purpose:** Express middleware modules.
 
@@ -17,3 +17,4 @@ JWT authentication middleware implemented. Applied globally to all `/v1/*` route
 - Health endpoint (`/v1/health`) is whitelisted to skip authentication
 - Invalid or missing tokens return 401 with error code
 - Decoded user payload attached to `req.user` for downstream handlers
+

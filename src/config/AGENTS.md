@@ -1,4 +1,4 @@
-# src/config - Configuration & Secrets
+﻿# src/config - Configuration & Secrets
 
 **Purpose:** Centralized configuration loading with validation and encrypted runtime settings.
 
@@ -22,10 +22,10 @@
 
 ## OPTIONAL PLATFORM VARS
 
-- `WHATSAPP_WEBJS_API_KEY` — WhatsApp Web.js
-- `TELEGRAM_BOT_TOKEN` — Telegram bot
-- `TWITTER_BEARER_TOKEN`, `TWITTER_API_KEY`, `TWITTER_API_SECRET` — Twitter API
-- `INSTAGRAM_ACCESS_TOKEN` — Instagram (optional)
+- `WHATSAPP_WEBJS_API_KEY` â€” WhatsApp Web.js
+- `TELEGRAM_BOT_TOKEN` â€” Telegram bot
+- `TWITTER_BEARER_TOKEN`, `TWITTER_API_KEY`, `TWITTER_API_SECRET` â€” Twitter API
+- `INSTAGRAM_ACCESS_TOKEN` â€” Instagram (optional)
 - Platform-specific tokens are per-account, stored in DB
 
 ## NOTES

@@ -1,4 +1,4 @@
-# Penjelasan Super Sederhana: Joki Blast Engine
+﻿# Penjelasan Super Sederhana: 4x-blast-engine
 
 Dokumen ini ditulis dengan bahasa yang sangat mudah dipahami.
 Tujuan: agar Anda langsung paham, langsung jalan, dan langsung lihat hasil.
@@ -150,7 +150,7 @@ Sebelum menyatakan sistem siap dipakai, pastikan:
 **Yang tetap perlu uji di dunia nyata**:
 
 - Uji live dengan kredensial platform asli (Facebook cookie, Instagram session, dll).
-- Browser validation end-to-end dengan skenario nyata (buat campaign → blast → klik → chat → lead).
+- Browser validation end-to-end dengan skenario nyata (buat campaign â†’ blast â†’ klik â†’ chat â†’ lead).
 
 ## 8) Daftar endpoint penting (ringkas)
 
@@ -196,7 +196,7 @@ GET/PUT /v1/settings/integrations   Simpan token integrasi
 2. Pastikan **dashboard** hidup (terminal `npm run dev` di folder dashboard?).
 3. Pastikan **database sudah di-init**: file `data/app.db` ada.
 4. Pastikan **environment variables** (`.env` atau di terminal) sudah di-set dengan benar.
-5. Cek **log backend** quando klik blast atau ada webhook — biasanya ada error message jelas.
+5. Cek **log backend** quando klik blast atau ada webhook â€” biasanya ada error message jelas.
 6. Cek **log dashboard** (browser console) jika UI error.
 
 **Error umum & solusi**:
@@ -210,7 +210,7 @@ GET/PUT /v1/settings/integrations   Simpan token integrasi
 
 ## 10) Kesimpulan super singkat
 
-**Fokus alur**: blast → tracking → auto-reply → handoff manual.
+**Fokus alur**: blast â†’ tracking â†’ auto-reply â†’ handoff manual.
 
 Tujuan akhir: memastikan 3 poin validasi (link berjalan, auto-reply bekerja, handoff terlihat) berjalan dengan akun platform asli dan uji browser end-to-end skenario nyata.
 
@@ -246,4 +246,5 @@ Dengan penjelasan ini Anda pahami di mana menambahkan fitur pencarian target, at
 
 ---
 
-**Joki Blast Engine** dibuat untuk membantu pemasaran otomatis di media sosial dengan **keamanan, keandalan, dan kemudahan penggunaan** sebagai prioritas.
+**4x-blast-engine** dibuat untuk membantu pemasaran otomatis di media sosial dengan **keamanan, keandalan, dan kemudahan penggunaan** sebagai prioritas.
+

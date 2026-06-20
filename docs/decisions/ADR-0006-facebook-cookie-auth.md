@@ -1,4 +1,4 @@
-# ADR-0006: Facebook Blast — Cookie-Based Auth over Graph API
+﻿# ADR-0006: Facebook Blast â€” Cookie-Based Auth over Graph API
 
 **Date:** 2026-04-30  
 **Status:** Accepted  
@@ -6,7 +6,7 @@
 
 ---
 
-## WHY — Problem
+## WHY â€” Problem
 
 The Graph API v19.0 path requires:
 - A Facebook developer app (approval required)
@@ -15,7 +15,7 @@ The Graph API v19.0 path requires:
 
 This creates friction for operators who just want to post from an existing personal/business account without managing developer app credentials.
 
-## WHAT ELSE — Options Considered
+## WHAT ELSE â€” Options Considered
 
 | Option | Pros | Cons | Score |
 |--------|------|------|-------|
@@ -23,7 +23,7 @@ This creates friction for operators who just want to post from an existing perso
 | **B. Cookie-based via m.facebook.com** | Works with any FB session, no app required | Fragile to HTML changes, cookie expires silently | 8/10 |
 | **C. facebook-scraper library** | Higher-level API | Unmaintained, heavier dependency | 3/10 |
 
-## WHY THIS — Evidence
+## WHY THIS â€” Evidence
 
 - Cookie-based adapter already implemented in `providers/meta/facebook/facebook.ts`
 - Tests already written and passing in `facebook-cookies.test.ts`
@@ -31,7 +31,7 @@ This creates friction for operators who just want to post from an existing perso
 - Pattern is consistent with other cookie adapters (Instagram, Twitter, Threads)
 - `fb_dtsg` + `c_user` extraction from `m.facebook.com` is stable across sessions
 
-## WHEN WRONG — Reversal Trigger
+## WHEN WRONG â€” Reversal Trigger
 
 Revert to Graph API if:
 - Meta changes `m.facebook.com/a/home.php` endpoint signature
@@ -47,7 +47,7 @@ Rollback: `git revert` the commit replacing `src/adapters/facebook.ts`.
 | File | Change |
 |------|--------|
 | `src/adapters/facebook.ts` | Replaced Graph API impl with re-export of `providers/meta/facebook/facebook.ts` |
-| `dashboard/app/page.tsx` | Fixed description text: Page ID/AccessToken → session cookie |
+| `dashboard/app/page.tsx` | Fixed description text: Page ID/AccessToken â†’ session cookie |
 | `README.md` | Removed Graph API references from Facebook section |
 | `agents.md` | Updated Facebook blast path description |
 | `docs/FACEBOOK_PAGES_BLAST.md` | Replaced Graph API guide with cookie guide |
@@ -66,3 +66,4 @@ Rollback: `git revert` the commit replacing `src/adapters/facebook.ts`.
 c_user=12345678; xs=AbCdEf...; datr=XyZ...; sb=...
 ```
 *(raw browser session cookie string, stored encrypted in SQLite)*
+

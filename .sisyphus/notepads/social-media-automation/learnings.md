@@ -1,6 +1,7 @@
--## Instagram Adapter (Graph API) - Learnings
+﻿-## Instagram Adapter (Graph API) - Learnings
 - Implemented an Instagram Adapter that uses Graph API as primary path and guards a private API fallback with feature flag INSTAGRAM_ALLOW_PRIVATE_API.
 - Centralized config exposure for INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_BUSINESS_ACCOUNT_ID (via env or secrets.ts wiring), and the flag.
 - Patterns observed: Graph API publish flow involves creating a media container and then publishing; status/status checks rely on typical Graph endpoints.
 - Verification strategy: tests mock axios to ensure success mappings and error handling paths are exercised.
 - Fixed test env setup by adding THREADS_ACCESS_TOKEN to instagram.test.ts to satisfy REQUIRED_VARS in config loader; also verified inclusion of TWITTER tokens.
+

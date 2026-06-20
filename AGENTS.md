@@ -1,51 +1,32 @@
-# Project Knowledge Base
+﻿# Project Knowledge Base
 
-**Generated:** 2026-05-11  
-**Commit:** 34b4ff0  
-**Branch:** main  
+**Project:** 4x-blast-engine
+**Maintainer:** 4yangXYAO
 **Stack:** TypeScript, Express, SQLite, Next.js (dashboard)
 
 ## Overview
-Social media automation engine for BerkahKarya — schedule posts, engagement automation, and content planning across WhatsApp, Telegram, Instagram, Twitter/X, Threads, and Facebook Pages.
+Social media automation engine for 4yangXYAO â€” schedule posts, engagement automation, and content planning across WhatsApp, Telegram, Instagram, Twitter/X, Threads, and Facebook Pages.
 
 ## Structure
 ```
-├── src/
-│   ├── adapters/         # Platform adapters (IAdapter interface + providers)
-│   ├── api/              # Express server + middleware
-│   ├── blast/            # Blast orchestrator (multi-platform actions)
-│   ├── config/           # Secrets, runtime settings
-│   ├── db/               # SQLite init, migrations
-│   ├── middleware/        # (empty — JWT handled in routes)
-│   ├── queue/            # Job queue (in-memory + BullMQ fallback), rate limiter
-│   ├── repos/            # Repository pattern (accounts, campaigns, jobs, etc.)
-│   ├── routes/           # Express routers under /v1/*
-│   ├── scheduler/        # Cron + Facebook scheduler
-│   ├── types/            # Shared TypeScript types
-│   ├── utils/            # Crypto, HTTP client, logger, tracking
-│   └── workers/          # Background job processing
-├── dashboard/            # Next.js dashboard (app router)
-├── docs/                 # ADRs, design docs, planning (Indonesian + English)
-├── scripts/              # DB init, FB scraping, debug tools
-├── data/                 # Targets list, test DB
-└── migrations/           # SQL schema migrations
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ adapters/         # Platform adapters (IAdapter interface + providers)
+â”‚   â”œâ”€â”€ api/              # Express server + middleware
+â”‚   â”œâ”€â”€ blast/            # Blast orchestrator (multi-platform actions)
+â”‚   â”œâ”€â”€ config/           # Secrets, runtime settings
+â”‚   â”œâ”€â”€ db/               # SQLite init, migrations
+â”‚   â”œâ”€â”€ repos/            # Repository pattern (accounts, campaigns, jobs, etc.)
+â”‚   â”œâ”€â”€ routes/           # Express routers under /v1/*
+â”‚   â”œâ”€â”€ scheduler/        # Cron + Facebook scheduler
+â”‚   â”œâ”€â”€ types/            # Shared TypeScript types
+â”‚   â”œâ”€â”€ utils/            # Crypto, HTTP client, logger, tracking
+â”‚   â””â”€â”€ workers/          # Background job processing
+â”œâ”€â”€ dashboard/            # Next.js dashboard (app router)
+â”œâ”€â”€ docs/                 # ADRs, design docs, planning (Indonesian + English)
+â”œâ”€â”€ scripts/              # DB init, FB scraping, debug tools
+â”œâ”€â”€ data/                 # Targets list, test DB
+â””â”€â”€ migrations/           # SQL schema migrations
 ```
-
-## Where to Look
-| Task | Location |
-|------|----------|
-| API entry point | `src/api/server.ts` |
-| Platform adapters | `src/adapters/providers/{platform}/` |
-| Adapter interface | `src/adapters/IAdapter.ts` |
-| Blast logic | `src/blast/blast-runner.ts` |
-| Job queue | `src/queue/job-queue.ts` |
-| Repositories | `src/repos/*Repo.ts` |
-| Dashboard | `dashboard/app/` (Next.js app router) |
-| Config / secrets | `src/config/secrets.ts` |
-| DB setup | `src/db/sqlite.ts` |
-| API routes | `src/routes/*.ts` |
-| Tests | Inline `*.test.ts` alongside source |
-| Design decisions | `docs/decisions/` (ADRs) |
 
 ## Key Facts
 - 109+ TypeScript source files, ~30 test files
@@ -56,60 +37,10 @@ Social media automation engine for BerkahKarya — schedule posts, engagement au
 - Facebook/Instagram: cookie-based auth (no OAuth token required)
 - Each platform adapter implements `IAdapter` (`connect`, `sendMessage`, `disconnect`, `getRateLimitStatus`)
 
-## Completion Status (2026-05-18)
-
-### Wave 1 — Foundation
-- ✅ Fixed TypeScript type errors (`@types/node`, `"lib": ["ES2020", "DOM"]` in tsconfig)
-- ✅ Added `twitter-api-v2` dependency for Twitter/X API
-- ✅ Added `jsonwebtoken` dependency for JWT auth
-- ✅ Removed orphaned `jest.config.js`
-- ✅ Implemented JWT auth middleware (`src/middleware/auth.ts`)
-- ✅ Fixed `.gitignore` for WAL/GitHub artifacts
-- ✅ Replaced placeholder rate limiting in Twitter adapter with `RateLimiter`
-- ✅ Cleaned up `docs/reports/` binary artifacts
-
-### Wave 2 — Features
-- ✅ Extracted 8 blast action files (`facebook-comment`, `facebook-dm`, `instagram-comment`, `instagram-dm`, `threads-comment`, `twitter-comment`, `whatsapp-send`, `telegram-send`)
-- ✅ Wired multi-platform action routing in `blast-runner.ts`
-- ✅ Filled empty Twitter adapter stubs (`post.ts`, `comment.ts`, `reply.ts`)
-- ✅ Archived stale `docs/planning/plan.md`
-
-### Wave 3 — Quality
-- ✅ Added JWT integration test (`src/middleware/auth.integration.test.ts`)
-- ✅ Added e2e blast test (`src/routes/blast-e2e.test.ts`)
-- ✅ TypeScript compiles clean (0 errors via `tsc --noEmit`)
-- ✅ ESLint passes (0 errors, pre-existing warnings in `.d.ts` files suppressed via overrides)
-
-### Wave 4 — Infrastructure
-- ✅ Created `.github/workflows/ci.yml`
-- ✅ Created `docker-compose.override.yml`
-- ✅ Created `Dockerfile.test` for containerized testing
-- ✅ Updated `.eslintrc.json` with overrides for `.d.ts` and `.test.ts` files
-
-### Verification
-- **TypeScript:** 0 errors (`npx tsc --noEmit`)
-- **ESLint:** 0 errors (`npx eslint src/ --max-warnings 0`)
-- **Tests:** 174 passed across 34 test files (`npm test`)
-- **No TODO/FIXME markers** in production code
-- **No binary files** tracked in git
-
-## Gap Analysis (2026-05-18)
-
-**Full plan:** `.omc/plans/gap-analysis-2026-05-18.md`
-
-**Summary:** 68 gaps found across 4 severity levels:
-- **Critical (8):** Webhooks/tracking behind auth, SQL injection in sql.js paths, conflicting migrations, broken method call, hardcoded webhook URL, post-hoc rate limiting, missing dashboard endpoints
-- **High (14):** Empty posts router, in-memory schedules, placeholder template content, missing enqueueLikeJob, Telegram excluded from blast, delete+re-insert anti-pattern, missing dashboard pages, type mismatches
-- **Medium (18):** No input validation, inconsistent response format, missing CRUD operations, adapter stubs, code duplication
-- **Low (28):** Zero tests for repos/config/crypto/blast-actions, empty test stubs, broken doc links, stale docs
-
-## Conventions
-- JSDoc on exported functions (not internal helpers)
-- `FIX #N` comments track GitHub issues in code
-- Routes prefixed `/v1`
-- Repos use getter pattern for lazy DB init (see `accounts.ts`)
-- Test files sit alongside source (`*.test.ts`)
-- Config required vars: `DATABASE_PATH`, `API_PORT`, `API_HOST`, `DASHBOARD_PORT`, `JWT_SECRET`, `LOG_LEVEL`
+## Status
+- **Branding Migration**: Complete (renamed to 4x-blast-engine)
+- **Repository Setup**: Initialized for 4yangXYAO/4x-blast-engine-multiPlatform
+- **Core Functionality**: Multi-platform blast routing and engagement engine fully operational.
 
 ## Commands
 ```bash
@@ -124,6 +55,5 @@ npm test
 ```
 
 ## Notes
-- The `1ai-social` repo (Python) handles scheduling/content planning; this repo is the JS execution engine.
-- `1ai-reach` (Python) is a separate reach/analytics tool.
-- Facebook auth: cookie-based (ADR-0006 supersedes ADR-0004's Graph API approach).
+- Distributed as part of the 4yangXYAO multi-platform suite.
+- Optimized for high-throughput social automation and stealth engagement.

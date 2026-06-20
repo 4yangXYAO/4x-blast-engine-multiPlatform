@@ -1,4 +1,4 @@
-# Decision 0002: Resolve adapters from stored accounts
+﻿# Decision 0002: Resolve adapters from stored accounts
 
 ## Status
 
@@ -21,3 +21,4 @@ This makes job execution real instead of simulated and keeps credentials central
 - Account creation is now part of the blast path.
 - Platform-specific credentials can be stored once and reused.
 - Worker startup depends on the account repository and encryption helpers.
+

@@ -1,6 +1,6 @@
-# Panduan: Cara Pertama Kali Menjalankan Joki Blast Engine
+﻿# Panduan: Cara Pertama Kali Menjalankan 4x-blast-engine
 
-Panduan langkah demi langkah ini akan memandu Anda menjalankan Joki Blast Engine untuk pertama kalinya.
+Panduan langkah demi langkah ini akan memandu Anda menjalankan 4x-blast-engine untuk pertama kalinya.
 
 ## Prasyarat
 
@@ -12,7 +12,7 @@ Panduan langkah demi langkah ini akan memandu Anda menjalankan Joki Blast Engine
 
 ```bash
 git clone <url-repo>
-cd joki-blast-engine
+cd 4x-blast-engine
 ```
 
 ## Langkah 2: Instal Dependensi
@@ -162,3 +162,4 @@ Jika Anda mengalami masalah, periksa:
 - `README-id.md` untuk dokumentasi lengkap
 - `docs/` untuk panduan teknis
 - `GLOSSARY.md` untuk istilah teknis
+

@@ -1,4 +1,4 @@
-## Decision: Marked F4 as complete and APPROVED
+﻿## Decision: Marked F4 as complete and APPROVED
 
 - **Task:** F4. Scope Fidelity Check
 - **Action Taken:** Verified no conflicts, updated plan with `[APPROVE]` for F4 task completion.

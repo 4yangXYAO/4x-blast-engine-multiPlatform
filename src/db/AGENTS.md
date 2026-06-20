@@ -1,4 +1,4 @@
-# src/db - Database Layer
+﻿# src/db - Database Layer
 
 **Purpose:** SQLite database initialization with native better-sqlite3 and WASM fallback.
 
@@ -6,7 +6,7 @@
 
 | File | Purpose |
 |------|---------|
-| `sqlite.ts` | `initDatabase()`, `initSqlJsDatabase()`, `getDb()` — DB singleton |
+| `sqlite.ts` | `initDatabase()`, `initSqlJsDatabase()`, `getDb()` â€” DB singleton |
 | `migrations/` | (at repo root) SQL migration files |
 
 ## KEY TYPES

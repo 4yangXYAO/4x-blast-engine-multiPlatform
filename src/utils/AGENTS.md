@@ -1,4 +1,4 @@
-# src/utils - Utility Modules
+﻿# src/utils - Utility Modules
 
 **Purpose:** Shared utility functions for crypto, HTTP, logging, tracking, and more.
 
@@ -15,7 +15,7 @@
 ## CONVENTIONS
 
 - Each utility is a single focused module
-- `crypto.ts` handles all encryption — never encrypt manually elsewhere
+- `crypto.ts` handles all encryption â€” never encrypt manually elsewhere
 - Logger uses Winston with JSON format; level from `LOG_LEVEL` env var
 - `http-client.ts` wraps Axios with sensible defaults (timeouts, retries)
 

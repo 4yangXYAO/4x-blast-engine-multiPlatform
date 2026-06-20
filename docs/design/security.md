@@ -1,4 +1,4 @@
-# Security
+﻿# Security
 
 ## Credentials
 
@@ -22,3 +22,4 @@
 
 - Rotate tokens through the dashboard when permissions change.
 - Revoke credentials if a Page is no longer managed.
+

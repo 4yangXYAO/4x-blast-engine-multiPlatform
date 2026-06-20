@@ -1,4 +1,4 @@
-# scripts - Utility & Debug Scripts
+﻿# scripts - Utility & Debug Scripts
 
 **Purpose:** Development, debugging, and maintenance scripts for the blast engine.
 

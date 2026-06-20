@@ -1,69 +1,78 @@
-# Joki Blast Engine
+﻿# ðŸš€ 4x-blast-engine
 
-Welcome! This is the Joki Blast Engine repository. This page provides a simple entry point to navigate the project and get started quickly.
+High-performance, multi-platform social media blast engine built for **4yangXYAO**. Designed for stealth, high throughput, and persistent engagement.
 
 ---
 
-## Quick Start
+## ðŸ›  Features
 
-To launch the project, use the following commands:
+- **Multi-Platform Support**: WhatsApp, Telegram, Instagram, Twitter/X, Threads, and Facebook Pages.
+- **Stealth Architecture**: Advanced fingerprinting and cookie-based authentication (no API tokens required for most platforms).
+- **Hybrid Adapters**: Seamlessly switch between high-speed HTTP/GraphQL and high-fidelity Browser (Playwright) execution.
+- **Robust Orchestration**: Queue-based processing with automatic retries and sophisticated rate limiting.
+- **Full Observability**: Real-time dashboard with CTR tracking, success rates, and live lead conversion funnels.
 
-- On Linux/MacOS:
+---
+
+## ðŸš€ Quick Start
+
+Ensure you have [Node.js](https://nodejs.org/) (v18+) and [SQLite](https://www.sqlite.org/) installed.
+
+### Installation
 ```bash
-./start.sh
+npm install
+npm run db:init
 ```
 
-- On Windows:
-```powershell
-.\start.ps1
+### Run the Engine
+- **Linux/MacOS**:
+  ```bash
+  ./start.sh
+  ```
+- **Windows**:
+  ```powershell
+  .\start.ps1
+  ```
+
+### Dashboard Access
+The Next.js dashboard runs at `http://localhost:3000` by default.
+```bash
+npm run dev:dashboard
 ```
 
 ---
 
-## Documentation Index
+## ðŸ“‚ Project Structure
 
-### Design & Architecture
-- [Architecture](docs/design/architecture.md)
-- [Data Flow](docs/design/data-flow.md)
-- [Scaling](docs/design/scaling.md)
-- [Security](docs/design/security.md)
-
-### Guides & Planning
-- [Development Guide](docs/planning/GUIDE.md)
-- [Glossary](docs/design/GLOSSARY.md)
-
-### Reports
-- [Implementation Summary](docs/reports/IMPLEMENTATION_SUMMARY.md)
-- [Testing Summary](docs/reports/TESTING_SUMMARY.md)
-
-### Decision Records
-- [ADR Index](docs/decisions/AGENTS.md)
-- [ADR-0006: Facebook Cookie Auth](docs/decisions/ADR-0006-facebook-cookie-auth.md)
-- [ADR-0007: Blast Runner Architecture](docs/decisions/ADR-0007-blast-runner-architecture.md)
+```
+â”œâ”€â”€ src/                  # Core execution engine (TypeScript)
+â”‚   â”œâ”€â”€ adapters/         # Platform-specific adapters (FB, IG, TW, etc.)
+â”‚   â”œâ”€â”€ blast/            # Multi-platform action orchestrator
+â”‚   â”œâ”€â”€ queue/            # Job queueing & rate limiting
+â”‚   â””â”€â”€ workers/          # Background processing
+â”œâ”€â”€ dashboard/            # Next.js admin dashboard
+â”œâ”€â”€ docs/                 # Detailed technical documentation
+â””â”€â”€ scripts/              # Utility and testing scripts
+```
 
 ---
 
-## Product Walkthrough
+## ðŸ“˜ Documentation
 
-The Joki Blast Engine is a production-ready social media automation suite. Below is the updated feature set for our Facebook implementation:
-
-*   **Unified Multi-Mode Adapter**: Supports both high-speed HTTP (GraphQL) and high-robustness BROWSER (Playwright).
-*   **Advanced Target Discovery**: Search by date, author, and group relevance with automated lead extraction.
-*   **Deep Engagement**: Automated comments, private messages, post reactions (Like/Love/etc.), and status updates.
-*   **Real-time Observability**: Comprehensive job tracking with detailed error traces and a live analytics dashboard.
-
-### 🎥 Live Facebook Blast
-![Facebook Blast Walkthrough](docs/assets/facebook_blast_walkthrough.webp)
-*Visualizing automated target identification and multi-action engagement.*
-
-### 📊 Real-time Analytics Dashboard
-![Dashboard Overview](docs/assets/dashboard_overview.png)
-*Track CTR, success rates, and lead conversion funnels across all platforms.*
-
-### 📋 Detailed Execution Logging
-![Dashboard Jobs](docs/assets/dashboard_jobs.png)
-*Monitor every automated action with full error persistence and trace visibility.*
+For deep dives into the architecture and setup, check the `docs/` directory:
+- [Architecture Overview](docs/design/architecture.md)
+- [Multi-Platform Strategies](docs/design/data-flow.md)
+- [Security & Stealth Guide](docs/design/security.md)
+- [ADR Index (Decisions)](AGENTS.md)
 
 ---
 
-For more details, visit the corresponding sections in the `docs/` folder.
+## âš¡ Monitoring & Logs
+The engine persists every action. You can monitor progress via:
+1. **Live Dashboard**: Visual tracking of ongoing campaigns.
+2. **SQLite Database**: Full execution history and error traces.
+3. **Internal Tracking**: Detailed job-level status updates.
+
+---
+
+Â© 2026 **4yangXYAO Automation**. All Rights Reserved.

@@ -1,4 +1,4 @@
-# docs/decisions - Architecture Decision Records
+﻿# docs/decisions - Architecture Decision Records
 
 **Purpose:** ADRs (Architecture Decision Records) documenting major design choices.
 
@@ -18,11 +18,11 @@
 ## FORMAT
 
 Each ADR follows this structure:
-- **Title** — short decision description
-- **Status** — proposed / accepted / superseded / deprecated
-- **Context** — problem being solved
-- **Decision** — what was chosen
-- **Consequences** — tradeoffs and implications
+- **Title** â€” short decision description
+- **Status** â€” proposed / accepted / superseded / deprecated
+- **Context** â€” problem being solved
+- **Decision** â€” what was chosen
+- **Consequences** â€” tradeoffs and implications
 
 ## NOTES
 

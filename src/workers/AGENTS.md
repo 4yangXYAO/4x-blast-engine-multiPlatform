@@ -1,4 +1,4 @@
-# src/workers - Background Job Workers
+﻿# src/workers - Background Job Workers
 
 **Purpose:** Background job processing that routes jobs to platform adapters.
 
@@ -6,14 +6,14 @@
 
 | File | Purpose |
 |------|---------|
-| `index.ts` | Worker entry point — starts job consumer |
+| `index.ts` | Worker entry point â€” starts job consumer |
 | `job-worker.ts` | `Worker` class: dispatches jobs to adapters based on platform |
 
 ## KEY LOGIC
 
 - `job-worker.ts` implements adapter factory pattern for testability
 - Accepts `AdapterFactory` function: `(platform, context?) => IAdapter`
-- Maps job types to adapter methods: post → `sendMessage`, comment → platform comment, etc.
+- Maps job types to adapter methods: post â†’ `sendMessage`, comment â†’ platform comment, etc.
 - DI-friendly: tests inject mock adapter factories
 
 ## CONVENTIONS

@@ -1,4 +1,4 @@
-# src/api - Express API Server
+﻿# src/api - Express API Server
 
 **Purpose:** Express.js server setup and configuration.
 
@@ -18,16 +18,16 @@
 
 ## MIDDLEWARE STACK
 
-1. `helmet()` — security headers
-2. `cors()` — cross-origin support
-3. `express.json()` — JSON body parsing
+1. `helmet()` â€” security headers
+2. `cors()` â€” cross-origin support
+3. `express.json()` â€” JSON body parsing
 4. Request logging (Winston)
 5. Route handlers under `/v1/*`
 6. JWT auth (per-route, in route files)
 
 ## NOTES
 
-- `middleware/` directory is empty — JWT handled in individual route files
+- `middleware/` directory is empty â€” JWT handled in individual route files
 - Fallback to sql.js (WASM) when `better-sqlite3` native module fails to load
-- Server entry point: `src/index.ts` → calls `startServer()`
+- Server entry point: `src/index.ts` â†’ calls `startServer()`
 - Campaign status updates are atomic (FIX #7: uses transaction)

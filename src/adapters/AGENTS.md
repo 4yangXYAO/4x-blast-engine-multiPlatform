@@ -1,21 +1,21 @@
-# src/adapters - Platform Adapter Layer
+﻿# src/adapters - Platform Adapter Layer
 
 **Purpose:** Bridge between the blast engine and social media platforms via `IAdapter` interface.
 
 ## STRUCTURE
 ```
 adapters/
-├── IAdapter.ts          # Interface: connect, sendMessage, disconnect, getRateLimitStatus
-├── facebook.ts          # Re-export of FacebookAdapter (cookie-based)
-└── providers/
-    ├── base.ts          # Shared provider utilities
-    ├── meta/
-    │   ├── facebook/    # Facebook Pages (cookie + Playwright)
-    │   ├── instagram/   # Instagram (cookie-based)
-    │   ├── threads/     # Threads (cookie-based)
-    │   └── Whatsapp/    # WhatsApp (WAHA)
-    ├── telegram/        # Telegram (MTProto + bot)
-    └── twitter/         # Twitter/X (cookie-based)
+â”œâ”€â”€ IAdapter.ts          # Interface: connect, sendMessage, disconnect, getRateLimitStatus
+â”œâ”€â”€ facebook.ts          # Re-export of FacebookAdapter (cookie-based)
+â””â”€â”€ providers/
+    â”œâ”€â”€ base.ts          # Shared provider utilities
+    â”œâ”€â”€ meta/
+    â”‚   â”œâ”€â”€ facebook/    # Facebook Pages (cookie + Playwright)
+    â”‚   â”œâ”€â”€ instagram/   # Instagram (cookie-based)
+    â”‚   â”œâ”€â”€ threads/     # Threads (cookie-based)
+    â”‚   â””â”€â”€ Whatsapp/    # WhatsApp (WAHA)
+    â”œâ”€â”€ telegram/        # Telegram (MTProto + bot)
+    â””â”€â”€ twitter/         # Twitter/X (cookie-based)
 ```
 
 ## CONVENTIONS

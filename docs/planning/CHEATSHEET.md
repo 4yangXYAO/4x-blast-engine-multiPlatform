@@ -1,15 +1,15 @@
-# 📋 CHEATSHEET — Joki Blast Engine (Panduan Cepat)
+﻿# ðŸ“‹ CHEATSHEET â€” 4x-blast-engine (Panduan Cepat)
 
-## 🚀 Quick Start (3 Langkah)
+## ðŸš€ Quick Start (3 Langkah)
 
 ```bash
-# 1️⃣ Install dependencies
+# 1ï¸âƒ£ Install dependencies
 npm install
 
-# 2️⃣ Inisialisasi database
+# 2ï¸âƒ£ Inisialisasi database
 npm run db:init
 
-# 3️⃣ Start backend (Terminal 1)
+# 3ï¸âƒ£ Start backend (Terminal 1)
 npm run dev:api
 
 # Start dashboard (Terminal 2)
@@ -20,7 +20,7 @@ cd dashboard && npm install && npm run dev
 
 ---
 
-## 📝 Commands Paling Sering Dipakai
+## ðŸ“ Commands Paling Sering Dipakai
 
 | Perintah | Kegunaan | Catatan |
 |----------|----------|---------|
@@ -33,7 +33,7 @@ cd dashboard && npm install && npm run dev
 
 ---
 
-## 🔧 .env Required Variables
+## ðŸ”§ .env Required Variables
 
 ```bash
 # Wajib
@@ -63,11 +63,11 @@ TELEGRAM_BOT_TOKEN=123456:ABC-def...
 
 ---
 
-## 🎯 Flow Paling Umum
+## ðŸŽ¯ Flow Paling Umum
 
 ### 1. Tambah Akun Platform
 
-**Via Dashboard** → Accounts → Add Account
+**Via Dashboard** â†’ Accounts â†’ Add Account
 
 **Via API**:
 
@@ -93,7 +93,7 @@ curl -X POST http://127.0.0.1:3456/v1/accounts \
 
 ### 2. Buat Kampanye
 
-**Via Dashboard** → Campaigns → New Campaign
+**Via Dashboard** â†’ Campaigns â†’ New Campaign
 
 **Via API**:
 
@@ -110,7 +110,7 @@ curl -X POST http://127.0.0.1:3456/v1/campaigns \
 
 ### 3. Blast (Kirim) Kampanye
 
-**Via Dashboard** → Campaigns → Pilih kampanye → Blast Campaign
+**Via Dashboard** â†’ Campaigns â†’ Pilih kampanye â†’ Blast Campaign
 
 **Via API**:
 
@@ -137,7 +137,7 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 ---
 
-## 🛠️ Troubleshooting Cepat
+## ðŸ› ï¸ Troubleshooting Cepat
 
 | Problem | Periksa Ini | Solusi |
 |---------|-------------|--------|
@@ -150,7 +150,7 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 ---
 
-## 📊 Endpoints Paling Penting
+## ðŸ“Š Endpoints Paling Penting
 
 | Method | Endpoint | Tujuan |
 |--------|----------|--------|
@@ -169,7 +169,7 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 ---
 
-## 🔐 Keamanan Cepat
+## ðŸ” Keamanan Cepat
 
 - **JANGAN** commit `.env` ke git (sudah ada di `.gitignore`)
 - **YA** gunakan `JWT_SECRET` yang random dan panjang
@@ -179,7 +179,7 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 ---
 
-## 🐛 Error Codes Umum
+## ðŸ› Error Codes Umum
 
 | Code | Arti | Tindakan |
 |------|------|----------|
@@ -191,7 +191,7 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 ---
 
-## 📞 Support & Bantuan
+## ðŸ“ž Support & Bantuan
 
 - **Dokumen Lengkap**: `README.md`
 - **Penjelasan Sederhana**: `penjelasan.md`
@@ -203,3 +203,4 @@ curl http://127.0.0.1:3456/v1/track/stats/{campaign_id}
 
 **Versi**: 1.0  
 **Last Update**: Mei 2026
+

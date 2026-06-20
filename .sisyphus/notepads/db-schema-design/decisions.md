@@ -1,3 +1,4 @@
-- Decision: Use SQLite with WAL mode for lightweight schema and migrations.
+﻿- Decision: Use SQLite with WAL mode for lightweight schema and migrations.
 - Reason: Simplicity, offline capability, and fast init for tests.
 - Decision: Tables use TEXT IDs (UUIDs) and DATETIME strings for timestamps as per guidelines.
+

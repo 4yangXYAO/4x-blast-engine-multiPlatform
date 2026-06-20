@@ -1,4 +1,4 @@
-# Comparison
+﻿# Comparison
 
 ## Dashboard API Base Resolution
 
@@ -23,3 +23,4 @@ Use the local `3456` default and preserve the env override for non-local deploym
 ## Decision
 
 Use the official Pages Graph API for automated Facebook posting. Keep group/forum work manual-assisted if it is needed at all.
+

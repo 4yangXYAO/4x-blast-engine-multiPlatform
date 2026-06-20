@@ -1,4 +1,4 @@
-# Research
+﻿# Research
 
 ## Question
 
@@ -24,7 +24,7 @@ Use a local default of `http://127.0.0.1:3456` and keep `NEXT_PUBLIC_API_BASE` a
 
 ## Question
 
-How should `joki-blast-engine` publish to Facebook in a way that is stable, production-friendly, and testable?
+How should `4x-blast-engine` publish to Facebook in a way that is stable, production-friendly, and testable?
 
 ## Options
 
@@ -43,3 +43,4 @@ How should `joki-blast-engine` publish to Facebook in a way that is stable, prod
 ## Research Summary
 
 The most reliable path is the official Pages Graph API. It keeps the blast flow inside the supported Meta surface and matches the repo's adapter pattern.
+

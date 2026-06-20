@@ -1,4 +1,4 @@
-# Ubiquitous Language Glossary for Indonesian Users
+﻿# Ubiquitous Language Glossary for Indonesian Users
 
 ## Technical Translations
 
@@ -13,6 +13,6 @@
 | Credential    | Kredensial                  | "Data Login" widely understood but less formal.                    |
 | Tracking      | Pelacakan                   | Translation for visual/manual processes (e.g., sales lead tracking).|
 | Lead          | Prospek                     | Preferably universal-marketing campaigns lead.                      |
-| Adapter       | Adaptor                     | Optional—Bluetooth/5G policy.                                       |
+| Adapter       | Adaptor                     | Optionalâ€”Bluetooth/5G policy.                                       |
 
 ### Another UX Set-Policies....Completed Blurry Outline.

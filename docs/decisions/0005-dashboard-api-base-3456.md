@@ -1,4 +1,4 @@
-# Decision 0005: Dashboard API base defaults to port 3456
+﻿# Decision 0005: Dashboard API base defaults to port 3456
 
 ## Status
 
@@ -27,3 +27,4 @@ Default the dashboard API base to `http://127.0.0.1:3456` and still allow `NEXT_
 ## Reversal Trigger
 
 If the backend development port changes or the repository adopts a same-origin proxy, revisit the default and the override strategy.
+

@@ -1,4 +1,4 @@
-# Keputusan 0004: Facebook Pages posting via Graph API v19.0
+﻿# Keputusan 0004: Facebook Pages posting via Graph API v19.0
 
 ## Status
 
@@ -32,3 +32,4 @@ Jika Meta remove required Pages permission atau Graph API path jadi unavailable 
 ---
 
 **Diperbarui**: April 2026
+

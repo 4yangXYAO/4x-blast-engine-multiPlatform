@@ -1,4 +1,4 @@
-# dashboard/components/ui - Shared UI Components
+﻿# dashboard/components/ui - Shared UI Components
 
 **Purpose:** Reusable shadcn/ui-based components used across the Next.js dashboard.
 
@@ -29,10 +29,10 @@
 - Built on shadcn/ui patterns (radix primitives + Tailwind)
 - Components accept `className` for composition
 - Use React 18+ server/client component boundaries
-- No inline styles — all Tailwind classes
+- No inline styles â€” all Tailwind classes
 
 ## NOTES
 
-- `DataTable` is the most complex component — handles pagination, sorting, column config
+- `DataTable` is the most complex component â€” handles pagination, sorting, column config
 - `PlatformIcon` maps platform names to Lucide/emoji icons
 - `sonner.tsx` wraps sonner toast library for consistent notifications

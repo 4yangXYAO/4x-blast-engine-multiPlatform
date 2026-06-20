@@ -1,4 +1,4 @@
-# Decision 0004: Facebook Pages posting via Graph API v19.0
+﻿# Decision 0004: Facebook Pages posting via Graph API v19.0
 
 ## Status
 
@@ -28,3 +28,4 @@ Use the Facebook Pages Graph API v19.0 with a Page access token stored in the en
 ## Reversal Trigger
 
 If Meta removes the required Pages permission or the Graph API path becomes unavailable for this use case, revisit the adapter strategy.
+

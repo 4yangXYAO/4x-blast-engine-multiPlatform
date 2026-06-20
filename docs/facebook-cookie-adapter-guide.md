@@ -1,4 +1,4 @@
-# FacebookCookieAdapter - Analysis & Test Script
+﻿# FacebookCookieAdapter - Analysis & Test Script
 
 ## Adapter Overview
 
@@ -14,8 +14,8 @@ The `FacebookCookieAdapter` posts to Facebook using browser session cookies, imp
 
 2. **Cookie Parsing** (`parseCookies` utility)
    - Handles two input formats:
-     - **JSON array**: `[{"name":"c_user","value":"123"}]` → `"c_user=123"`
-     - **Plain string**: `"c_user=123; xs=abc"` → passed through as-is
+     - **JSON array**: `[{"name":"c_user","value":"123"}]` â†’ `"c_user=123"`
+     - **Plain string**: `"c_user=123; xs=abc"` â†’ passed through as-is
    - Result: standardized cookie header string
 
 3. **Connection Phase** (`connect()`)
@@ -68,28 +68,28 @@ ts-node scripts/test-fb.ts 'c_user=12345; xs=abc123; csrftoken=token123'
 ### Output Example
 
 ```
-🔍 Initializing FacebookCookieAdapter...
-🔗 Connecting to Facebook...
+ðŸ” Initializing FacebookCookieAdapter...
+ðŸ”— Connecting to Facebook...
 [FB-ADAPTER] Cookie loaded
-✅ Connected successfully
+âœ… Connected successfully
 
-📤 Sending test message to Facebook page...
+ðŸ“¤ Sending test message to Facebook page...
 [FB-ADAPTER] Post result: ok
-✅ Message sent successfully
+âœ… Message sent successfully
    Response: { success: true }
 
-🔌 Disconnecting...
-✅ Disconnected
+ðŸ”Œ Disconnecting...
+âœ… Disconnected
 ```
 
 ## Key Features
 
-✅ **Flexible input**: Accepts both JSON array and plain cookie strings  
-✅ **Automatic parsing**: `parseCookies()` utility handles conversion  
-✅ **CSRF extraction**: Automatically pulls token from cookies  
-✅ **Rate limiting**: Built-in rate limit tracking  
-✅ **Error handling**: Clear error messages with codes  
-✅ **Logging**: Optional debug logger for troubleshooting  
+âœ… **Flexible input**: Accepts both JSON array and plain cookie strings  
+âœ… **Automatic parsing**: `parseCookies()` utility handles conversion  
+âœ… **CSRF extraction**: Automatically pulls token from cookies  
+âœ… **Rate limiting**: Built-in rate limit tracking  
+âœ… **Error handling**: Clear error messages with codes  
+âœ… **Logging**: Optional debug logger for troubleshooting  
 
 ## Error Codes
 
@@ -103,3 +103,4 @@ ts-node scripts/test-fb.ts 'c_user=12345; xs=abc123; csrftoken=token123'
 - Uses mobile user agent (iPhone)
 - Target endpoint: `/api/v1/media/configure_text_post_app_feed/`
 - Timeout: 15 seconds
+

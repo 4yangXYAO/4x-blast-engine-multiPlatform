@@ -1,4 +1,4 @@
-# src/routes - API Endpoints
+﻿# src/routes - API Endpoints
 
 **Purpose**: Express REST API endpoints under `/v1/*`
 
@@ -14,8 +14,8 @@
 | `templates.ts` | ~119 | Template management |
 | `webhooks.ts` | ~115 | Inbound webhook handlers |
 | `track.ts` | ~61 | Link tracking & stats |
-| `adapters.ts` | — | Adapter registration + proxy |
-| `settings.ts` | — | Runtime settings CRUD |
+| `adapters.ts` | â€” | Adapter registration + proxy |
+| `settings.ts` | â€” | Runtime settings CRUD |
 
 ## TEST FILES
 

@@ -1,4 +1,4 @@
-# Keputusan 0002: Resolve adapters dari stored accounts
+﻿# Keputusan 0002: Resolve adapters dari stored accounts
 
 ## Status
 
@@ -25,3 +25,4 @@ Ini membuat job execution real daripada simulated dan keep credentials centraliz
 ---
 
 **Diperbarui**: Mei 2026
+

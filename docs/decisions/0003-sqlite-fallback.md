@@ -1,4 +1,4 @@
-# Decision 0003: Keep sql.js as a fallback
+﻿# Decision 0003: Keep sql.js as a fallback
 
 ## Status
 
@@ -21,3 +21,4 @@ This preserves a working system in environments where the native binding is unav
 - Development remains portable.
 - Tests can run even when the native binding is broken.
 - The code must handle both native and sql.js database behaviors.
+

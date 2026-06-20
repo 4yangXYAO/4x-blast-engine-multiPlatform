@@ -1,33 +1,33 @@
-# dashboard/app/ - Next.js App Router Pages
+﻿# dashboard/app/ - Next.js App Router Pages
 
 **Purpose:** Route handlers and page components for the dashboard UI.
 
 ## STRUCTURE
 ```
 app/
-├── layout.tsx            # Root layout shell
-├── page.tsx              # Home / overview
-├── globals.css           # Global styles
-├── accounts/
-│   ├── page.tsx          # Account list
-│   └── new/page.tsx      # Create account
-├── campaigns/
-│   ├── page.tsx          # Campaign list
-│   ├── new/page.tsx      # Create campaign
-│   └── [id]/page.tsx     # Campaign detail
-├── blast-runner/
-│   └── page.tsx          # Manual blast trigger
-├── jobs/
-│   └── page.tsx          # Job queue monitor
-├── leads/
-│   └── page.tsx          # Lead capture view
-├── templates/
-│   ├── page.tsx          # Template list
-│   └── new/page.tsx      # Create template
-├── settings/
-│   └── page.tsx          # Runtime settings
-└── analytics/
-    └── page.tsx          # Dashboard analytics
+â”œâ”€â”€ layout.tsx            # Root layout shell
+â”œâ”€â”€ page.tsx              # Home / overview
+â”œâ”€â”€ globals.css           # Global styles
+â”œâ”€â”€ accounts/
+â”‚   â”œâ”€â”€ page.tsx          # Account list
+â”‚   â””â”€â”€ new/page.tsx      # Create account
+â”œâ”€â”€ campaigns/
+â”‚   â”œâ”€â”€ page.tsx          # Campaign list
+â”‚   â”œâ”€â”€ new/page.tsx      # Create campaign
+â”‚   â””â”€â”€ [id]/page.tsx     # Campaign detail
+â”œâ”€â”€ blast-runner/
+â”‚   â””â”€â”€ page.tsx          # Manual blast trigger
+â”œâ”€â”€ jobs/
+â”‚   â””â”€â”€ page.tsx          # Job queue monitor
+â”œâ”€â”€ leads/
+â”‚   â””â”€â”€ page.tsx          # Lead capture view
+â”œâ”€â”€ templates/
+â”‚   â”œâ”€â”€ page.tsx          # Template list
+â”‚   â””â”€â”€ new/page.tsx      # Create template
+â”œâ”€â”€ settings/
+â”‚   â””â”€â”€ page.tsx          # Runtime settings
+â””â”€â”€ analytics/
+    â””â”€â”€ page.tsx          # Dashboard analytics
 ```
 
 ## CONVENTIONS

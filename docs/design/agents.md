@@ -1,4 +1,4 @@
-# PROJECT KNOWLEDGE BASE
+﻿# PROJECT KNOWLEDGE BASE
 
 **Generated:** Tue May 05 2026
 **Commit:** [NOT AVAILABLE]
@@ -13,17 +13,17 @@ Production-focused Node.js/TypeScript blast engine with Next.js dashboard, SQLit
 ## STRUCTURE
 ```
 root/
-├ src/                    # Backend API, queue, workers, repos
-│ ├ api/                  # Server entry point
-│ ├ routes/               # Express endpoints
-│ ├ repos/                # Data access layer
-│ ├ queue/                # Job queue (bullmq-based)
-│ ├ scheduler/            # Cron scheduling
-│ ├ blast/                # Core blast engine
-│ ├ workers/              # Background job workers
-│ └ db/                   # SQLite configuration
-├ dashboard/              # Next.js UI (port 3001)
-└ tests/                  # Integration & unit tests
+â”œ src/                    # Backend API, queue, workers, repos
+â”‚ â”œ api/                  # Server entry point
+â”‚ â”œ routes/               # Express endpoints
+â”‚ â”œ repos/                # Data access layer
+â”‚ â”œ queue/                # Job queue (bullmq-based)
+â”‚ â”œ scheduler/            # Cron scheduling
+â”‚ â”œ blast/                # Core blast engine
+â”‚ â”œ workers/              # Background job workers
+â”‚ â”” db/                   # SQLite configuration
+â”œ dashboard/              # Next.js UI (port 3001)
+â”” tests/                  # Integration & unit tests
 ```
 
 ---

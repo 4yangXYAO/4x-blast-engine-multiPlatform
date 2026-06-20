@@ -1,4 +1,4 @@
-# Claude Notes
+﻿# Claude Notes
 
 Use this project as a production-oriented blast engine.
 
@@ -11,3 +11,4 @@ Rules:
 - Prefer WAHA for WhatsApp.
 - Keep `README.md`, `docs/architecture.md`, and `docs/decisions/*` synchronized with code.
 - Validate with backend tests plus dashboard build.
+

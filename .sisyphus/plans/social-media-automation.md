@@ -1,4 +1,4 @@
-# Social Media Automation Platform - Work Plan
+﻿# Social Media Automation Platform - Work Plan
 
 ## TL;DR
 > **Summary**: Build a Node.js/TypeScript platform that automates content distribution across WhatsApp, Telegram, Twitter, Threads, Instagram. Support multi-account management, template-based + trigger-based + AI-powered replies, strict rate limiting with job queue retries, rich analytics, and admin dashboard (Next.js).
@@ -14,7 +14,7 @@
 > 
 > **Effort**: XL (15-20 sprints for full MVP)
 > **Parallel**: YES - 3-4 waves (adapters in parallel, core services shared)
-> **Critical Path**: Core API + Job Queue → Platform Adapters → Dashboard → Testing & Deployment
+> **Critical Path**: Core API + Job Queue â†’ Platform Adapters â†’ Dashboard â†’ Testing & Deployment
 
 ---
 
@@ -37,10 +37,10 @@ User requested a social media automation platform for managing joki (outsourcing
 ### Metis Review (Gap Analysis & Guardrails)
 
 **Key Risks Mitigated**:
-1. Platform ToS violations (cookies) → Prioritize official APIs, use automation as fallback
-2. SQLite bottleneck → Use WAL mode, plan PostgreSQL migration early
-3. Scope creep → Strict MVP boundaries defined in "Must Have / Must NOT Have"
-4. Architecture gaps → Logging, secrets, deployment, observability components identified
+1. Platform ToS violations (cookies) â†’ Prioritize official APIs, use automation as fallback
+2. SQLite bottleneck â†’ Use WAL mode, plan PostgreSQL migration early
+3. Scope creep â†’ Strict MVP boundaries defined in "Must Have / Must NOT Have"
+4. Architecture gaps â†’ Logging, secrets, deployment, observability components identified
 
 **Architecture Components Added**:
 - Observability: Structured logs + metrics dashboard
@@ -71,23 +71,23 @@ Deliver a production-ready social media automation platform that reduces manual 
 ### Definition of Done (Verifiable Conditions)
 ```bash
 # API health
-curl -s http://localhost:3000/health | jq '.status' → "ok"
+curl -s http://localhost:3000/health | jq '.status' â†’ "ok"
 
 # Database initialized
 sqlite3 data.db ".tables" | grep -E "accounts|templates|jobs|posts"
 
 # All 5 adapters loaded
-curl -s http://localhost:3000/adapters | jq '.platforms | length' → 5
+curl -s http://localhost:3000/adapters | jq '.platforms | length' â†’ 5
 
 # Job queue running
-curl -s http://localhost:3000/queue/status | jq '.workers | length' → >= 1
+curl -s http://localhost:3000/queue/status | jq '.workers | length' â†’ >= 1
 
 # Dashboard accessible
 curl -s http://localhost:3001 | grep -q "Admin Dashboard"
 
 # End-to-end post successful
-curl -X POST http://localhost:3000/v1/posts with valid payload → 201 Created, job_id in response
-sqlite3 data.db "SELECT status FROM jobs WHERE id='$job_id';" → "posted" or "pending"
+curl -X POST http://localhost:3000/v1/posts with valid payload â†’ 201 Created, job_id in response
+sqlite3 data.db "SELECT status FROM jobs WHERE id='$job_id';" â†’ "posted" or "pending"
 ```
 
 ### Must Have (MVP Scope)
@@ -307,11 +307,11 @@ Comprehensive QA, security audit, acceptance sign-off.
   **Entity Relationships** (text schema):
   ```
   Accounts (id, platform, username, email, credentials_hash, status, created_at, updated_at)
-    ↓ 1-many
+    â†“ 1-many
   Templates (id, account_id, name, content, variables, type, created_at)
-    ↓ 1-many
+    â†“ 1-many
   Jobs (id, template_id, account_id, platform, status, scheduled_at, started_at, completed_at, error_msg, retries, max_retries)
-    ↓ 1-many
+    â†“ 1-many
   Posts (id, job_id, account_id, platform, content, post_url, engagement_count, created_at)
   
   Schedules (id, template_id, cron_expr, enabled, created_at)
@@ -497,10 +497,10 @@ Comprehensive QA, security audit, acceptance sign-off.
 
   **Acceptance Criteria**:
   - [ ] Express server starts: `npm run dev` (should start on port 3000)
-  - [ ] Health endpoint responds: `curl http://localhost:3000/v1/health | jq '.status'` → "ok"
+  - [ ] Health endpoint responds: `curl http://localhost:3000/v1/health | jq '.status'` â†’ "ok"
   - [ ] All route files created (empty stubs): `src/routes/{accounts,templates,posts,jobs,adapters}.ts`
   - [ ] Error handling middleware catches and logs errors
-  - [ ] Request validation (Zod) works: `curl -X POST /v1/accounts -d '{}' | jq '.error'` → validation error
+  - [ ] Request validation (Zod) works: `curl -X POST /v1/accounts -d '{}' | jq '.error'` â†’ validation error
   - [ ] CORS configured for dashboard origin
 
   **QA Scenarios**:
@@ -538,7 +538,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - Implement WhatsApp Web client (whatsapp-web.js) as fallback
   - Setup authentication (OAuth tokens for Cloud API, cookies for Web)
   - Implement rate limit handling (respecting Cloud API quotas)
-  - Add error mapping (platform errors → standardized error types)
+  - Add error mapping (platform errors â†’ standardized error types)
 
   **Must NOT do**:
   - Implement job queue integration (task 10)
@@ -703,7 +703,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - [ ] postMessage() creates tweet
   - [ ] replyToMessage() replies to tweet
   - [ ] Rate limit handler tracks per-endpoint limits
-  - [ ] Error mapping: 429 → rate limit, 401 → auth error, etc.
+  - [ ] Error mapping: 429 â†’ rate limit, 401 â†’ auth error, etc.
   - [ ] Tests pass: `jest src/adapters/twitter.test.ts`
 
   **QA Scenarios**:
@@ -907,7 +907,7 @@ Comprehensive QA, security audit, acceptance sign-off.
       2. sleep 2
       3. npm run test -- queue --testNamePattern="enqueue.*process"
       4. pkill -f "start:workers"
-    Expected: Job moves from pending → completed
+    Expected: Job moves from pending â†’ completed
     Evidence: .sisyphus/evidence/task-10-queue-process.log
 
   Scenario: Failed job moves to DLQ after max retries
@@ -924,7 +924,7 @@ Comprehensive QA, security audit, acceptance sign-off.
     Tool: interactive_bash
     Steps:
       1. npm run test -- queue --testNamePattern="state.*transition"
-    Expected: Invalid transitions rejected (e.g., pending → completed without processing)
+    Expected: Invalid transitions rejected (e.g., pending â†’ completed without processing)
     Evidence: .sisyphus/evidence/task-10-queue-state.log
   ```
 
@@ -937,7 +937,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   **What to do**:
   - Implement exponential backoff formula: `delay = base_delay * (multiplier ^ attempt)` + jitter
   - Create per-platform retry policies (different max_retries, backoff curves for each platform)
-  - Implement automatic requeue logic (failed job → requeue with increased delay)
+  - Implement automatic requeue logic (failed job â†’ requeue with increased delay)
   - Create retry history tracking in database (logs each attempt with error details)
   - Handle non-retryable errors (auth failure, 404) vs retryable (5xx, 429)
   - Circuit breaker pattern: disable platform adapter if too many consecutive failures
@@ -970,7 +970,7 @@ Comprehensive QA, security audit, acceptance sign-off.
 
   **Acceptance Criteria**:
   - [ ] Exponential backoff formula calculates correctly: `calculateBackoff(attempt, policy)` returns increasing delays
-  - [ ] Jitter applied: `calculateBackoff()` returns random ±10% variance
+  - [ ] Jitter applied: `calculateBackoff()` returns random Â±10% variance
   - [ ] Requeue logic works: failed job requeued with updated retry count
   - [ ] Retry history logged: `SELECT COUNT(*) FROM logs WHERE job_id=? AND level='retry'`
   - [ ] Non-retryable errors bypass retry (logged as permanent failure)
@@ -1046,7 +1046,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - [ ] Token bucket algorithm correctly tracks tokens and refills
   - [ ] canProceed() returns true until limit hit, then false
   - [ ] 429 response handling extracts retry-after and updates limit
-  - [ ] Queue pauses when rate limit hit: `queue.isPaused()` → true
+  - [ ] Queue pauses when rate limit hit: `queue.isPaused()` â†’ true
   - [ ] Rate limit metrics exposed: `GET /v1/adapters/status` includes rate_limit_status
   - [ ] Tests pass: `jest src/queue/rate-limiter.test.ts`
 
@@ -1104,7 +1104,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - External: https://expressjs.com/en/guide/routing.html
 
   **Acceptance Criteria**:
-  - [ ] POST /v1/accounts creates account: `curl -X POST http://localhost:3000/v1/accounts -d '{"platform":"telegram","username":"test_bot"}' → 201 Created`
+  - [ ] POST /v1/accounts creates account: `curl -X POST http://localhost:3000/v1/accounts -d '{"platform":"telegram","username":"test_bot"}' â†’ 201 Created`
   - [ ] Credentials encrypted on storage: `SELECT encrypted_value FROM credentials WHERE account_id=?` (not plaintext)
   - [ ] GET /v1/accounts lists all accounts with status
   - [ ] Health check run on account creation: attempts to authenticate
@@ -1639,7 +1639,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - Backup strategy: SQLite database backups (cron script)
   - Monitoring setup: log rotation, disk space monitoring
   - Rollback procedure: how to revert to previous version
-  - Database migration guide: SQLite → PostgreSQL path
+  - Database migration guide: SQLite â†’ PostgreSQL path
 
   **Must NOT do**: Actual VPS provisioning, cloud-specific deployments
 
@@ -1658,7 +1658,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   - [ ] VPS Setup script created (Bash): provisions fresh Ubuntu with Docker
   - [ ] Backup script automated (cron)
   - [ ] Monitoring instructions included (log rotation, disk alerts)
-  - [ ] Database migration path documented (SQLite → PostgreSQL)
+  - [ ] Database migration path documented (SQLite â†’ PostgreSQL)
 
   **QA Scenarios**:
   ```
@@ -1684,7 +1684,7 @@ Comprehensive QA, security audit, acceptance sign-off.
 
 ---
 
-## Wave 6: Final Verification (MANDATORY — after ALL implementation tasks)
+## Wave 6: Final Verification (MANDATORY â€” after ALL implementation tasks)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Present consolidated results to user and get explicit "okay" before completing.
 
@@ -1722,7 +1722,7 @@ Comprehensive QA, security audit, acceptance sign-off.
   **What to do**: End-to-end test all workflows across all 5 platforms. Test rate limiting, alerts, dashboard, error scenarios.
 
   **Acceptance Criteria**:
-  - [ ] Complete workflow: Account → Template → Schedule → Post → Success (all 5 platforms)
+  - [ ] Complete workflow: Account â†’ Template â†’ Schedule â†’ Post â†’ Success (all 5 platforms)
   - [ ] Rate limiting: 10 consecutive requests respected, backoff applied
   - [ ] Alerts: Job failure triggers email + webhook
   - [ ] Dashboard: All pages load, forms work, real-time updates functional
@@ -1755,7 +1755,7 @@ Comprehensive QA, security audit, acceptance sign-off.
 
 | Task | Depends On | Blocks | Wave |
 |------|-----------|--------|------|
-| 1 (Setup) | — | 2-22 | W1 |
+| 1 (Setup) | â€” | 2-22 | W1 |
 | 2 (DB Schema) | 1 | 3-22 | W1 |
 | 3 (Secrets) | 1 | 4-22 | W1 |
 | 4 (API Scaffold) | 2,3 | 5-9,13-18 | W2 |
@@ -1765,7 +1765,7 @@ Comprehensive QA, security audit, acceptance sign-off.
 | 12 (Rate Limiter) | 10 | 23 | W3 |
 | 13-18 (Dashboard) | 4,5-9,10 | 23 | W4 |
 | 19-22 (Deployment) | 1-18 | 23 | W5 |
-| 23-24 (Verification) | 1-22 | — | W6 |
+| 23-24 (Verification) | 1-22 | â€” | W6 |
 
 ---
 
@@ -1809,27 +1809,27 @@ type(scope): short description
 ## Success Criteria
 
 ### Functional
-✅ All 5 platforms posting successfully (happy path + retry on failure)
-✅ Templates (database + CSV import) working end-to-end
-✅ Rate limiting respected per platform
-✅ Job queue retrying failed jobs with backoff
-✅ Admin dashboard CRUD operations functional
-✅ Analytics showing posts sent, success rate, engagement
+âœ… All 5 platforms posting successfully (happy path + retry on failure)
+âœ… Templates (database + CSV import) working end-to-end
+âœ… Rate limiting respected per platform
+âœ… Job queue retrying failed jobs with backoff
+âœ… Admin dashboard CRUD operations functional
+âœ… Analytics showing posts sent, success rate, engagement
 
 ### Technical
-✅ API fully typed (TypeScript strict mode)
-✅ Database migrations reversible
-✅ Secrets never logged or exposed
-✅ Rate limiter protecting against API 429s
-✅ Logging structured (JSON format, contextual fields)
-✅ Code coverage >80% critical paths
+âœ… API fully typed (TypeScript strict mode)
+âœ… Database migrations reversible
+âœ… Secrets never logged or exposed
+âœ… Rate limiter protecting against API 429s
+âœ… Logging structured (JSON format, contextual fields)
+âœ… Code coverage >80% critical paths
 
 ### Operational
-✅ Docker Compose brings up all services (API, workers, dashboard, DB)
-✅ Health checks passing
-✅ Deployment guide executable by ops team
-✅ Alerts routing correctly (email, webhooks)
-✅ Monitoring dashboard showing metrics
+âœ… Docker Compose brings up all services (API, workers, dashboard, DB)
+âœ… Health checks passing
+âœ… Deployment guide executable by ops team
+âœ… Alerts routing correctly (email, webhooks)
+âœ… Monitoring dashboard showing metrics
 
 ---
 
@@ -1858,3 +1858,4 @@ type(scope): short description
 | Cookies expired (WhatsApp Web) | Token refresh logic; monitor session health; fallback to Cloud API |
 | Rate limit exceeded | Per-platform rate limiter; exponential backoff + jitter; circuit breaker |
 | Secret leak | Encrypted storage; no logs with credentials; audit log for access |
+

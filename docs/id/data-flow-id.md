@@ -1,6 +1,6 @@
-# Alur Data (Data Flow)
+﻿# Alur Data (Data Flow)
 
-Dokumen ini menjelaskan aliran data melalui sistem Joki Blast Engine untuk berbagai mode operasi.
+Dokumen ini menjelaskan aliran data melalui sistem 4x-blast-engine untuk berbagai mode operasi.
 
 ---
 
@@ -12,10 +12,10 @@ Dokumen ini menjelaskan aliran data melalui sistem Joki Blast Engine untuk berba
 2. **Sistem validasi**: cek apakah blast lain sedang berjalan (single-platform mode only). Tolak jika ada blast aktif.
 3. **Ambil kredensial** akun dari tabel `accounts` (didekripsi).
 4. **Platform finder** cari target (posts/users) via internal APIs:
-   - **Facebook**: GraphQL search → postIds + userIds (fallback: `data/targets.txt`)
-   - **Instagram**: Hashtag/explore API → postIds + userIds
-   - **Twitter**: GraphQL search → tweetIds + userIds
-   - **Threads**: Internal search API → postIds + userIds
+   - **Facebook**: GraphQL search â†’ postIds + userIds (fallback: `data/targets.txt`)
+   - **Instagram**: Hashtag/explore API â†’ postIds + userIds
+   - **Twitter**: GraphQL search â†’ tweetIds + userIds
+   - **Threads**: Internal search API â†’ postIds + userIds
    - **WhatsApp**: Terima phone number list langsung (tidak perlu finder)
 5. **Target di-shuffle** secara acak.
 6. **Loop berurutan** (max 30 aksi):
@@ -67,14 +67,14 @@ Dokumen ini menjelaskan aliran data melalui sistem Joki Blast Engine untuk berba
 ## Storage Flow
 
 ```
-Campaign Created → INSERT INTO campaigns
-Account Created → INSERT INTO accounts (credentials encrypted)
-Job Enqueued → INSERT INTO jobs (status=pending)
-Worker Picks Job → UPDATE jobs SET status=running
-Adapter Post Success → INSERT INTO posts + UPDATE jobs status=completed
-Adapter Post Failed → UPDATE jobs status=failed + log error
-Link Clicked → INSERT INTO link_clicks
-Inbound Message → INSERT INTO leads + trigger welcome auto-reply
+Campaign Created â†’ INSERT INTO campaigns
+Account Created â†’ INSERT INTO accounts (credentials encrypted)
+Job Enqueued â†’ INSERT INTO jobs (status=pending)
+Worker Picks Job â†’ UPDATE jobs SET status=running
+Adapter Post Success â†’ INSERT INTO posts + UPDATE jobs status=completed
+Adapter Post Failed â†’ UPDATE jobs status=failed + log error
+Link Clicked â†’ INSERT INTO link_clicks
+Inbound Message â†’ INSERT INTO leads + trigger welcome auto-reply
 ```
 
 ---
@@ -82,7 +82,7 @@ Inbound Message → INSERT INTO leads + trigger welcome auto-reply
 ## Tracking Flow
 
 1. User klik tracking link: `GET /v1/track/:token`
-2. Server decrypt token → ambil `campaignId` dan `platform`
+2. Server decrypt token â†’ ambil `campaignId` dan `platform`
 3. `INSERT INTO link_clicks (campaign_id, platform, clicked_at)`
 4. Redirect (302) ke `cta_link` yang disimpan di campaign
 
@@ -92,17 +92,17 @@ Inbound Message → INSERT INTO leads + trigger welcome auto-reply
 
 ```
 [WAHA/Telegram Webhook] 
-    ↓ POST /v1/webhooks/waha|telegram
+    â†“ POST /v1/webhooks/waha|telegram
 [Parse inbound message] 
-    ↓ extract sender phone/chat_id
+    â†“ extract sender phone/chat_id
 [Check lead exists?] 
-    ↓ if new: INSERT INTO leads (status=awaiting_handoff)
+    â†“ if new: INSERT INTO leads (status=awaiting_handoff)
 [Generate welcome message] 
-    ↓ (deterministic template based on campaign)
+    â†“ (deterministic template based on campaign)
 [Send via adapter] 
-    ↓ WhatsApp/Telegram API
+    â†“ WhatsApp/Telegram API
 [Log result] 
-    ↓ Mark lead as contacted
+    â†“ Mark lead as contacted
 ```
 
 **Idempotency**: Lead masuk hanya once per phone number (unique constraint).
@@ -110,7 +110,8 @@ Inbound Message → INSERT INTO leads + trigger welcome auto-reply
 ---
 
 **Related files**:  
-- `src/blast/blast-runner.ts` — Core orchestration  
-- `src/workers/job-worker.ts` — Background worker  
-- `src/queue/job-queue.ts` — Queue management  
-- `src/adapters/providers/*` — Platform-specific adapters
+- `src/blast/blast-runner.ts` â€” Core orchestration  
+- `src/workers/job-worker.ts` â€” Background worker  
+- `src/queue/job-queue.ts` â€” Queue management  
+- `src/adapters/providers/*` â€” Platform-specific adapters
+

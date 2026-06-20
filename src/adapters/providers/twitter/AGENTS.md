@@ -1,4 +1,4 @@
-# src/adapters/providers/twitter - Twitter/X Adapter
+﻿# src/adapters/providers/twitter - Twitter/X Adapter
 
 **Purpose:** Twitter/X posting, replying, commenting, and DM sending via cookie-based auth.
 

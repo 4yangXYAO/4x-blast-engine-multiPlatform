@@ -1,4 +1,4 @@
-# Data Flow
+﻿# Data Flow
 
 ## Blast Runner Flow (Multi-Platform)
 
@@ -6,10 +6,10 @@
 2. System validates single-platform mode (rejects if a blast is already running).
 3. Account credentials are loaded and decrypted from the `accounts` table.
 4. Platform finder searches for targets (posts/users) via internal APIs.
-   - Facebook: GraphQL search → postIds + userIds (fallback: `data/targets.txt`).
-   - Instagram: Hashtag/explore API → postIds + userIds.
-   - Twitter: GraphQL search → tweetIds + userIds.
-   - Threads: Internal search API → postIds + userIds.
+   - Facebook: GraphQL search â†’ postIds + userIds (fallback: `data/targets.txt`).
+   - Instagram: Hashtag/explore API â†’ postIds + userIds.
+   - Twitter: GraphQL search â†’ tweetIds + userIds.
+   - Threads: Internal search API â†’ postIds + userIds.
    - WhatsApp: Uses supplied phone number list (no finder needed).
 5. Targets are shuffled randomly.
 6. Sequential loop (max 30 actions):
@@ -38,3 +38,4 @@
 - Code `190` becomes `TOKEN_EXPIRED`.
 - Other Graph errors bubble back as adapter failures.
 - Blast runner: errors are logged per-action and skipped (no stop, no retry).
+

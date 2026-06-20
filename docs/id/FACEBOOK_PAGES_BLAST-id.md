@@ -1,4 +1,4 @@
-# Facebook Blast — Panduan Cookie
+﻿# Facebook Blast â€” Panduan Cookie
 
 **Metode auth:** Browser session cookie via `m.facebook.com`  
 **Adapter:** `FacebookAdapter` di `src/adapters/providers/meta/facebook/facebook.ts`
@@ -23,8 +23,8 @@ Anda perlu copy cookie dari sesi Facebook yang sedang aktif di browser.
 **Menggunakan Chrome / Edge:**
 
 1. Login ke [facebook.com](https://www.facebook.com) di browser Anda
-2. Buka **DevTools** → tekan `F12`
-3. Pergi ke tab **Application** → **Cookies** → `https://www.facebook.com`
+2. Buka **DevTools** â†’ tekan `F12`
+3. Pergi ke tab **Application** â†’ **Cookies** â†’ `https://www.facebook.com`
 4. Copy nilai-nilai yang diperlukan (atau gunakan extension untuk export cookie)
 
 **Cookie penting yang dibutuhkan:**
@@ -48,7 +48,7 @@ c_user=12345678; xs=AbCdEf; datr=XyZaBc; sb=defGHI
 ### 2. Buat Akun Facebook di Dashboard
 
 1. Buka dashboard di `http://localhost:3001`
-2. Navigasi ke **Buat Akun** (atau **Accounts** → **Add Account**)
+2. Navigasi ke **Buat Akun** (atau **Accounts** â†’ **Add Account**)
 3. Pilih platform: `facebook`
 4. Masukkan username (label bebas, contoh: "Akun FB Saya")
 5. Di textarea **Facebook Session Cookie**, tempel cookie string Anda
@@ -68,15 +68,15 @@ CTA Link:         https://wa.me/628123456789
 Platform:         facebook
 ```
 
-→ Klik **Buat Kampanye Facebook**
+â†’ Klik **Buat Kampanye Facebook**
 
 ---
 
 ### 4. Blast
 
-→ Pilih akun Facebook Anda dari dropdown  
-→ Klik **Blast Kampanye Facebook**  
-→ Postingan akan muncul di akun Facebook Anda
+â†’ Pilih akun Facebook Anda dari dropdown  
+â†’ Klik **Blast Kampanye Facebook**  
+â†’ Postingan akan muncul di akun Facebook Anda
 
 ---
 
@@ -137,7 +137,7 @@ Content-Type: application/json
 **Posting tidak muncul:**
 - Cek apakah cookie `c_user` dan `xs` ada di string Anda
 - Pastikan Anda masih login di Facebook di browser
-- Cookie mungkin sudah expired — export ulang dari browser
+- Cookie mungkin sudah expired â€” export ulang dari browser
 
 **AUTH_EXPIRED langsung:**
 - Sesi Facebook Anda sudah kadaluarsa atau logout
@@ -152,12 +152,13 @@ Content-Type: application/json
 ## Catatan Keamanan
 
 - **Cookie disimpan terenkripsi** (AES-256-GCM) di `data/app.db`
-- **Jangan pernah bagikan cookie string** — ini seperti password
+- **Jangan pernah bagikan cookie string** â€” ini seperti password
 - Cookie kadaluarsa saat Anda logout dari Facebook di browser tersebut
 - **Gunakan akun dedicated untuk blast**, bukan akun personal Anda
 
-⚠️ **Warning**: Pemakaian cookie untuk otomatisasi posts harus accordance dengan Facebook Terms of Service. Gunakan dengan risiko sendiri.
+âš ï¸ **Warning**: Pemakaian cookie untuk otomatisasi posts harus accordance dengan Facebook Terms of Service. Gunakan dengan risiko sendiri.
 
 ---
 
 **Butuh bantuan?** Cek file `docs/architecture.md` untuk arsitektur lengkap, atau buka issue di repository.
+

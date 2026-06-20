@@ -1,4 +1,4 @@
-# Keputusan 0005: Dashboard API base default ke port 3456
+﻿# Keputusan 0005: Dashboard API base default ke port 3456
 
 ## Status
 
@@ -31,3 +31,4 @@ Jika backend development port berubah atau repository adop same-origin proxy, re
 ---
 
 **Diperbarui**: Mei 2026
+

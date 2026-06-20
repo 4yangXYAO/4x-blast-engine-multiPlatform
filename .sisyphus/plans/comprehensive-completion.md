@@ -1,14 +1,14 @@
-# Comprehensive Repo Completion Plan
+﻿# Comprehensive Repo Completion Plan
 
 ## TL;DR
 
-> **Quick Summary**: Close all critical gaps in the Joki Blast Engine — fix TypeScript errors, add missing dependencies, complete JWT auth, finish blast actions, add tests, set up CI/CD, and clean up stale artifacts.
+> **Quick Summary**: Close all critical gaps in the 4x-blast-engine â€” fix TypeScript errors, add missing dependencies, complete JWT auth, finish blast actions, add tests, set up CI/CD, and clean up stale artifacts.
 >
 > **Deliverables**: Production-ready codebase with passing tests, working CI pipeline, complete adapter coverage, and cleaned-up documentation.
 >
-> **Estimated Effort**: Large (≈80+ tasks across 6 waves)
-> **Parallel Execution**: YES — 6 waves, 5-8 tasks per wave
-> **Critical Path**: TypeScript fixes → JWT auth → blast actions → tests → CI/CD
+> **Estimated Effort**: Large (â‰ˆ80+ tasks across 6 waves)
+> **Parallel Execution**: YES â€” 6 waves, 5-8 tasks per wave
+> **Critical Path**: TypeScript fixes â†’ JWT auth â†’ blast actions â†’ tests â†’ CI/CD
 
 ---
 
@@ -81,9 +81,9 @@ Make the repo production-ready by fixing all critical issues, completing incompl
 Every task MUST include agent-executed QA scenarios.
 Evidence saved to `.sisyphus/evidence/task-{N}-{scenario-slug}.{ext}`.
 
-- **Frontend/UI**: Use Playwright — Navigate, interact, assert DOM, screenshot
-- **CLI/Backend**: Use Bash (curl) — Send requests, assert status + response fields
-- **Library/Module**: Use Bash (bun/node REPL) — Import, call functions, compare output
+- **Frontend/UI**: Use Playwright â€” Navigate, interact, assert DOM, screenshot
+- **CLI/Backend**: Use Bash (curl) â€” Send requests, assert status + response fields
+- **Library/Module**: Use Bash (bun/node REPL) â€” Import, call functions, compare output
 
 ---
 
@@ -93,45 +93,45 @@ Evidence saved to `.sisyphus/evidence/task-{N}-{scenario-slug}.{ext}`.
 
 ```
 Wave 1 (Foundation - Fix what's broken):
-├── Task 1: Fix TypeScript type errors (@types/node, crypto declarations)
-├── Task 2: Add missing twitter-api-v2 dependency + fix imports
-├── Task 3: Remove orphaned jest.config.js + update package.json scripts
-├── Task 4: Implement JWT middleware in src/middleware/
-├── Task 5: Fix .gitignore (WAL artifacts, build outputs, env files)
-├── Task 6: Replace placeholder rate limiting in Twitter adapter
-└── Task 7: Clean up docs/reports/ binary artifacts
+â”œâ”€â”€ Task 1: Fix TypeScript type errors (@types/node, crypto declarations)
+â”œâ”€â”€ Task 2: Add missing twitter-api-v2 dependency + fix imports
+â”œâ”€â”€ Task 3: Remove orphaned jest.config.js + update package.json scripts
+â”œâ”€â”€ Task 4: Implement JWT middleware in src/middleware/
+â”œâ”€â”€ Task 5: Fix .gitignore (WAL artifacts, build outputs, env files)
+â”œâ”€â”€ Task 6: Replace placeholder rate limiting in Twitter adapter
+â””â”€â”€ Task 7: Clean up docs/reports/ binary artifacts
 
 Wave 2 (Feature Completion):
-├── Task 8: Add blast actions for Facebook, Twitter, Threads, WhatsApp, Telegram
-├── Task 9: Wire blast runner to support multi-action DM routing
-├── Task 10: Add blast action tests (at least 1 per new action)
-├── Task 11: Add missing adapter tests (twitter.test.ts, facebook.test.ts)
-└── Task 12: Update docs/planning/ stale files
+â”œâ”€â”€ Task 8: Add blast actions for Facebook, Twitter, Threads, WhatsApp, Telegram
+â”œâ”€â”€ Task 9: Wire blast runner to support multi-action DM routing
+â”œâ”€â”€ Task 10: Add blast action tests (at least 1 per new action)
+â”œâ”€â”€ Task 11: Add missing adapter tests (twitter.test.ts, facebook.test.ts)
+â””â”€â”€ Task 12: Update docs/planning/ stale files
 
 Wave 3 (Testing & Quality):
-├── Task 13: Add integration test for JWT auth flow
-├── Task 14: Add e2e blast test with mock adapters
-├── Task 15: Fix all remaining TypeScript warnings
-├── Task 16: Add TypeScript strict mode enforcement
-└── Task 17: Verify all 31+ tests pass
+â”œâ”€â”€ Task 13: Add integration test for JWT auth flow
+â”œâ”€â”€ Task 14: Add e2e blast test with mock adapters
+â”œâ”€â”€ Task 15: Fix all remaining TypeScript warnings
+â”œâ”€â”€ Task 16: Add TypeScript strict mode enforcement
+â””â”€â”€ Task 17: Verify all 31+ tests pass
 
 Wave 4 (Infrastructure):
-├── Task 18: Create CI/CD pipeline (.github/workflows/ci.yml)
-├── Task 19: Create docker-compose.override.yml
-├── Task 20: Add Dockerfile.test for testing in containers
-└── Task 21: Add linting rules + fix lint issues
+â”œâ”€â”€ Task 18: Create CI/CD pipeline (.github/workflows/ci.yml)
+â”œâ”€â”€ Task 19: Create docker-compose.override.yml
+â”œâ”€â”€ Task 20: Add Dockerfile.test for testing in containers
+â””â”€â”€ Task 21: Add linting rules + fix lint issues
 
 Wave 5 (Cleanup & Docs):
-├── Task 22: Remove stale docs/planning files
-├── Task 23: Update docs/decisions/ for completed items
-├── Task 24: Update root AGENTS.md with completion notes
-└── Task 25: Final verification sweep
+â”œâ”€â”€ Task 22: Remove stale docs/planning files
+â”œâ”€â”€ Task 23: Update docs/decisions/ for completed items
+â”œâ”€â”€ Task 24: Update root AGENTS.md with completion notes
+â””â”€â”€ Task 25: Final verification sweep
 
 Wave FINAL (Review):
-├── F1: Plan compliance audit
-├── F2: Code quality review
-├── F3: Full test suite pass
-└── F4: Scope fidelity check
+â”œâ”€â”€ F1: Plan compliance audit
+â”œâ”€â”€ F2: Code quality review
+â”œâ”€â”€ F3: Full test suite pass
+â””â”€â”€ F4: Scope fidelity check
 ```
 
 ### Dependency Matrix
@@ -145,12 +145,12 @@ Wave FINAL (Review):
 
 ### Agent Dispatch Summary
 
-- **Wave 1**: 7 tasks → mix of `quick` and `unspecified-high`
-- **Wave 2**: 5 tasks → mix of `deep` and `unspecified-high`
-- **Wave 3**: 5 tasks → `deep` and `unspecified-high`
-- **Wave 4**: 4 tasks → mix of `quick` and `unspecified-high`
-- **Wave 5**: 4 tasks → `writing` and `quick`
-- **Wave FINAL**: 4 tasks → `oracle` and `unspecified-high`
+- **Wave 1**: 7 tasks â†’ mix of `quick` and `unspecified-high`
+- **Wave 2**: 5 tasks â†’ mix of `deep` and `unspecified-high`
+- **Wave 3**: 5 tasks â†’ `deep` and `unspecified-high`
+- **Wave 4**: 4 tasks â†’ mix of `quick` and `unspecified-high`
+- **Wave 5**: 4 tasks â†’ `writing` and `quick`
+- **Wave FINAL**: 4 tasks â†’ `oracle` and `unspecified-high`
 
 ---
 
@@ -170,9 +170,9 @@ Wave FINAL (Review):
   - Zero TypeScript errors in output
 
   **References**:
-  - `tsconfig.json` — current compilerOptions
-  - `src/types/better-sqlite3.d.ts` — existing ambient type pattern
-  - `package.json` — dependencies/devDependencies section
+  - `tsconfig.json` â€” current compilerOptions
+  - `src/types/better-sqlite3.d.ts` â€” existing ambient type pattern
+  - `package.json` â€” dependencies/devDependencies section
 
   **QA Scenarios**:
 
@@ -201,8 +201,8 @@ Wave FINAL (Review):
   - `tsc --noEmit` shows no import errors for twitter adapter
 
   **References**:
-  - `src/adapters/providers/twitter/twitter.ts` — import statements at top
-  - `package.json` — dependencies block
+  - `src/adapters/providers/twitter/twitter.ts` â€” import statements at top
+  - `package.json` â€” dependencies block
 
   **QA Scenarios**:
 
@@ -234,9 +234,9 @@ Wave FINAL (Review):
   - No jest dependencies in package.json
 
   **References**:
-  - `package.json` — scripts and devDependencies
-  - `vitest.config.ts` — active vitest config
-  - `jest.config.js` — file to remove
+  - `package.json` â€” scripts and devDependencies
+  - `vitest.config.ts` â€” active vitest config
+  - `jest.config.js` â€” file to remove
 
   **QA Scenarios**:
 
@@ -258,7 +258,7 @@ Wave FINAL (Review):
   **What to do**:
   - Create `src/middleware/auth.ts` implementing JWT verification middleware
   - Read existing route files to understand current JWT handling pattern (grep "jwt\|JWT\|verify\|auth" in src/routes/)
-  - Use `jsonwebtoken` package (check if already a dependency — if not add it)
+  - Use `jsonwebtoken` package (check if already a dependency â€” if not add it)
   - Middleware should: extract Authorization header, verify JWT using JWT_SECRET, attach user to req, return 401 on failure
   - Export as Express middleware function `(req, res, next) => void`
   - Optionally: create `src/middleware/index.ts` barrel export
@@ -270,9 +270,9 @@ Wave FINAL (Review):
   - Attaches decoded payload to `req.user`
 
   **References**:
-  - `src/config/secrets.ts` — JWT_SECRET config
-  - `src/routes/accounts.ts` — existing auth-related route
-  - `package.json` — check for jsonwebtoken dependency
+  - `src/config/secrets.ts` â€” JWT_SECRET config
+  - `src/routes/accounts.ts` â€” existing auth-related route
+  - `package.json` â€” check for jsonwebtoken dependency
 
   **QA Scenarios**:
 
@@ -308,7 +308,7 @@ Wave FINAL (Review):
   - `git status` shows no WAL/DB files as untracked
 
   **References**:
-  - `.gitignore` — current file
+  - `.gitignore` â€” current file
   - `data/` directory contents
 
   **QA Scenarios**:
@@ -341,7 +341,7 @@ Wave FINAL (Review):
   **References**:
   - `src/adapters/providers/twitter/twitter.ts` lines 97, 143
   - `src/queue/rate-limiter.ts`
-  - `src/adapters/IAdapter.ts` — RateLimitStatus interface
+  - `src/adapters/IAdapter.ts` â€” RateLimitStatus interface
 
   **QA Scenarios**:
 
@@ -369,8 +369,8 @@ Wave FINAL (Review):
   - No broken script references
 
   **References**:
-  - `git status` — current tracked/untracked state
-  - Script files in `scripts/` — grep for HTML filenames
+  - `git status` â€” current tracked/untracked state
+  - Script files in `scripts/` â€” grep for HTML filenames
 
   **QA Scenarios**:
 
@@ -393,12 +393,12 @@ Wave FINAL (Review):
   **What to do**:
   - Read `src/blast/actions/instagram-dm.ts` as pattern reference
   - Read `src/adapters/providers/` for each platform's send/comment methods
-  - Create `src/blast/actions/facebook-comment.ts` — uses `postComment` from facebook adapter
-  - Create `src/blast/actions/facebook-dm.ts` — uses `sendPrivateMessage` from facebook chat
-  - Create `src/blast/actions/twitter-engage.ts` — uses twitter DM/reply methods
-  - Create `src/blast/actions/threads-engage.ts` — uses Threads adapter
-  - Create `src/blast/actions/whatsapp-send.ts` — uses WhatsApp adapter
-  - Create `src/blast/actions/telegram-send.ts` — uses Telegram adapter
+  - Create `src/blast/actions/facebook-comment.ts` â€” uses `postComment` from facebook adapter
+  - Create `src/blast/actions/facebook-dm.ts` â€” uses `sendPrivateMessage` from facebook chat
+  - Create `src/blast/actions/twitter-engage.ts` â€” uses twitter DM/reply methods
+  - Create `src/blast/actions/threads-engage.ts` â€” uses Threads adapter
+  - Create `src/blast/actions/whatsapp-send.ts` â€” uses WhatsApp adapter
+  - Create `src/blast/actions/telegram-send.ts` â€” uses Telegram adapter
   - Update `src/blast/blast-runner.ts` to import and use new actions based on platform
 
   **Acceptance Criteria**:
@@ -407,9 +407,9 @@ Wave FINAL (Review):
   - All action files compile without errors
 
   **References**:
-  - `src/blast/actions/instagram-dm.ts` — canonical action pattern
-  - `src/blast/blast-runner.ts` — action dispatch logic (lines 30-40)
-  - `src/adapters/providers/{platform}/` — adapter methods per platform
+  - `src/blast/actions/instagram-dm.ts` â€” canonical action pattern
+  - `src/blast/blast-runner.ts` â€” action dispatch logic (lines 30-40)
+  - `src/adapters/providers/{platform}/` â€” adapter methods per platform
 
   **QA Scenarios**:
 
@@ -447,8 +447,8 @@ Wave FINAL (Review):
   - Sequential execution preserved
 
   **References**:
-  - `src/blast/types.ts` — BlastPlatform type
-  - `src/blast/blast-runner.ts` — execution loop
+  - `src/blast/types.ts` â€” BlastPlatform type
+  - `src/blast/blast-runner.ts` â€” execution loop
 
   **QA Scenarios**:
 
@@ -476,8 +476,8 @@ Wave FINAL (Review):
   - All tests pass
 
   **References**:
-  - `src/blast/blast-runner.test.ts` — test pattern reference
-  - `src/blast/action-picker.test.ts` — mock patterns
+  - `src/blast/blast-runner.test.ts` â€” test pattern reference
+  - `src/blast/action-picker.test.ts` â€” mock patterns
 
   **QA Scenarios**:
 
@@ -495,18 +495,18 @@ Wave FINAL (Review):
 
   **What to do**:
   - Read existing adapter tests: `whatsapp.test.ts`, `instagram.test.ts`, `threads.test.ts`, `twitter-cookie.test.ts`
-  - Create `src/adapters/providers/twitter/twitter.test.ts` — tests for main adapter methods
-  - Create `src/adapters/providers/meta/facebook/facebook.test.ts` — tests for main adapter methods
+  - Create `src/adapters/providers/twitter/twitter.test.ts` â€” tests for main adapter methods
+  - Create `src/adapters/providers/meta/facebook/facebook.test.ts` â€” tests for main adapter methods
   - Use mock cookie stores and mock fetch/Playwright
 
   **Acceptance Criteria**:
-  - `twitter.test.ts` exists with ≥2 tests
-  - `facebook.test.ts` exists with ≥2 tests
+  - `twitter.test.ts` exists with â‰¥2 tests
+  - `facebook.test.ts` exists with â‰¥2 tests
   - All adapter tests pass
 
   **References**:
-  - `src/adapters/providers/meta/Whatsapp/whatsapp.test.ts` — adapter test reference
-  - `src/adapters/providers/twitter/twitter.ts` — methods to test
+  - `src/adapters/providers/meta/Whatsapp/whatsapp.test.ts` â€” adapter test reference
+  - `src/adapters/providers/twitter/twitter.ts` â€” methods to test
 
   **QA Scenarios**:
 
@@ -533,8 +533,8 @@ Wave FINAL (Review):
   - Stale files archived or updated
 
   **References**:
-  - `docs/planning/` — all files
-  - Current `docs/decisions/` — for authoritative decisions
+  - `docs/planning/` â€” all files
+  - Current `docs/decisions/` â€” for authoritative decisions
 
   **QA Scenarios**:
 
@@ -552,9 +552,9 @@ Wave FINAL (Review):
 
   **What to do**:
   - Create `src/middleware/auth.test.ts` or `src/routes/auth-integration.test.ts`
-  - Test: request without token → 401
-  - Test: request with valid token → passes through
-  - Test: request with expired token → 401
+  - Test: request without token â†’ 401
+  - Test: request with valid token â†’ passes through
+  - Test: request with expired token â†’ 401
   - Use test JWT signed with JWT_SECRET
 
   **Acceptance Criteria**:
@@ -562,8 +562,8 @@ Wave FINAL (Review):
   - All 3 scenarios pass
 
   **References**:
-  - `src/middleware/auth.ts` — middleware to test
-  - `src/config/secrets.ts` — JWT_SECRET
+  - `src/middleware/auth.ts` â€” middleware to test
+  - `src/config/secrets.ts` â€” JWT_SECRET
 
   **QA Scenarios**:
 
@@ -582,7 +582,7 @@ Wave FINAL (Review):
   **What to do**:
   - Create comprehensive e2e test in `src/routes/e2e.test.ts` or new file
   - Mock all adapters using factory pattern
-  - Test full blast lifecycle: create account → create campaign → trigger blast → verify status sync
+  - Test full blast lifecycle: create account â†’ create campaign â†’ trigger blast â†’ verify status sync
   - Test error paths: failed jobs, rate limiting, invalid credentials
 
   **Acceptance Criteria**:
@@ -591,8 +591,8 @@ Wave FINAL (Review):
   - All e2e tests pass
 
   **References**:
-  - `src/routes/e2e.test.ts` — existing e2e test
-  - `src/routes/functional.test.ts` — functional test patterns
+  - `src/routes/e2e.test.ts` â€” existing e2e test
+  - `src/routes/functional.test.ts` â€” functional test patterns
 
   **QA Scenarios**:
 
@@ -620,7 +620,7 @@ Wave FINAL (Review):
   - No `as any` without documented reason
 
   **References**:
-  - `tsconfig.json` — compiler options
+  - `tsconfig.json` â€” compiler options
   - `npx tsc --noEmit` output
 
   **QA Scenarios**:
@@ -676,8 +676,8 @@ Wave FINAL (Review):
   - Coverage meets or exceeds existing thresholds
 
   **References**:
-  - `vitest.config.ts` — test config
-  - `package.json` — test scripts
+  - `vitest.config.ts` â€” test config
+  - `package.json` â€” test scripts
 
   **QA Scenarios**:
 
@@ -697,7 +697,7 @@ Wave FINAL (Review):
   **What to do**:
   - Create `.github/workflows/ci.yml`
   - Triggers: push to main, PRs to main
-  - Steps: install → lint → typecheck → test → build dashboard
+  - Steps: install â†’ lint â†’ typecheck â†’ test â†’ build dashboard
   - Add status badge to README
   - Consider adding deploy step if deployment target is known
 
@@ -706,8 +706,8 @@ Wave FINAL (Review):
   - Visible badge in README
 
   **References**:
-  - `package.json` — scripts
-  - `vitest.config.ts` — test config
+  - `package.json` â€” scripts
+  - `vitest.config.ts` â€” test config
 
   **QA Scenarios**:
 
@@ -736,8 +736,8 @@ Wave FINAL (Review):
   - Environment properly configured
 
   **References**:
-  - `docker-compose.yml` — base config
-  - `.env.example` — variable reference
+  - `docker-compose.yml` â€” base config
+  - `.env.example` â€” variable reference
 
   **QA Scenarios**:
 
@@ -765,7 +765,7 @@ Wave FINAL (Review):
   - Container runs tests successfully
 
   **References**:
-  - `Dockerfile` — base image
+  - `Dockerfile` â€” base image
   - `docker-compose.yml`
 
   **QA Scenarios**:
@@ -795,8 +795,8 @@ Wave FINAL (Review):
   - Linter catches real issues
 
   **References**:
-  - `.eslintrc.json` — current config
-  - `.prettierrc` — formatting rules
+  - `.eslintrc.json` â€” current config
+  - `.prettierrc` â€” formatting rules
 
   **QA Scenarios**:
 
@@ -823,7 +823,7 @@ Wave FINAL (Review):
   - Stale docs archived
 
   **References**:
-  - `docs/planning/` — all files
+  - `docs/planning/` â€” all files
 
 - [x] 23. Update docs/decisions/ for completed items
 
@@ -836,7 +836,7 @@ Wave FINAL (Review):
   - Docs/decisions reflect current state
 
   **References**:
-  - `docs/decisions/` — all files
+  - `docs/decisions/` â€” all files
 
 - [x] 24. Update root AGENTS.md with completion notes
 
@@ -844,23 +844,23 @@ Wave FINAL (Review):
 
 ---
 
-## Final Verification Wave (MANDATORY — after ALL implementation tasks)
+## Final Verification Wave (MANDATORY â€” after ALL implementation tasks)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Present consolidated results to user and get explicit "okay" before completing.
 
-- [x] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** â€” `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists. For each "Must NOT Have": search codebase. Check evidence files exist.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT`
 
-- [x] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** â€” `unspecified-high`
   Run `tsc --noEmit` + linter + `npm test`.
   Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | VERDICT`
 
-- [x] F3. **Full Test Suite** — `unspecified-high`
+- [x] F3. **Full Test Suite** â€” `unspecified-high`
   Run ALL tests. Save results.
   Output: `Total [N/N pass] | Coverage [X%] | VERDICT`
 
-- [x] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** â€” `deep`
   Verify all tasks match plan, no scope creep.
   Output: `Tasks [N/N compliant] | VERDICT`
 
@@ -901,23 +901,23 @@ npx eslint src/ --max-warnings 0  # Expected: no errors
 - [x] No binary files tracked in git
 - [x] WAL artifacts gitignored
 
-## Final Verification Wave (MANDATORY — after ALL implementation tasks)
+## Final Verification Wave (MANDATORY â€” after ALL implementation tasks)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Present consolidated results to user and get explicit "okay" before completing.
 
-- [x] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** â€” `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, run command). For each "Must NOT Have": search codebase for forbidden patterns. Check evidence files exist. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [x] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** â€” `unspecified-high`
   Run `tsc --noEmit` + linter + `npm test`. Review all changed files. Check for `as any`, empty catches, console.log in code, commented-out code.
   Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | VERDICT`
 
-- [x] F3. **Full Test Suite** — `unspecified-high`
+- [x] F3. **Full Test Suite** â€” `unspecified-high`
   Run ALL tests with coverage. All scenarios must pass. Save results to `.sisyphus/evidence/final-test-results/`.
   Output: `Total [N/N pass] | Coverage [X%] | VERDICT`
 
-- [x] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** â€” `deep`
   For each task: verify "What to do" matches actual diff. No scope creep, no missing items.
   Output: `Tasks [N/N compliant] | Unaccounted [CLEAN/N issues] | VERDICT`
 
@@ -925,7 +925,7 @@ npx eslint src/ --max-warnings 0  # Expected: no errors
 
 ## Commit Strategy
 
-- **Each wave**: `feat(scope): description` — all files in that wave
+- **Each wave**: `feat(scope): description` â€” all files in that wave
 - **Pre-commit**: `tsc --noEmit && npm test`
 
 ---

@@ -1,4 +1,4 @@
-# Rencana: Auto Blast Marketing
+﻿# Rencana: Auto Blast Marketing
 
 ## Tujuan
 
@@ -95,3 +95,4 @@ Jalankan dan pass semua:
 
 **Tanggal**: April 2026  
 **Status**: MVP Plan
+

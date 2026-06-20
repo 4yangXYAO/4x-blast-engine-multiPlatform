@@ -1,4 +1,4 @@
-# ADR-001: Improve cookie-based adapters, DB locking, and worker observability
+﻿# ADR-001: Improve cookie-based adapters, DB locking, and worker observability
 
 Date: 2026-04-30
 
@@ -45,3 +45,4 @@ Several issues were observed when running the system end-to-end and in unit test
 ## Reversal
 
 If cookie-based posting proves brittle or becomes a maintenance burden, revert and prefer Graph API-only path for Facebook Pages. Rollback plan: revert adapter file, restore tests, and update docs accordingly.
+

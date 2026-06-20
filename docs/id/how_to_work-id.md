@@ -1,29 +1,29 @@
-# 📖 Cara Pakai Joki Blast Engine (Versi Super Mudah)
+﻿# ðŸ“– Cara Pakai 4x-blast-engine (Versi Super Mudah)
 
 > Panduan ini ditulis sesederhana mungkin. Kalau kamu bisa pakai WhatsApp, kamu bisa pakai ini!
 
 ---
 
-## 🤔 Ini Alat Apa?
+## ðŸ¤” Ini Alat Apa?
 
-**Joki Blast Engine** adalah mesin pengirim pesan otomatis ke media sosial.
+**4x-blast-engine** adalah mesin pengirim pesan otomatis ke media sosial.
 
 Kamu bisa kirim pesan ke banyak orang sekaligus di platform:
 
-- 📱 **WhatsApp** (via WAHA atau Cloud API)
-- ✈️ **Telegram** (via Bot atau akun pengguna)
-- 📸 **Instagram** (via Graph API atau cookie browser)
-- 🐦 **Twitter/X** (via API atau cookie browser)
-- 🧵 **Threads** (via Graph API atau cookie browser)
+- ðŸ“± **WhatsApp** (via WAHA atau Cloud API)
+- âœˆï¸ **Telegram** (via Bot atau akun pengguna)
+- ðŸ“¸ **Instagram** (via Graph API atau cookie browser)
+- ðŸ¦ **Twitter/X** (via API atau cookie browser)
+- ðŸ§µ **Threads** (via Graph API atau cookie browser)
 
 ---
 
-## 🚀 Langkah 1 — Persiapan Awal (Lakukan Sekali Saja)
+## ðŸš€ Langkah 1 â€” Persiapan Awal (Lakukan Sekali Saja)
 
 ### 1.1 Salin File Konfigurasi
 
 ```
-Salin file .env.example → buat file baru bernama .env
+Salin file .env.example â†’ buat file baru bernama .env
 Isi nilai-nilainya (lihat bagian "Isi .env" di bawah)
 ```
 
@@ -41,11 +41,11 @@ npm install
 npm run db:init
 ```
 
-✅ **Selesai!** Sekarang kamu siap pakai.
+âœ… **Selesai!** Sekarang kamu siap pakai.
 
 ---
 
-## ⚙️ Isi File `.env`
+## âš™ï¸ Isi File `.env`
 
 File `.env` adalah "kunci-kunci" yang diperlukan mesin ini.
 
@@ -64,7 +64,7 @@ Untuk platform-nya, lihat tabel di bawah:
 
 ---
 
-## 📱 Platform — Mana yang Mau Dipakai?
+## ðŸ“± Platform â€” Mana yang Mau Dipakai?
 
 ### WhatsApp via WAHA (Paling Mudah)
 
@@ -78,39 +78,39 @@ Untuk platform-nya, lihat tabel di bawah:
    docker run -p 3001:3000 devlikeapro/waha
    ```
 
-2. Buka browser → `http://localhost:3001` → scan QR WhatsApp kamu
+2. Buka browser â†’ `http://localhost:3001` â†’ scan QR WhatsApp kamu
 3. Isi di `.env`:
 
    ```
    WAHA_BASE_URL=http://localhost:3001
-   WAHA_API_KEY=          ← kosongkan kalau tidak diset
+   WAHA_API_KEY=          â† kosongkan kalau tidak diset
    WAHA_SESSION=default
    ```
 
 ---
 
-### ✈️ Telegram — Bot Biasa
+### âœˆï¸ Telegram â€” Bot Biasa
 
 > Cocok untuk kirim pesan dari bot ke grup/channel
 
-1. Buka Telegram → cari **@BotFather** → ketik `/newbot` → ikuti instruksi
+1. Buka Telegram â†’ cari **@BotFather** â†’ ketik `/newbot` â†’ ikuti instruksi
 2. Kamu dapat **token** seperti: `1234567890:ABCdef...`
 3. Simpan token itu, nanti dipakai saat tambah akun
 
 ---
 
-### ✈️ Telegram — Akun Pengguna (MTProto)
+### âœˆï¸ Telegram â€” Akun Pengguna (MTProto)
 
 > Cocok untuk kirim pesan sebagai "orang biasa" bukan bot
 
-1. Buka https://my.telegram.org → login
-2. Klik **API development tools** → buat aplikasi
+1. Buka https://my.telegram.org â†’ login
+2. Klik **API development tools** â†’ buat aplikasi
 3. Kamu dapat `api_id` (angka) dan `api_hash` (huruf+angka)
 4. Untuk `sessionString`: hubungi admin untuk generate sekali pakai
 
 ---
 
-### 📸 Instagram / 🐦 Twitter / 🧵 Threads via Cookie
+### ðŸ“¸ Instagram / ðŸ¦ Twitter / ðŸ§µ Threads via Cookie
 
 > Cookie = bukti bahwa kamu sudah login di browser
 
@@ -118,9 +118,9 @@ Untuk platform-nya, lihat tabel di bawah:
 
 1. Buka Instagram/Twitter/Threads di browser (Chrome/Firefox)
 2. Login dengan akun kamu
-3. Tekan **F12** → pilih tab **Application**
-4. Klik **Cookies** di sebelah kiri → klik nama website
-5. Kopi semua cookie (atau pakai ekstensi "EditThisCookie" → Export)
+3. Tekan **F12** â†’ pilih tab **Application**
+4. Klik **Cookies** di sebelah kiri â†’ klik nama website
+5. Kopi semua cookie (atau pakai ekstensi "EditThisCookie" â†’ Export)
 
 Format cookie yang bisa dipakai:
 
@@ -129,7 +129,7 @@ Format cookie yang bisa dipakai:
 
 ---
 
-## ▶️ Langkah 2 — Jalankan Server
+## â–¶ï¸ Langkah 2 â€” Jalankan Server
 
 Buka terminal, ketik:
 
@@ -141,7 +141,7 @@ Sekarang server berjalan di: `http://127.0.0.1:3456`
 
 ---
 
-## 🖥️ Langkah 3 — Jalankan Dashboard (Tampilan Web)
+## ðŸ–¥ï¸ Langkah 3 â€” Jalankan Dashboard (Tampilan Web)
 
 Buka terminal **BARU** (jangan tutup yang lama), ketik:
 
@@ -161,18 +161,18 @@ Di sini kamu bisa:
 
 ---
 
-## 👤 Langkah 4 — Tambah Akun
+## ðŸ‘¤ Langkah 4 â€” Tambah Akun
 
 Akun = identitas platform yang mau kamu pakai untuk kirim pesan.
 
-### Cara Termudah — Pakai Dashboard
+### Cara Termudah â€” Pakai Dashboard
 
-1. Buka dashboard → klik **Accounts** → klik **Tambah Akun**
+1. Buka dashboard â†’ klik **Accounts** â†’ klik **Tambah Akun**
 2. Pilih platform (whatsapp, telegram, instagram, dll)
 3. Isi username dan credential yang diperlukan
-4. Klik **Simpan** ✅
+4. Klik **Simpan** âœ…
 
-### Cara Manual — Pakai API
+### Cara Manual â€” Pakai API
 
 Contoh tambah akun WhatsApp (WAHA):
 
@@ -198,11 +198,11 @@ curl -X POST http://127.0.0.1:3456/v1/accounts \
   }'
 ```
 
-> 🔒 **Credential disimpan terenkripsi** — tidak ada yang bisa baca isinya kecuali mesinmu sendiri.
+> ðŸ”’ **Credential disimpan terenkripsi** â€” tidak ada yang bisa baca isinya kecuali mesinmu sendiri.
 
 ---
 
-## 📝 Langkah 5 — Buat Template Pesan
+## ðŸ“ Langkah 5 â€” Buat Template Pesan
 
 Template = pesan yang bisa dipakai berkali-kali dengan nama/link berbeda.
 
@@ -229,7 +229,7 @@ curl -X POST http://127.0.0.1:3456/v1/templates \
 
 ---
 
-## 📤 Langkah 6 — Kirim Pesan
+## ðŸ“¤ Langkah 6 â€” Kirim Pesan
 
 **Via API:**
 
@@ -246,7 +246,7 @@ curl -X POST http://127.0.0.1:3456/v1/jobs/trigger \
 
 ---
 
-## 🔄 Jenis Adapter — Pilih yang Sesuai Kebutuhanmu
+## ðŸ”„ Jenis Adapter â€” Pilih yang Sesuai Kebutuhanmu
 
 | Platform | Adapter | Kapan Dipakai |
 |----------|---------|---------------|
@@ -263,7 +263,7 @@ curl -X POST http://127.0.0.1:3456/v1/jobs/trigger \
 
 ---
 
-## ❓ Pertanyaan Umum (FAQ)
+## â“ Pertanyaan Umum (FAQ)
 
 **Q: Apakah akun/password saya aman?**
 
@@ -287,7 +287,7 @@ A: Di Windows, kamu perlu install **Visual Studio Build Tools** (cari di Google 
 
 ---
 
-## 🆘 Butuh Bantuan?
+## ðŸ†˜ Butuh Bantuan?
 
 Cek file `README.md` untuk dokumentasi teknis lengkap, atau lihat `penjelasan.md` untuk detail arsitektur sistem.
 
@@ -295,3 +295,4 @@ Cek file `README.md` untuk dokumentasi teknis lengkap, atau lihat `penjelasan.md
 
 **Versi**: 1.0  
 **Terakhir update**: Mei 2026
+

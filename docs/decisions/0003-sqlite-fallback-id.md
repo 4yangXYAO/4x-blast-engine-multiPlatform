@@ -1,4 +1,4 @@
-# Keputusan 0003: Pertahankan sql.js sebagai fallback
+﻿# Keputusan 0003: Pertahankan sql.js sebagai fallback
 
 ## Status
 
@@ -25,3 +25,4 @@ Ini preserves working system di environments dimana native binding unavailable a
 ---
 
 **Diperbarui**: Mei 2026
+

@@ -1,4 +1,4 @@
-# dashboard/lib - Shared Dashboard Utilities
+﻿# dashboard/lib - Shared Dashboard Utilities
 
 **Purpose:** Shared utilities, API client, type definitions, and React hooks for the Next.js dashboard.
 
@@ -14,7 +14,7 @@
 
 ## CONVENTIONS
 
-- `api.ts` is the single HTTP client — all dashboard data fetching goes through it
+- `api.ts` is the single HTTP client â€” all dashboard data fetching goes through it
 - Types mirror backend types but may include UI-specific fields
 - Hooks follow React Query / SWR patterns for data fetching and caching
 

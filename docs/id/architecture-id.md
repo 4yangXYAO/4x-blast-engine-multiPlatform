@@ -1,54 +1,54 @@
-# Arsitektur - Joki Blast Engine
+﻿# Arsitektur - 4x-blast-engine
 
-Dokumen ini menjelaskan arsitektur sistem Joki Blast Engine pada level tinggi.
+Dokumen ini menjelaskan arsitektur sistem 4x-blast-engine pada level tinggi.
 
 ## Komponen Utama
 
 ### 1. Backend API (Node.js + Express)
 
 ```
-src/api/server.ts           ← Entry point
-src/routes/*.ts             ← REST API endpoints
-src/repos/*.ts              ← Data access layer (SQLite)
-src/queue/job-queue.ts      ← BullMQ queue manager
-src/workers/*.ts            ← Background job workers
-src/blast/blast-runner.ts   ← Core blast engine
-src/adapters/*.ts           ← Platform adapters (Facebook, Twitter, IG, etc)
-src/utils/*.ts              ← Helper utilities (crypto, logger, tracking)
-src/db/sqlite.ts            ← Database connection & migrations
-src/config/*.ts             ← Configuration & secrets management
+src/api/server.ts           â† Entry point
+src/routes/*.ts             â† REST API endpoints
+src/repos/*.ts              â† Data access layer (SQLite)
+src/queue/job-queue.ts      â† BullMQ queue manager
+src/workers/*.ts            â† Background job workers
+src/blast/blast-runner.ts   â† Core blast engine
+src/adapters/*.ts           â† Platform adapters (Facebook, Twitter, IG, etc)
+src/utils/*.ts              â† Helper utilities (crypto, logger, tracking)
+src/db/sqlite.ts            â† Database connection & migrations
+src/config/*.ts             â† Configuration & secrets management
 ```
 
 ### 2. Dashboard (Next.js + React)
 
 ```
 dashboard/
-├─ app/
-│  ├─ page.tsx              ← Overview / Dashboard home
-│  ├─ campaigns/            ← Campaign management pages
-│  ├─ accounts/             ← Platform accounts management
-│  ├─ templates/            ← Message templates
-│  ├─ blast-runner/         ← Manual blast execution
-│  ├─ jobs/                 ← Job queue monitoring
-│  ├─ leads/                ← Lead management (inbound)
-│  ├─ settings/             ← Settings & integrations
-│  └─ analytics/            ← Statistics & reports
-└─ components/
-   ├─ ui/                   ← Reusable UI components
-   └─ layout/               ← Layout components (Header, Sidebar)
+â”œâ”€ app/
+â”‚  â”œâ”€ page.tsx              â† Overview / Dashboard home
+â”‚  â”œâ”€ campaigns/            â† Campaign management pages
+â”‚  â”œâ”€ accounts/             â† Platform accounts management
+â”‚  â”œâ”€ templates/            â† Message templates
+â”‚  â”œâ”€ blast-runner/         â† Manual blast execution
+â”‚  â”œâ”€ jobs/                 â† Job queue monitoring
+â”‚  â”œâ”€ leads/                â† Lead management (inbound)
+â”‚  â”œâ”€ settings/             â† Settings & integrations
+â”‚  â””â”€ analytics/            â† Statistics & reports
+â””â”€ components/
+   â”œâ”€ ui/                   â† Reusable UI components
+   â””â”€ layout/               â† Layout components (Header, Sidebar)
 ```
 
 ### 3. Database (SQLite via better-sqlite3)
 
 **Tables:**
-- `accounts` — Platform accounts (credentials encrypted)
-- `campaigns` — Campaign definitions
-- `templates` — Message templates (optional)
-- `posts` — Individual post records (result of blast)
-- `jobs` — Job queue (pending, running, completed, failed)
-- `leads` — Inbound leads from WhatsApp/Telegram
-- `link_clicks` — Tracking link click records
-- `runtime_settings` — Key-value store for tokens/config
+- `accounts` â€” Platform accounts (credentials encrypted)
+- `campaigns` â€” Campaign definitions
+- `templates` â€” Message templates (optional)
+- `posts` â€” Individual post records (result of blast)
+- `jobs` â€” Job queue (pending, running, completed, failed)
+- `leads` â€” Inbound leads from WhatsApp/Telegram
+- `link_clicks` â€” Tracking link click records
+- `runtime_settings` â€” Key-value store for tokens/config
 
 ### 4. Queue System (BullMQ)
 
@@ -82,21 +82,21 @@ dashboard/
 
 ```
 [User Dashboard] 
-    ↓ HTTP (REST)
+    â†“ HTTP (REST)
 [Backend API Routes]
-    ↓ (create jobs)
+    â†“ (create jobs)
 [Job Queue (Redis/BullMQ)]
-    ↓ (workers consume)
+    â†“ (workers consume)
 [Worker Pool] 
-    ↓ (load credentials)
+    â†“ (load credentials)
 [Adapter Factory] 
-    ↓ (platform-specific)
+    â†“ (platform-specific)
 [Platform Adapter] 
-    ↓ (HTTP request)
+    â†“ (HTTP request)
 [Social Media Platform]
-    ↓ (webhook callback)
+    â†“ (webhook callback)
 [Inbound Webhook Handler]
-    ↓ (store lead)
+    â†“ (store lead)
 [Database]
 ```
 
@@ -156,4 +156,5 @@ Untuk tambah platform baru:
 ---
 
 **Last updated**: May 2026  
-**Maintainers**: BerkahKarya Team
+**Maintainers**: 4yangXYAO Team
+

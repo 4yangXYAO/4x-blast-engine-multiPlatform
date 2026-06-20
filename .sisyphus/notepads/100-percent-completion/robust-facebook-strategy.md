@@ -1,4 +1,4 @@
-# Strategy for Robust Facebook Automation (100% Feature Completeness)
+﻿# Strategy for Robust Facebook Automation (100% Feature Completeness)
 
 ## The Core Problem
 Facebook actively fights automation. They have three lines of defense:
@@ -30,3 +30,4 @@ To get 100% features (DM, Groups, Like, Comment, Repost, Share, Search), we cann
 1. `playwright-extra` + `puppeteer-extra-plugin-stealth` (For UI-driven fallbacks).
 2. A custom MQTT/FCA port for DMs (based on the community's `fb-chat-api` forks).
 3. A Request Queue (BullMQ or simple JS queue) to pace requests to human-like speeds (e.g., random delay of 3-10 seconds between actions).
+
