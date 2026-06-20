@@ -1,24 +1,134 @@
 # 🚀 4x-blast-engine
 
-High-performance, multi-platform social media blast engine built for **4yangXYAO**. Designed for stealth, high throughput, and persistent engagement.
+Welcome! This is the **4x-blast-engine** repository. This page provides a simple entry point to navigate the project and get started quickly.
 
 ---
 
-## 🛠 Features
+## 🚀 Quick Start
 
-- **Multi-Platform Support**: WhatsApp, Telegram, Instagram, Twitter/X, Threads, and Facebook Pages.
-- **Stealth Architecture**: Advanced fingerprinting and cookie-based authentication (no API tokens required for most platforms).
-- **Hybrid Adapters**: Seamlessly switch between high-speed HTTP/GraphQL and high-fidelity Browser (Playwright) execution.
-- **Robust Orchestration**: Queue-based processing with automatic retries and sophisticated rate limiting.
-- **Full Observability**: Real-time dashboard with CTR tracking, success rates, and live lead conversion funnels.
+To launch the project, use the following commands:
+
+- **On Linux/MacOS**:
+  ```bash
+  ./start.sh
+  ```
+
+- **On Windows**:
+  ```powershell
+  .\start.ps1
+  ```
+
+---
+
+## 🏗 System Architecture
+
+```mermaid
+flowchart TD
+	U[Admin / Operator] --> DASH[Dashboard UI / Next.js]
+	DASH --> API[HTTP API Routes]
+
+	API --> SET[Runtime Settings API]
+	API --> ACC[Accounts API]
+	API --> TMP[Templates API]
+	API --> JOB[Jobs API]
+	API --> CAM[Campaigns API]
+
+	SET --> RSR[RuntimeSettingsRepo]
+	ACC --> ARR[AccountsRepo]
+	TMP --> TPR[TemplatesRepo]
+	JOB --> JPR[JobsRepo]
+	CAM --> CPR[CampaignsRepo]
+
+	RSR --> DB[(SQLite / sql.js fallback)]
+	ARR --> DB
+	TPR --> DB
+	JPR --> DB
+	CPR --> DB
+
+	API --> Q[Job Queue]
+	Q --> W[Worker / Job Executor]
+
+	W --> SEL{Job Type}
+	SEL -->|CommentJob| CMT[Facebook Comment Action]
+	SEL -->|ChatJob| CHAT[Facebook Chat Action]
+	SEL -->|PostJob| PST[Facebook / Platform Post Action]
+	SEL -->|Campaign Job| CMP[Campaign Orchestrator]
+
+	CMT --> FB1[Facebook comment.ts]
+	CHAT --> FB2[Facebook chat.ts]
+	PST --> FB3[FacebookAdapter / facebook.ts]
+	CMP --> Q
+
+	FB1 --> HTTP[HTTP Client + Cookies Parser]
+	FB2 --> HTTP
+	FB3 --> HTTP
+
+	HTTP --> FB[Facebook Internal Endpoints]
+
+	FB1 --> LOG[Logging / logs table]
+	FB2 --> LOG
+	FB3 --> LOG
+	W --> LOG
+	LOG --> DB
+
+	DASH --> HEALTH[API Health / Status Card]
+	HEALTH --> API
+
+	DASH --> CFG[Integration Tokens]
+	CFG --> RSR
+
+	DASH --> ACT[Create Account / Template / Job]
+	ACT --> ARR
+	ACT --> TPR
+	ACT --> JPR
+
+	FB1 -. uses .-> AUTH[Cookie Session + CSRF Tokens]
+	FB2 -. uses .-> AUTH
+	FB3 -. uses .-> AUTH
+	AUTH -. stored in .-> ARR
+
+	subgraph Core[Root Backend]
+		API
+		RSR
+		ARR
+		TPR
+		JPR
+		CPR
+		Q
+		W
+		LOG
+	end
+
+	subgraph Surface[Dashboard Surface]
+		DASH
+		HEALTH
+		CFG
+		ACT
+	end
+```
+
+---
+
+## 📂 Documentation Index
+
+### Design & Architecture
+- [Architecture Overview](docs/design/architecture.md)
+- [Data Flow Analysis](docs/design/data-flow.md)
+- [System Scaling](docs/design/scaling.md)
+- [Security & Stealth](docs/design/security.md)
+
+### Guides & Decision Records
+- [ADR Index](docs/decisions/AGENTS.md)
+- [Facebook Cookie Adapter Guide](docs/facebook-cookie-adapter-guide.md)
+- [Development Workflow](docs/planning/GUIDE.md)
 
 ---
 
 ## 🎥 Product Walkthrough
 
-The **4x-blast-engine** is a production-ready social media automation suite. Below is the feature set for our Facebook implementation:
+The **4x-blast-engine** is a production-ready social media automation suite. 
 
-### 🚀 Live Facebook Blast
+### 🎥 Live Facebook Blast
 ![Facebook Blast Walkthrough](docs/assets/facebook_blast_walkthrough.webp)
 *Visualizing automated target identification and multi-action engagement.*
 
@@ -32,57 +142,6 @@ The **4x-blast-engine** is a production-ready social media automation suite. Bel
 
 ---
 
-## 🚀 Quick Start
-
-Ensure you have [Node.js](https://nodejs.org/) (v18+) and [SQLite](https://www.sqlite.org/) installed.
-
-### Installation
-```bash
-npm install
-npm run db:init
-```
-
-### Run the Engine
-- **Linux/MacOS**:
-  ```bash
-  ./start.sh
-  ```
-- **Windows**:
-  ```powershell
-  .\start.ps1
-  ```
-
-### Dashboard Access
-The Next.js dashboard runs at `http://localhost:3000` by default.
-```bash
-npm run dev:dashboard
-```
-
----
-
-## 📂 Project Structure
-
-```
-├── src/                  # Core execution engine (TypeScript)
-│   ├── adapters/         # Platform-specific adapters (FB, IG, TW, etc.)
-│   ├── blast/            # Multi-platform action orchestrator
-│   ├── queue/            # Job queueing & rate limiting
-│   └── workers/          # Background processing
-├── dashboard/            # Next.js admin dashboard
-├── docs/                 # Detailed technical documentation
-└── scripts/              # Utility and testing scripts
-```
-
----
-
-## 📘 Documentation
-
-For deep dives into the architecture and setup, check the `docs/` directory:
-- [Architecture Overview](docs/design/architecture.md)
-- [Multi-Platform Strategies](docs/design/data-flow.md)
-- [Security & Stealth Guide](docs/design/security.md)
-- [ADR Index (Decisions)](AGENTS.md)
-
----
+For more details, visit the corresponding sections in the `docs/` folder.
 
 © 2026 **4yangXYAO Automation**. All Rights Reserved.
