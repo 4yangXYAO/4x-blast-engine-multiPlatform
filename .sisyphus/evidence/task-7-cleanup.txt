@@ -1,9 +1,0 @@
- M .gitignore
- M .sisyphus/boulder.json
- D jest.config.js
- D package-lock.json
- M package.json
- M tsconfig.json
-?? .sisyphus/evidence/task-5-gitignore.txt
-?? .sisyphus/evidence/task-7-cleanup.txt
-?? .sisyphus/plans/comprehensive-completion.md
