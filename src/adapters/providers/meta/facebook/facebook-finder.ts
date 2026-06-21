@@ -28,6 +28,12 @@ export interface FacebookFinderResult {
  * @param limit   Max target yang di-return (default 30)
  * @param filters Advanced search filters
  */
+import { discoveryService } from '../../../../blast/discovery-service'
+
+/**
+ * Cari Facebook untuk group posts berdasarkan query.
+ * Ekstrak post IDs (untuk comment) dan user IDs (untuk DM).
+ */
 export async function findFacebookTargets(
   query: string,
   cookie: string,
@@ -38,69 +44,32 @@ export async function findFacebookTargets(
     return fallbackToFile(limit)
   }
 
-  const cookieHeader = parseCookies(cookie)
-
   try {
-    // Try GraphQL search first for better filtering support
-    try {
-      const gqlResult = await findFacebookTargetsGraphQL(query, cookie, limit, filters)
-      if (gqlResult.postIds.length > 0 || gqlResult.userIds.length > 0) {
-        return gqlResult
-      }
-    } catch (e) {
-      console.warn('[FacebookFinder] GraphQL search failed, falling back to HTML scraper:', e instanceof Error ? e.message : String(e))
-    }
-
-    // Fallback to HTML scraper
-    const searchClient = createHttpClient({
-      baseURL: 'https://www.facebook.com',
-      timeout: 20_000,
-      headers: {
-        Cookie: cookieHeader,
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      },
+    console.log(`[FacebookFinder] Using Stealth DiscoveryService for query: ${query}`)
+    const discoveryTargets = await discoveryService.findTargets(cookie, {
+      platform: 'facebook',
+      keyword: query,
+      limit,
+      strategy: 'AD_ENGAGEMENT' // Default to high-value discovery
     })
 
-    const searchUrl = `/search/posts/?q=${encodeURIComponent(query)}`;
-    const res = await searchClient.get(searchUrl)
-    const html = String(res?.data || '')
-
-    if (html.includes('"login_form"')) {
-      console.warn('[FacebookFinder] Cookie expired (redirected to login), fallback ke targets.txt')
-      return fallbackToFile(limit)
-    }
-
-    const postIds: string[] = []
-    const userIds: string[] = []
-
-    // Extract post_id dari initial state payload di HTML
-    const postIdRegex = /"post_id":"(\d+)"/g
-    let match: RegExpExecArray | null
-    while ((match = postIdRegex.exec(html)) !== null) {
-      if (!postIds.includes(match[1])) postIds.push(match[1])
-    }
+    const postIds = discoveryTargets
+      .filter(t => t.action === 'comment')
+      .map(t => t.id)
     
-    // Extract ID dari posts URL pattern (biasanya di group_id/posts/post_id)
-    const urlRegex = /"url":"https:\\\/\\\/www\.facebook\.com\\\/groups\\\/(\d+)\\\/posts\\\/(\d+)\\\/"/g
-    while ((match = urlRegex.exec(html)) !== null) {
-      const fullId = `${match[1]}_${match[2]}`
-      if (!postIds.includes(fullId)) postIds.push(fullId)
-    }
+    const userIds = discoveryTargets
+      .filter(t => t.action === 'chat')
+      .map(t => t.id)
 
     if (postIds.length === 0 && userIds.length === 0) {
       return fallbackToFile(limit)
     }
 
-     return {
-       postIds: postIds.slice(0, limit),
-       userIds: userIds.slice(0, limit),
-     }
-   } catch (e: unknown) {
-     const error = e instanceof Error ? e : new Error(String(e))
-     console.error('[FacebookFinder] Search error:', error.message)
-     return fallbackToFile(limit)
-   }
+    return { postIds, userIds }
+  } catch (e: unknown) {
+    console.error('[FacebookFinder] Stealth search failed:', e instanceof Error ? e.message : String(e))
+    return fallbackToFile(limit)
+  }
 }
 
 /**

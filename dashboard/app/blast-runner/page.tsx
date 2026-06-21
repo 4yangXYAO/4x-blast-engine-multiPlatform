@@ -26,7 +26,7 @@ export default function BlastRunnerPage() {
   const [step, setStep] = useState(1)
   const [platform, setPlatform] = useState<PlatformName>('facebook')
   const [credential, setCredential] = useState('')
-  const [message, setMessage] = useState('Test blast from Joki Engine')
+  const [message, setMessage] = useState('Test blast from 4x Blast Engine')
   const [targetSource, setTargetSource] = useState('feed')
   const [maxActions, setMaxActions] = useState(30)
   const [actionMixComment, setActionMixComment] = useState(70)

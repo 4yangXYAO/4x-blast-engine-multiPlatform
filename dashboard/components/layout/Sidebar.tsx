@@ -12,6 +12,8 @@ import {
   BarChart3,
   Settings,
   NotebookText,
+  Calendar,
+  Target,
   X,
 } from 'lucide-react'
 
@@ -44,6 +46,8 @@ const navGroups: NavGroup[] = [
     group: 'Campaigns',
     items: [
       { label: 'Manage Campaigns', href: '/campaigns', icon: NotebookText },
+      { label: 'Schedules', href: '/schedules', icon: Calendar },
+      { label: 'Batch Comment', href: '/comment-random', icon: MessageSquareText },
       { label: 'Blast Runner', href: '/blast-runner', icon: Send },
       { label: 'Jobs & History', href: '/jobs', icon: History },
     ],
@@ -64,8 +68,12 @@ const navGroups: NavGroup[] = [
   },
 ]
 
+import { useStatus } from '@/lib/hooks'
+
 function SidebarContent({ onClose, collapsed }: { onClose?: () => void, collapsed?: boolean }) {
   const pathname = usePathname()
+  const { data: status } = useStatus()
+  const isOnline = !!status
 
   return (
     <div className="flex flex-col h-full bg-[#0a0f18]/95 backdrop-blur-md">
@@ -74,7 +82,7 @@ function SidebarContent({ onClose, collapsed }: { onClose?: () => void, collapse
           <Send className="w-5 h-5 text-white" />
         </div>
         {!collapsed && (
-          <span className="font-bold text-lg tracking-tight text-slate-100 uppercase">Joki Blast</span>
+          <span className="font-bold text-lg tracking-tight text-slate-100 uppercase">4x Blast</span>
         )}
       </div>
 
@@ -120,10 +128,10 @@ function SidebarContent({ onClose, collapsed }: { onClose?: () => void, collapse
 
       <div className="p-4 border-t border-slate-800/50 bg-slate-900/30">
         <div className={`flex items-center gap-3 px-2 py-2 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'} shrink-0`} />
           {!collapsed && (
             <>
-              <span className="text-xs font-medium text-slate-400">System Online</span>
+              <span className="text-xs font-medium text-slate-400">{isOnline ? 'System Online' : 'System Offline'}</span>
               <span className="ml-auto text-[10px] font-mono text-slate-600">v0.1.0</span>
             </>
           )}
@@ -136,7 +144,7 @@ function SidebarContent({ onClose, collapsed }: { onClose?: () => void, collapse
 export function Sidebar({ open, onClose, collapsed }: SidebarProps) {
   return (
     <>
-      <aside 
+      <aside
         className={`hidden md:flex flex-col fixed left-0 top-0 h-screen bg-slate-950 border-r border-slate-800/50 z-30 transition-all duration-300
           ${collapsed ? 'w-20' : 'w-64'}
         `}
@@ -148,7 +156,7 @@ export function Sidebar({ open, onClose, collapsed }: SidebarProps) {
         <div className="md:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-slate-950 shadow-2xl border-r border-slate-800/50 animate-in slide-in-from-left duration-300">
-            <button 
+            <button
               onClick={onClose}
               className="absolute right-4 top-6 p-2 text-slate-400 hover:text-slate-100"
             >

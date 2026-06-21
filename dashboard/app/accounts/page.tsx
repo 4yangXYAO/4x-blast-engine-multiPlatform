@@ -12,15 +12,17 @@ import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { PlatformIcon } from '@/components/ui/PlatformIcon'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { useState } from 'react'
-import { Plus, Eye, Trash2, Key } from 'lucide-react'
+import { Plus, Eye, Trash2, Key, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import type { Account } from '@/lib/types'
+import { EditAccountModal } from '@/components/modals/EditAccountModal'
 
 export default function AccountsPage() {
   const queryClient = useQueryClient()
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [revealId, setRevealId] = useState<string | null>(null)
+  const [editAccount, setEditAccount] = useState<Account | null>(null)
 
   const { data: accounts, isLoading } = useQuery<Account[]>({
     queryKey: ['accounts'],
@@ -81,6 +83,9 @@ export default function AccountsPage() {
 
   const actions = (row: Account) => (
     <div className="flex gap-1">
+      <Button variant="ghost" size="icon" onClick={() => setEditAccount(row)}>
+        <Pencil className="w-4 h-4 text-emerald-400" />
+      </Button>
       <Button variant="ghost" size="icon" asChild>
         <Link href={`/accounts/${row.id}`}>
           <Eye className="w-4 h-4" />
@@ -118,6 +123,12 @@ export default function AccountsPage() {
             <Link href="/accounts/new">Add Account</Link>
           </Button>
         }
+      />
+
+      <EditAccountModal 
+        account={editAccount}
+        open={!!editAccount}
+        onOpenChange={(open) => !open && setEditAccount(null)}
       />
 
       <ConfirmDialog

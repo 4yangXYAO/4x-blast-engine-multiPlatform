@@ -10,34 +10,50 @@ import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { dateRanges } from '@/lib/utils'
 import { BarChart3, TrendingUp } from 'lucide-react'
 
+import { useAnalytics, useCampaigns } from '@/lib/hooks'
+
 export default function AnalyticsPage() {
   const [dateRange, setDateRange] = useState('last7')
+  const [campaignId, setCampaignId] = useState<string>('all')
 
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ['analytics', dateRange],
-    queryFn: async () => {
-      const from = dateRanges[dateRange as keyof typeof dateRanges]()
-      const res = await api.get(`/v1/track/stats${from ? `?from=${from}` : ''}`)
-      return res.data
-    },
-  })
+  const { data: campaigns } = useCampaigns()
+  const fromDate = dateRanges[dateRange as keyof typeof dateRanges]()
+  
+  const { data: stats, isLoading } = useAnalytics(
+    campaignId === 'all' ? undefined : campaignId,
+    fromDate
+  )
 
   if (isLoading) return <LoadingSkeleton count={4} />
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Analytics</h1>
-        <Select value={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[180px] bg-slate-800 border-slate-700">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="bg-slate-800 border-slate-700">
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="last7">Last 7 Days</SelectItem>
-            <SelectItem value="last30">Last 30 Days</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-100">Analytics</h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <Select value={campaignId} onValueChange={setCampaignId}>
+            <SelectTrigger className="w-[200px] bg-slate-800 border-slate-700 text-slate-200">
+              <SelectValue placeholder="All Campaigns" />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-800 border-slate-700 text-slate-200">
+              <SelectItem value="all">All Campaigns</SelectItem>
+              {campaigns?.map((c: any) => (
+                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-[180px] bg-slate-800 border-slate-700 text-slate-200">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-800 border-slate-700 text-slate-200">
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="last7">Last 7 Days</SelectItem>
+              <SelectItem value="last30">Last 30 Days</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">

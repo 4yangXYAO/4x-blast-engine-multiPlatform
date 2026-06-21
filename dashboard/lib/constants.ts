@@ -4,6 +4,7 @@ export const INTEGRATION_FIELDS = [
   { key: 'THREADS_ACCESS_TOKEN', label: 'Threads Access Token' },
   { key: 'TWITTER_BEARER_TOKEN', label: 'Twitter Bearer Token' },
   { key: 'INSTAGRAM_ACCESS_TOKEN', label: 'Instagram Access Token' },
+  { key: 'WEBHOOK_URL', label: 'Global Webhook URL' },
 ]
 
 export const CONFIG_FIELDS = [

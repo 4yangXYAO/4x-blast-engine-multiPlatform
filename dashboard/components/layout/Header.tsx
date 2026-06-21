@@ -75,7 +75,7 @@ export function Header({ onMenuToggle, platformHealth, breadcrumb }: HeaderProps
           
           <div className="flex items-center gap-3 pl-2">
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold border border-indigo-400/30">
-              JS
+              4X
             </div>
           </div>
         </div>

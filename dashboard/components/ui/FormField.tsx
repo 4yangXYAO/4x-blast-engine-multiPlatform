@@ -11,6 +11,8 @@ export interface FormFieldProps {
   options?: { value: string; label: string }[]
   error?: string
   className?: string
+  value?: string | number
+  defaultValue?: string | number
   onChange?: ReactEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
 }
 
@@ -23,6 +25,8 @@ export function FormField({
   options,
   error,
   className = '',
+  value,
+  defaultValue,
 }: FormFieldProps) {
   const baseClass = `w-full px-3 py-2 bg-slate-800 border rounded-lg text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${error ? 'border-red-500' : 'border-slate-700'} ${className}`
 
@@ -37,9 +41,17 @@ export function FormField({
           placeholder={placeholder}
           aria-invalid={!!error}
           name={name}
+          value={value}
+          defaultValue={defaultValue}
         />
       ) : type === 'select' ? (
-        <select className={baseClass} name={name} aria-invalid={!!error}>
+        <select 
+          className={baseClass} 
+          name={name} 
+          aria-invalid={!!error} 
+          value={value}
+          defaultValue={defaultValue}
+        >
           <option value="">Select...</option>
           {options?.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -54,6 +66,8 @@ export function FormField({
           placeholder={placeholder}
           aria-invalid={!!error}
           name={name}
+          value={value}
+          defaultValue={defaultValue}
         />
       )}
       {helperText && !error && <p className="mt-1 text-xs text-slate-400">{helperText}</p>}

@@ -11,6 +11,7 @@ import { postsRouter } from '../routes/posts'
 import { jobsRouter, schedulesRouter, defaultJobQueue, startCronScheduler } from '../routes/jobs'
 import { adaptersRouter } from '../routes/adapters'
 import { webhooksRouter } from '../routes/webhooks'
+import { discoveryRouter } from '../routes/discovery'
 import { settingsRouter } from '../routes/settings'
 import { createCampaignsRouter } from '../routes/campaigns'
 import { trackRouter } from '../routes/track'
@@ -89,7 +90,7 @@ export async function startServer() {
     const duplicatePorts = allPorts.filter((p, i) => allPorts.indexOf(p) !== i)
     throw new Error(
       `❌ PORT CONFLICT: Duplicate ports detected: ${[...new Set(duplicatePorts)].join(', ')}. ` +
-        `Set API_PORT=${port}, DASHBOARD_PORT=${dashboardPort} to different values.`
+      `Set API_PORT=${port}, DASHBOARD_PORT=${dashboardPort} to different values.`
     )
   }
 
@@ -97,6 +98,7 @@ export async function startServer() {
   app.use('/v1', authMiddleware)
   app.use('/v1/accounts', accountsRouter)
   app.use('/v1/templates', templatesRouter)
+  app.use('/v1/discovery', discoveryRouter)
   app.use('/v1/posts', postsRouter)
   app.use('/v1/jobs', jobsRouter)
   app.use('/v1/schedules', schedulesRouter)

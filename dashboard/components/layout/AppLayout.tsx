@@ -45,7 +45,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </main>
 
           <footer className="py-6 px-8 border-t border-slate-900/50 text-center text-slate-600 text-[10px] uppercase tracking-widest">
-            &copy; 2026 BerkahKarya Automation Engine • All Rights Reserved
+            &copy; 2026 4yangXYAO Automation Engine &bull; All Rights Reserved
           </footer>
         </div>
 

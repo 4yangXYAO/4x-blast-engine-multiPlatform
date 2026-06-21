@@ -191,7 +191,7 @@ async function fetchTargets(
   // Shuffle targets (Fisher-Yates)
   for (let i = targets.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[targets[i], targets[j]] = [targets[j], targets[i]]
+      ;[targets[i], targets[j]] = [targets[j], targets[i]]
   }
 
   return targets.slice(0, limit)

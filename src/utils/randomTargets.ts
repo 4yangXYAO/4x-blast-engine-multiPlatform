@@ -41,7 +41,7 @@ export function getRandomTargets(count: number): string[] {
     }
     console.warn(
       `[randomTargets] targets.txt not found — created example at ${TARGETS_FILE}. ` +
-        'Fill it with one target ID per line and try again.'
+      'Fill it with one target ID per line and try again.'
     )
     return []
   }
@@ -63,7 +63,7 @@ export function getRandomTargets(count: number): string[] {
   // Fisher-Yates shuffle
   for (let i = unique.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[unique[i], unique[j]] = [unique[j], unique[i]]
+      ;[unique[i], unique[j]] = [unique[j], unique[i]]
   }
 
   return unique.slice(0, count)
@@ -79,6 +79,34 @@ export function countTargets(): number {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line.length > 0 && !line.startsWith('#')).length
+}
+
+export function appendTargets(newTargets: string[]): { added: number; total: number } {
+  if (!existsSync(DATA_DIR)) {
+    mkdirSync(DATA_DIR, { recursive: true })
+  }
+
+  let existing: string[] = []
+  if (existsSync(TARGETS_FILE)) {
+    const raw = readFileSync(TARGETS_FILE, 'utf8')
+    existing = raw
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith('#'))
+  }
+
+  const existingSet = new Set(existing)
+  const toAdd = newTargets.filter((t) => !existingSet.has(t))
+
+  if (toAdd.length > 0) {
+    const contentToAppend = '\n' + toAdd.join('\n') + '\n'
+    writeFileSync(TARGETS_FILE, contentToAppend, { flag: 'a', encoding: 'utf8' })
+  }
+
+  return {
+    added: toAdd.length,
+    total: existing.length + toAdd.length,
+  }
 }
 
 export { TARGETS_FILE }

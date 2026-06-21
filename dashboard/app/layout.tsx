@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import AppLayout from '@/components/layout/AppLayout'
 
 export const metadata: Metadata = {
-  title: 'Joki Blast | Social Media Automation',
-  description: 'Professional multi-platform social media automation engine by BerkahKarya.',
+  title: '4x Blast Engine | Social Media Automation',
+  description: 'Professional multi-platform social media automation engine by 4yangXYAO.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
