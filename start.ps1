@@ -24,7 +24,7 @@ if (-not (Test-Path "dashboard/node_modules")) {
     Set-Location ..
 }
 
-# 4. InisialDatabase SQLite
+# 4. Inisialisasi Database SQLite
 Write-Host "🗄️ Menginisialisasi Database..." -ForegroundColor Cyan
 npm run db:init
 
