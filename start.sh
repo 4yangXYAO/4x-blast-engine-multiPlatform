@@ -32,12 +32,4 @@ echo "💡 Tekan Ctrl+C untuk menghentikan semua proses."
 echo "======================================================="
 
 # 5. Jalankan API dan Dashboard bersamaan
-npm run dev:api &
-API_PID=$!
-
-cd dashboard && npm run dev &
-DASH_PID=$!
-
-# Trap agar saat Ctrl+C, kedua server mati
-trap "echo 'Mematikan server...'; kill $API_PID $DASH_PID; exit 0" SIGINT EXIT
-wait
+npm run dev
