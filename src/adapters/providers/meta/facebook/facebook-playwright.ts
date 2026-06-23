@@ -112,10 +112,8 @@ export class FacebookPlaywrightAdapter implements IAdapter {
         if (!this._page) throw new Error('Browser not connected');
         try {
             await this._page.goto(`https://www.facebook.com/messages/t/${to}`, { waitUntil: 'domcontentloaded' });
-            const textBox = await this._page.waitForSelector('div[role="textbox"][contenteditable="true"]');
-
-            if (!textBox) throw new Error('Could not find message input box');
-
+            const textBox = this._page.locator('div[role="textbox"][contenteditable="true"], [placeholder*="Aa"], [aria-label*="Message"]').first();
+            await textBox.waitFor({ state: 'visible', timeout: 15000 });
             await textBox.fill(message);
             await textBox.press('Enter');
 
@@ -137,11 +135,13 @@ export class FacebookPlaywrightAdapter implements IAdapter {
             await this._page.goto(postUrl, { waitUntil: 'domcontentloaded' });
             await this._page.waitForTimeout(3000);
 
-            const textBox = await this._page.waitForSelector('div[role="textbox"][contenteditable="true"]');
-            if (!textBox) throw new Error('Comment box not found');
-
-            await textBox.fill(commentText);
-            await textBox.press('Enter');
+            // Try to find the comment box using multiple strategies
+            const commentBox = this._page.locator('div[role="textbox"][contenteditable="true"], [placeholder*="Write a comment"], [aria-label*="Write a comment"]').first();
+            
+            await commentBox.waitFor({ state: 'visible', timeout: 15000 });
+            await commentBox.click(); // Ensure focus
+            await commentBox.fill(commentText);
+            await commentBox.press('Enter');
             this.log('Successfully commented on the post.');
             return true;
         } catch (error) {
