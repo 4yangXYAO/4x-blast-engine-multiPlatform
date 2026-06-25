@@ -1,12 +1,32 @@
-Write-Host "🚀 Memulai Joki Blast Engine..." -ForegroundColor Cyan
+$ErrorActionPreference = "Stop"
+
+Write-Host "🚀 Memulai 4x-Blast Engine..." -ForegroundColor Cyan
+
+# Function to check command existence
+function Test-CommandExists($Command) {
+    return (Get-Command $Command -ErrorAction SilentlyContinue) -ne $null
+}
+
+# 0. Cek Node.js & NPM
+if (-not (Test-CommandExists "node")) {
+    Write-Host "❌ Error: Node.js belum terinstall." -ForegroundColor Red
+    exit 1
+}
+
+if (-not (Test-CommandExists "npm")) {
+    Write-Host "❌ Error: NPM belum terinstall." -ForegroundColor Red
+    exit 1
+}
 
 # 1. Cek & Copy .env
 if (-not (Test-Path ".env")) {
     if (Test-Path ".env.example") {
         Write-Host "📄 Membuat .env dari .env.example..." -ForegroundColor Yellow
         Copy-Item ".env.example" ".env"
+        Write-Host "⚠️ Silakan edit file .env nanti jika ada konfigurasi khusus (misal: API Keys)." -ForegroundColor Yellow
     } else {
-        Write-Host "⚠️ .env.example tidak ditemukan, silakan buat .env secara manual." -ForegroundColor Red
+        Write-Host "❌ Error: .env.example tidak ditemukan, silakan buat .env secara manual." -ForegroundColor Red
+        exit 1
     }
 }
 
@@ -19,9 +39,7 @@ if (-not (Test-Path "node_modules")) {
 # 3. Install dependensi Dashboard
 if (-not (Test-Path "dashboard/node_modules")) {
     Write-Host "📦 Menginstal dependensi Dashboard..." -ForegroundColor Cyan
-    Set-Location dashboard
-    npm install
-    Set-Location ..
+    npm install --prefix dashboard
 }
 
 # 4. Inisialisasi Database SQLite
