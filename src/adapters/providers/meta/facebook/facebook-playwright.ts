@@ -2,6 +2,7 @@ import type { Browser, BrowserContext, Page } from 'playwright';
 import { IAdapter, RateLimitStatus } from '../../../IAdapter';
 import { findFacebookTargets, FacebookFinderResult } from './facebook-finder';
 import { getNotifications, FacebookNotification } from './facebook-notif';
+import { getActiveProxy, toPlaywrightProxy } from '../../../../proxy';
 
 export interface FacebookAdapterOptions {
     logger?: (message: string) => void;
@@ -35,7 +36,11 @@ export class FacebookPlaywrightAdapter implements IAdapter {
             const { chromium: chr } = await import('playwright-extra')
             const stealthPlugin = (await import('puppeteer-extra-plugin-stealth')).default
             const browserWithStealth = chr.use(stealthPlugin())
-            this.browser = await browserWithStealth.launch({ headless: this.opts.headless ?? true });
+            const activeProxy = getActiveProxy()
+            this.browser = await browserWithStealth.launch({
+                headless: this.opts.headless ?? true,
+                proxy: activeProxy ? toPlaywrightProxy(activeProxy) : undefined,
+            });
             this.context = await this.browser.newContext();
             this._page = await this.context.newPage();
 
@@ -111,10 +116,30 @@ export class FacebookPlaywrightAdapter implements IAdapter {
     async sendMessage(to: string, message: string): Promise<{ success: boolean; error?: string; code?: string }> {
         if (!this._page) throw new Error('Browser not connected');
         try {
-            await this._page.goto(`https://www.facebook.com/messages/t/${to}`, { waitUntil: 'domcontentloaded' });
-            const textBox = this._page.locator('div[role="textbox"][contenteditable="true"], [placeholder*="Aa"], [aria-label*="Message"]').first();
-            await textBox.waitFor({ state: 'visible', timeout: 15000 });
+            await this._page.goto(`https://www.facebook.com/messages/t/${to}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+            await this._page.waitForTimeout(2000);
+            const selectors = [
+                'div[role="textbox"][contenteditable="true"]',
+                '[aria-label*="Message"]',
+                '[aria-label*="Pesan"]',
+                '[placeholder*="Aa"]',
+                '[placeholder*="Ketik"]',
+            ];
+            let textBox = null;
+            for (const sel of selectors) {
+                const loc = this._page.locator(sel).first();
+                if (await loc.count()) {
+                    textBox = loc;
+                    break;
+                }
+            }
+            if (!textBox) {
+                throw new Error('DM text box not found — user ID may be invalid or messaging blocked');
+            }
+            await textBox.waitFor({ state: 'visible', timeout: 30_000 });
+            await textBox.click();
             await textBox.fill(message);
+            await this._page.waitForTimeout(300);
             await textBox.press('Enter');
 
             this.log(`Message sent to ${to}`);
@@ -129,19 +154,88 @@ export class FacebookPlaywrightAdapter implements IAdapter {
         return findFacebookTargets(query, this.rawCookieString, limit);
     }
 
-    async commentOnPost(postUrl: string, commentText: string): Promise<boolean> {
+    async commentOnPost(postUrlOrId: string, commentText: string): Promise<boolean> {
+        if (!this._page) throw new Error('Browser not connected');
+        const urls = this.buildPostUrls(postUrlOrId);
+        let lastError: unknown = null;
+
+        for (const url of urls) {
+            try {
+                const ok = await this.tryCommentOnUrl(url, commentText);
+                if (ok) return true;
+            } catch (error) {
+                lastError = error;
+                this.log(`Comment attempt failed for ${url}: ${error}`);
+            }
+        }
+
+        throw lastError ?? new Error('Comment failed on all URL variants');
+    }
+
+    private buildPostUrls(postUrlOrId: string): string[] {
+        if (postUrlOrId.startsWith('http')) return [postUrlOrId];
+        const id = postUrlOrId.replace(/\D/g, '');
+        return [
+            `https://www.facebook.com/permalink.php?story_fbid=${id}`,
+            `https://www.facebook.com/${id}`,
+            `https://m.facebook.com/story.php?story_fbid=${id}`,
+        ];
+    }
+
+    private async tryCommentOnUrl(url: string, commentText: string): Promise<boolean> {
         if (!this._page) throw new Error('Browser not connected');
         try {
-            await this._page.goto(postUrl, { waitUntil: 'domcontentloaded' });
-            await this._page.waitForTimeout(3000);
+            await this._page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+            await this._page.waitForTimeout(4000);
 
-            // Try to find the comment box using multiple strategies
-            const commentBox = this._page.locator('div[role="textbox"][contenteditable="true"], [placeholder*="Write a comment"], [aria-label*="Write a comment"]').first();
-            
-            await commentBox.waitFor({ state: 'visible', timeout: 15000 });
-            await commentBox.click(); // Ensure focus
+            await this._page.mouse.wheel(0, 800);
+            await this._page.waitForTimeout(1500);
+
+            const selectors = [
+                'div[role="textbox"][contenteditable="true"]',
+                '[aria-label*="Write a comment"]',
+                '[aria-label*="Tulis komentar"]',
+                '[aria-label*="Write a comment as"]',
+                '[aria-label*="Tulis komentar sebagai"]',
+                '[placeholder*="comment"]',
+                '[placeholder*="komentar"]',
+                '[placeholder*="Comment"]',
+                '[placeholder*="Komentar"]',
+            ];
+
+            let commentBox = null;
+            for (const sel of selectors) {
+                const loc = this._page.locator(sel).first();
+                if (await loc.count()) {
+                    commentBox = loc;
+                    break;
+                }
+            }
+
+            if (!commentBox) {
+                const commentBtn = this._page
+                    .locator(
+                        '[aria-label*="Comment"], [aria-label*="Komentar"], [role="button"]:has-text("Comment"), [role="button"]:has-text("Komentar")'
+                    )
+                    .first();
+                if (await commentBtn.count()) {
+                    await commentBtn.click();
+                    await this._page.waitForTimeout(2000);
+                    commentBox = this._page.locator('div[role="textbox"][contenteditable="true"]').first();
+                }
+            }
+
+            if (!commentBox || (await commentBox.count()) === 0) {
+                throw new Error('Comment box not found — post may not allow comments or layout changed');
+            }
+
+            await commentBox.scrollIntoViewIfNeeded();
+            await commentBox.waitFor({ state: 'visible', timeout: 30_000 });
+            await commentBox.click();
             await commentBox.fill(commentText);
+            await this._page.waitForTimeout(500);
             await commentBox.press('Enter');
+            await this._page.waitForTimeout(2000);
             this.log('Successfully commented on the post.');
             return true;
         } catch (error) {

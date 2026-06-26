@@ -1,8 +1,11 @@
 import { Router, Request, Response } from 'express'
 import { discoveryService } from '../blast/discovery-service'
+import type { DiscoveryMode } from '../blast/platform-search'
 import { AccountsRepo } from '../repos/accountsRepo'
 import { decrypt } from '../utils/crypto'
 import { appendTargets } from '../utils/randomTargets'
+
+const VALID_MODES: DiscoveryMode[] = ['feed', 'keyword', 'hashtag']
 
 export function createDiscoveryRouter() {
   const router = Router()
@@ -20,14 +23,24 @@ export function createDiscoveryRouter() {
 
   /**
    * POST /v1/discovery/search
-   * Body: { platform, accountId, keyword, strategy, limit }
+   * Body: { platform, accountId, keyword?, strategy, limit, mode }
    */
   router.post('/search', async (req: Request, res: Response) => {
-    const { platform, accountId, keyword, strategy, limit } = req.body || {}
+    const { platform, accountId, keyword, strategy, limit, mode } = req.body || {}
 
-    if (!platform || !accountId || !keyword) {
-      return res.status(400).json({ error: 'platform, accountId, and keyword are required' })
+    if (!platform || !accountId) {
+      return res.status(400).json({ error: 'platform and accountId are required' })
     }
+
+    const searchMode = (mode as DiscoveryMode) || (keyword?.trim() ? 'keyword' : 'feed')
+    if (!VALID_MODES.includes(searchMode)) {
+      return res.status(400).json({ error: `mode must be one of: ${VALID_MODES.join(', ')}` })
+    }
+    if (searchMode !== 'feed' && !String(keyword ?? '').trim()) {
+      return res.status(400).json({ error: 'keyword is required for keyword/hashtag mode' })
+    }
+
+    const targetLimit = Math.min(Math.max(Number(limit) || 30, 1), 100)
 
     try {
       const account = accountsRepo.findById(accountId)
@@ -36,14 +49,23 @@ export function createDiscoveryRouter() {
       const cookie = readDecryptedCredentials(account.credentials_encrypted)
       const targets = await discoveryService.findTargets(cookie, {
         platform,
-        keyword,
+        keyword: String(keyword ?? '').trim(),
         strategy: strategy || 'AD_ENGAGEMENT',
-        limit: limit ? Number(limit) : 30
+        limit: targetLimit,
+        mode: searchMode,
       })
 
-      res.json({ targets })
-    } catch (e: any) {
-      res.status(500).json({ error: e.message || 'Search failed' })
+      res.json({
+        targets,
+        meta: {
+          requested: targetLimit,
+          found: targets.length,
+          mode: searchMode,
+        },
+      })
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Search failed'
+      res.status(500).json({ error: msg })
     }
   })
 
@@ -60,8 +82,9 @@ export function createDiscoveryRouter() {
     try {
       const result = appendTargets(targets)
       res.json({ message: 'Targets saved successfully', ...result })
-    } catch (e: any) {
-      res.status(500).json({ error: e.message || 'Failed to save targets' })
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to save targets'
+      res.status(500).json({ error: msg })
     }
   })
 

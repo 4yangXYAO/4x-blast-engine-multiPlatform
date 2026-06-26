@@ -23,6 +23,10 @@ export function getLeadsRepo(db?: DB): LeadsRepo {
   return leadsRepo
 }
 
+;(getLeadsRepo as any)._reset = () => {
+  leadsRepo = null
+}
+
 export function createWebhooksRouter(queue: Pick<JobQueue, 'enqueuePostJob'>): Router {
   const router = Router()
 
@@ -48,23 +52,23 @@ export function createWebhooksRouter(queue: Pick<JobQueue, 'enqueuePostJob'>): R
       const repo = getLeadsRepo()
       const lead = repo.findOrCreate('whatsapp', from, campaignId)
 
-       // Only send welcome once
-       if (!lead.welcome_sent) {
-         await queue.enqueuePostJob({
-           platform: 'whatsapp',
-           to: from,
-           message: getWelcomeMessage(),
-           account_id: '',
-         } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
-         repo.markWelcomeSent(lead.id)
-       }
+      // Only send welcome once
+      if (!lead.welcome_sent) {
+        await queue.enqueuePostJob({
+          platform: 'whatsapp',
+          to: from,
+          message: getWelcomeMessage(),
+          account_id: '',
+        } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
+        repo.markWelcomeSent(lead.id)
+      }
 
-       repo.markAwaitingHandoff(lead.id)
-       res.json({ ok: true, lead_id: lead.id })
-     } catch (e: unknown) {
-       const errorMsg = e instanceof Error ? e.message : 'Webhook error'
-       res.status(500).json({ error: errorMsg })
-     }
+      repo.markAwaitingHandoff(lead.id)
+      res.json({ ok: true, lead_id: lead.id })
+    } catch (e: unknown) {
+      const errorMsg = e instanceof Error ? e.message : 'Webhook error'
+      res.status(500).json({ error: errorMsg })
+    }
   })
 
   /**
@@ -80,21 +84,21 @@ export function createWebhooksRouter(queue: Pick<JobQueue, 'enqueuePostJob'>): R
       const repo = getLeadsRepo()
       const lead = repo.findOrCreate('telegram', contact)
 
-       if (!lead.welcome_sent) {
-         await queue.enqueuePostJob({
-           platform: 'telegram',
-           to: contact,
-           message: getWelcomeMessage(),
-           account_id: '',
-         } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
-         repo.markWelcomeSent(lead.id)
-       }
+      if (!lead.welcome_sent) {
+        await queue.enqueuePostJob({
+          platform: 'telegram',
+          to: contact,
+          message: getWelcomeMessage(),
+          account_id: '',
+        } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
+        repo.markWelcomeSent(lead.id)
+      }
 
-       repo.markAwaitingHandoff(lead.id)
-       res.json({ ok: true, lead_id: lead.id })
-     } catch (e: unknown) {
-       const errorMsg = e instanceof Error ? e.message : 'Webhook error'
-       res.status(500).json({ error: errorMsg })
+      repo.markAwaitingHandoff(lead.id)
+      res.json({ ok: true, lead_id: lead.id })
+    } catch (e: unknown) {
+      const errorMsg = e instanceof Error ? e.message : 'Webhook error'
+      res.status(500).json({ error: errorMsg })
     }
   })
 
@@ -102,32 +106,32 @@ export function createWebhooksRouter(queue: Pick<JobQueue, 'enqueuePostJob'>): R
    * GET /v1/webhooks/leads
    * List all leads ordered by newest first.
    */
-   router.get('/leads', (_req, res) => {
-     try {
-       const repo = getLeadsRepo()
-       res.json(repo.list())
-     } catch (e: unknown) {
-       const errorMsg = e instanceof Error ? e.message : 'Internal error'
-       res.status(500).json({ error: errorMsg })
-     }
-   })
+  router.get('/leads', (_req, res) => {
+    try {
+      const repo = getLeadsRepo()
+      res.json(repo.list())
+    } catch (e: unknown) {
+      const errorMsg = e instanceof Error ? e.message : 'Internal error'
+      res.status(500).json({ error: errorMsg })
+    }
+  })
 
   /**
    * POST /v1/webhooks/leads/:id/handoff
    * Marks a lead as handed off (agent takes over from bot).
    */
-   router.post('/leads/:id/handoff', (req, res) => {
-     try {
-       const repo = getLeadsRepo()
-       const lead = repo.findById(req.params.id)
-       if (!lead) return res.status(404).json({ error: 'Lead not found' })
-       repo.markHandedOff(lead.id)
-       res.json({ ok: true, lead_id: lead.id, status: 'handed_off' })
-     } catch (e: unknown) {
-       const errorMsg = e instanceof Error ? e.message : 'Internal error'
-       res.status(500).json({ error: errorMsg })
-     }
-   })
+  router.post('/leads/:id/handoff', (req, res) => {
+    try {
+      const repo = getLeadsRepo()
+      const lead = repo.findById(req.params.id)
+      if (!lead) return res.status(404).json({ error: 'Lead not found' })
+      repo.markHandedOff(lead.id)
+      res.json({ ok: true, lead_id: lead.id, status: 'handed_off' })
+    } catch (e: unknown) {
+      const errorMsg = e instanceof Error ? e.message : 'Internal error'
+      res.status(500).json({ error: errorMsg })
+    }
+  })
 
   return router
 }

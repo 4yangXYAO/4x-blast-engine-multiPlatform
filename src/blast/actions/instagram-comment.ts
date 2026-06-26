@@ -54,9 +54,8 @@ export async function instagramPostComment(
     const adapter = new InstagramPlaywrightAdapter(cookie, { headless: opts?.headless, logger: opts?.logger })
     try {
       await adapter.connect()
-      const result = await adapter.commentOnPost(`https://www.instagram.com/p/${postId}/`, message)
+      const result = await adapter.commentOnPost(postId, message)
       if (result.success) return result
-      // Browser failed — fall back to API
       opts?.logger?.(`[instagram-comment] Browser failed: ${result.error}. Falling back to API.`)
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error)
@@ -66,7 +65,10 @@ export async function instagramPostComment(
     }
   }
 
-  return instagramPostCommentViaApi(postId, message, cookie)
+  if (/^\d+$/.test(postId)) {
+    return instagramPostCommentViaApi(postId, message, cookie)
+  }
+  return { success: false, error: 'Browser gagal dan post ID bukan format numerik untuk API fallback' }
 }
 
 export { instagramPostCommentViaApi }

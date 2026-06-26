@@ -24,7 +24,8 @@ async function startApp() {
 
 describe('Kripto Akun', () => {
   it('harus enkripsi dan dekripsi dengan benar', async () => {
-    process.env.JWT_SECRET = 'test-secret'
+    process.env.JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long'
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
     const { encrypt, decrypt } = await import('../utils/crypto')
     const original = 'my-credential'
     const encrypted = encrypt(original)

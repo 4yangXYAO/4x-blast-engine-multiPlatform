@@ -80,7 +80,7 @@ describe('API Kampanye', () => {
       body: JSON.stringify({ name: 'C1', content: 'hello', platforms: ['twitter'] }),
     })
     const res = await fetch(`${baseUrl}/v1/campaigns`)
-    const body = (await res.json()) as any[]
+    const body = await res.json()
     await close()
     expect(res.status).toBe(200)
     expect(Array.isArray(body)).toBe(true)

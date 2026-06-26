@@ -4,21 +4,20 @@ import { join } from 'path'
 const DATA_DIR = join(process.cwd(), 'data')
 const TARGETS_FILE = join(DATA_DIR, 'targets.txt')
 
-const EXAMPLE_CONTENT = `# Facebook Blast Targets
+const EXAMPLE_CONTENT = `# Facebook Blast Targets (manual list — NOT auto-used by discovery)
 # ---------------------
 # One Facebook user ID or post ID per line.
 # Lines starting with # are comments and are ignored.
 # Blank lines are ignored.
 #
-# For comment blast: use post IDs (e.g. "123456789_987654321" or just "987654321")
-# For chat blast: use numeric user IDs (e.g. "100012345678901")
+# Discovery (automatic) does NOT read this file anymore.
+# This file is only used when you explicitly run comment-random jobs
+# or pass targets manually via API.
 #
-# Example:
-# 100012345678901
-# 100023456789012
-# 561234567890_123456789012345
+# For comment blast: use post IDs (e.g. "123456789_987654321" or numeric post ID)
+# For chat blast: use numeric Facebook user IDs
 #
-# Fill this file with target IDs (one per line) then run the blast.
+# Add REAL target IDs below (remove these instructions when filling):
 `
 
 /**
@@ -57,8 +56,14 @@ export function getRandomTargets(count: number): string[] {
     return []
   }
 
-  // Deduplicate
-  const unique = Array.from(new Set(entries))
+  const unique = Array.from(new Set(entries)).filter((id) => !isPlaceholderTarget(id))
+
+  if (unique.length === 0) {
+    console.warn(
+      '[randomTargets] targets.txt has no valid entries (placeholders filtered out).'
+    )
+    return []
+  }
 
   // Fisher-Yates shuffle
   for (let i = unique.length - 1; i > 0; i--) {
@@ -78,7 +83,8 @@ export function countTargets(): number {
   return raw
     .split('\n')
     .map((line) => line.trim())
-    .filter((line) => line.length > 0 && !line.startsWith('#')).length
+    .filter((line) => line.length > 0 && !line.startsWith('#') && !isPlaceholderTarget(line))
+    .length
 }
 
 export function appendTargets(newTargets: string[]): { added: number; total: number } {
@@ -110,3 +116,23 @@ export function appendTargets(newTargets: string[]): { added: number; total: num
 }
 
 export { TARGETS_FILE }
+
+/** Known placeholder / sample IDs that must never be used in production blasts. */
+const PLACEHOLDER_PATTERNS = [
+  /^fb_post_/i,
+  /^ig_shortcode_/i,
+  /^tw_tweet_/i,
+  /^th_post_/i,
+  /^test_id_/i,
+  /^sample_/i,
+]
+
+export function isPlaceholderTarget(id: string): boolean {
+  const trimmed = id.trim()
+  if (!trimmed) return true
+  if (PLACEHOLDER_PATTERNS.some((p) => p.test(trimmed))) return true
+  // Valid FB post: digits or userId_postId; valid user: long numeric
+  if (/^\d+(_\d+)?$/.test(trimmed)) return false
+  if (/^\d{10,}$/.test(trimmed)) return false
+  return true
+}

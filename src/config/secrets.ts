@@ -10,6 +10,7 @@ export const REQUIRED_VARS = [
   "API_HOST",
   "DASHBOARD_PORT",
   "JWT_SECRET",
+  "ENCRYPTION_KEY",
   "LOG_LEVEL",
 ];
 
@@ -24,8 +25,10 @@ function readRuntimeSettingValue(key: string): string | undefined {
     const row = db.prepare("SELECT value_encrypted FROM runtime_settings WHERE key = ? LIMIT 1").get(key);
     if (!row?.value_encrypted) return undefined;
 
-    const secret = process.env.JWT_SECRET || "fallback-secret-for-development-only";
-    const keyBytes = crypto.createHash("sha256").update(secret).digest();
+    const encryptionKey = process.env.ENCRYPTION_KEY || process.env.JWT_SECRET;
+    if (!encryptionKey) return undefined;
+    
+    const keyBytes = crypto.createHash("sha256").update(encryptionKey).digest();
     const data = Buffer.from(row.value_encrypted, "base64");
     const iv = data.slice(0, 12);
     const tag = data.slice(12, 28);
@@ -46,6 +49,11 @@ export function loadConfig(): { [key: string]: string } {
     if (!value) {
       throw new Error(`Missing required env var: ${key}`);
     }
+    if (key === "JWT_SECRET" || key === "ENCRYPTION_KEY") {
+      if (value.length < 32 || value === "CHANGE_ME_JWT_SECRET" || value === "fallback_secret") {
+        throw new Error(`${key} must be at least 32 characters and not a default value`);
+      }
+    }
     (config as any)[key] = value as string;
   }
   // Optional: additional secrets for webhook/path-based usage
@@ -62,6 +70,7 @@ export type AppConfig = {
   API_HOST: string;
   DASHBOARD_PORT: string;
   JWT_SECRET: string;
+  ENCRYPTION_KEY: string;
   LOG_LEVEL: string;
   WHATSAPP_CLOUD_API_TOKEN: string;
   TELEGRAM_BOT_TOKEN: string;
@@ -94,6 +103,7 @@ export function getConfig(): AppConfig {
     API_HOST: cfg.API_HOST,
     DASHBOARD_PORT: cfg.DASHBOARD_PORT,
     JWT_SECRET: cfg.JWT_SECRET,
+    ENCRYPTION_KEY: cfg.ENCRYPTION_KEY,
     LOG_LEVEL: cfg.LOG_LEVEL,
     // Optional platform tokens can come from env first, then runtime settings stored in SQLite
     WHATSAPP_CLOUD_API_TOKEN: readRuntimeSettingValue("WHATSAPP_CLOUD_API_TOKEN") || '',

@@ -3,7 +3,8 @@ import { encryptRuntimeSecret, decryptRuntimeSecret } from '../config/runtime-se
 
 describe('runtime-secret-store', () => {
   beforeEach(() => {
-    process.env.JWT_SECRET = 'test-secret-key-for-testing'
+    process.env.JWT_SECRET = 'test-secret-key-must-be-at-least-32-chars-long'
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
   })
 
   it('should encrypt and decrypt correctly', () => {

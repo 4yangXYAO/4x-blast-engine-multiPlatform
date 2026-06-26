@@ -21,7 +21,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   const token = authHeader.substring(7)
   try {
     const cfg = getConfig()
-    const decoded = jwt.verify(token, cfg.JWT_SECRET)
+    const decoded = jwt.verify(token, cfg.JWT_SECRET, { algorithms: ['HS256'] })
     ;(req as any).user = decoded
     next()
   } catch (e: any) {

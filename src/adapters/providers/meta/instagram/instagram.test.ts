@@ -13,7 +13,8 @@ function setEnv() {
   process.env.API_PORT = "3000";
   process.env.API_HOST = "localhost";
   process.env.DASHBOARD_PORT = "4000";
-  process.env.JWT_SECRET = "test-secret";
+  process.env.JWT_SECRET = "test-secret-must-be-at-least-32-chars-long";
+  process.env.ENCRYPTION_KEY = "test-encryption-key-must-be-32-chars";
   process.env.LOG_LEVEL = "debug";
   process.env.WHATSAPP_CLOUD_API_TOKEN = "xw";
   process.env.TELEGRAM_BOT_TOKEN = "tok";

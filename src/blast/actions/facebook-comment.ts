@@ -1,4 +1,4 @@
-import { getFacebookAdapter } from './facebook-adapter-cache'
+import { getFacebookAdapter, disconnectFacebookAdapter } from './facebook-adapter-cache'
 
 export async function facebookPostComment(
     postId: string,
@@ -8,13 +8,12 @@ export async function facebookPostComment(
     try {
         const adapter = getFacebookAdapter(cookie)
         await adapter.connect()
-        await adapter.commentOnPost(
-            `https://www.facebook.com/${postId}`,
-            message
-        )
+        await adapter.commentOnPost(postId, message)
         return { success: true }
     } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : String(e)
         return { success: false, error: msg }
+    } finally {
+        await disconnectFacebookAdapter(cookie).catch(() => {})
     }
 }

@@ -6,7 +6,7 @@
  */
 
 import { Router, Request, Response } from 'express'
-import { runBlast, isBlastRunning } from '../blast/blast-runner'
+import { runBlast, isBlastRunning, getBlastProgress, getLastBlastResult } from '../blast/blast-runner'
 import type { BlastPlatform } from '../blast/types'
 
 const VALID_PLATFORMS: BlastPlatform[] = ['facebook', 'instagram', 'twitter', 'threads', 'whatsapp', 'telegram']
@@ -24,10 +24,27 @@ export function createBlastRouter() {
    *   maxActions?: number   // default 30, capped at 30
    *   targets?: string[]    // optional, for whatsapp phone numbers or manual targets
    *   searchQuery?: string  // optional, for platform finders
+   *   commentPercent?: number  // 0-100 action mix for auto targets
+   *   delayMinSec?: number
+   *   delayMaxSec?: number
+   *   targetAction?: 'comment' | 'chat' | 'like'  // for manual target IDs
    * }
    */
   router.post('/run', async (req: Request, res: Response) => {
-    const { platform, accountId, message, maxActions, targets, searchQuery } = req.body || {}
+    const {
+      platform,
+      accountId,
+      message,
+      maxActions,
+      targets,
+      searchQuery,
+      commentPercent,
+      delayMinSec,
+      delayMaxSec,
+      targetAction,
+      targetEntries,
+      strategy,
+    } = req.body || {}
 
     // Validation
     if (!platform || !VALID_PLATFORMS.includes(platform)) {
@@ -58,6 +75,19 @@ export function createBlastRouter() {
         maxActions: maxActions ? Math.min(Number(maxActions), 30) : 30,
         targets,
         searchQuery,
+        commentPercent: commentPercent != null ? Number(commentPercent) : undefined,
+        delayMinSec: delayMinSec != null ? Number(delayMinSec) : undefined,
+        delayMaxSec: delayMaxSec != null ? Number(delayMaxSec) : undefined,
+        targetAction: targetAction as 'comment' | 'chat' | 'like' | undefined,
+        targetEntries: Array.isArray(targetEntries)
+          ? targetEntries
+              .filter((e: { id?: string }) => e?.id)
+              .map((e: { id: string; action?: string }) => ({
+                id: String(e.id),
+                action: (e.action === 'chat' ? 'chat' : 'comment') as 'comment' | 'chat',
+              }))
+          : undefined,
+        strategy: strategy as 'AD_ENGAGEMENT' | 'BUSINESS_PROSPECT' | 'INTENT_DETECTION' | undefined,
       })
 
       return res.status(200).json(result)
@@ -73,7 +103,11 @@ export function createBlastRouter() {
    * Returns whether a blast is currently running.
    */
   router.get('/status', (_req: Request, res: Response) => {
-    res.json({ running: isBlastRunning() })
+    res.json({
+      running: isBlastRunning(),
+      progress: getBlastProgress(),
+      lastResult: getLastBlastResult(),
+    })
   })
 
   return router

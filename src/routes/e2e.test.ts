@@ -16,6 +16,8 @@ describe('E2E Test: Full Marketing Campaign Workflow', () => {
   let campaignId: string
 
   beforeEach(async () => {
+    process.env.JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long'
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
     initDatabase(':memory:')
     runMigrations('./migrations')
     server = express()

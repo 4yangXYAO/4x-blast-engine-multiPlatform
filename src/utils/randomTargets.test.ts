@@ -18,7 +18,19 @@ beforeEach(() => {
 })
 
 // Import after mocks are hoisted
-import { getRandomTargets, countTargets } from './randomTargets'
+import { getRandomTargets, countTargets, isPlaceholderTarget } from './randomTargets'
+
+describe('isPlaceholderTarget', () => {
+  it('flags known sample IDs', () => {
+    expect(isPlaceholderTarget('fb_post_123')).toBe(true)
+    expect(isPlaceholderTarget('test_id_1782047237465')).toBe(true)
+  })
+
+  it('allows numeric Facebook IDs', () => {
+    expect(isPlaceholderTarget('2035782367051052')).toBe(false)
+    expect(isPlaceholderTarget('100012345678901_987654321')).toBe(false)
+  })
+})
 
 describe('getRandomTargets', () => {
   it('returns empty array and creates example file when targets.txt does not exist', () => {
@@ -71,6 +83,18 @@ describe('getRandomTargets', () => {
     vi.mocked(fs.readFileSync).mockReturnValue('# only comments\n# nothing here\n' as any)
     const result = getRandomTargets(5)
     expect(result).toEqual([])
+  })
+
+  it('filters placeholder sample IDs from file', () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true)
+    vi.mocked(fs.readFileSync).mockReturnValue(
+      '2035782367051052\nfb_post_123\ntest_id_abc\n100012345678901_987654321\n' as any
+    )
+    const result = getRandomTargets(10)
+    expect(result).toContain('2035782367051052')
+    expect(result).toContain('100012345678901_987654321')
+    expect(result).not.toContain('fb_post_123')
+    expect(result).not.toContain('test_id_abc')
   })
 })
 

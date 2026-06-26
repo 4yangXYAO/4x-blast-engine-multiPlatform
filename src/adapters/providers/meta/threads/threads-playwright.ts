@@ -1,5 +1,6 @@
 import type { Browser, BrowserContext, Page } from 'playwright'
 import { IAdapter, RateLimitStatus } from '../../../IAdapter'
+import { getActiveProxy, toPlaywrightProxy } from '../../../../proxy'
 
 export interface ThreadsPlaywrightOptions {
   logger?: (message: string) => void
@@ -33,7 +34,11 @@ export class ThreadsPlaywrightAdapter implements IAdapter {
       const { chromium: chr } = await import('playwright-extra')
       const stealthPlugin = (await import('puppeteer-extra-plugin-stealth')).default
       const browserWithStealth = chr.use(stealthPlugin())
-      this.browser = await browserWithStealth.launch({ headless: this.opts.headless ?? true })
+      const activeProxy = getActiveProxy()
+      this.browser = await browserWithStealth.launch({
+        headless: this.opts.headless ?? true,
+        proxy: activeProxy ? toPlaywrightProxy(activeProxy) : undefined,
+      })
       this.context = await this.browser.newContext()
       this._page = await this.context.newPage()
 
@@ -161,42 +166,74 @@ export class ThreadsPlaywrightAdapter implements IAdapter {
     }
   }
 
-  async replyToMessage(threadUrl: string, message: string): Promise<{ success: boolean; error?: string; code?: string }> {
+  async replyToMessage(threadUrlOrId: string, message: string): Promise<{ success: boolean; error?: string; code?: string }> {
+    if (!this._page) throw new Error('Browser not connected')
+    const urls = buildThreadsPostUrls(threadUrlOrId)
+    let lastError = 'Reply failed'
+
+    for (const url of urls) {
+      try {
+        const result = await this.tryReplyOnUrl(url, message)
+        if (result.success) return { ...result, code: undefined }
+        lastError = result.error ?? lastError
+      } catch (e) {
+        lastError = e instanceof Error ? e.message : String(e)
+      }
+    }
+    return { success: false, error: lastError, code: 'THREADS_REPLY_ERROR' }
+  }
+
+  private async tryReplyOnUrl(
+    threadUrl: string,
+    message: string
+  ): Promise<{ success: boolean; error?: string }> {
     if (!this._page) throw new Error('Browser not connected')
     try {
-      await this._page.goto(threadUrl, { waitUntil: 'domcontentloaded' })
-      await this._page.waitForTimeout(3000)
+      await this._page.goto(threadUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+      await this._page.waitForTimeout(3500)
 
-      const replyInput = await this._page.waitForSelector(
-        'div[role="textbox"][contenteditable="true"], textarea[aria-label*="reply" i], div[contenteditable="true"][data-lexical-editor="true"]',
-        { timeout: 8000 }
-      ).catch(() => null)
+      const selectors = [
+        'div[role="textbox"][contenteditable="true"]',
+        'textarea[aria-label*="reply" i]',
+        'textarea[aria-label*="Balas" i]',
+        'div[contenteditable="true"][data-lexical-editor="true"]',
+      ]
+
+      let replyInput = null
+      for (const sel of selectors) {
+        const loc = this._page.locator(sel).first()
+        if (await loc.count()) {
+          replyInput = loc
+          break
+        }
+      }
 
       if (!replyInput) {
-        return { success: false, error: 'Reply input not found on thread page', code: 'NO_INPUT' }
+        return { success: false, error: 'Kotak balasan tidak ditemukan' }
       }
 
+      await replyInput.waitFor({ state: 'visible', timeout: 25_000 })
+      await replyInput.click()
       await replyInput.fill(message)
-      await this._page.waitForTimeout(500)
+      await this._page.waitForTimeout(400)
 
-      const replyBtn = await this._page.waitForSelector(
-        'div[role="button"]:has-text("Reply"), button:has-text("Reply"), div[role="button"][aria-label*="reply" i]',
-        { timeout: 5000 }
-      ).catch(() => null)
+      const replyBtn = this._page
+        .locator(
+          'div[role="button"]:has-text("Reply"), div[role="button"]:has-text("Balas"), button:has-text("Reply"), button:has-text("Balas")'
+        )
+        .first()
 
-      if (replyBtn) {
+      if (await replyBtn.count()) {
         await replyBtn.click()
-        await this._page.waitForTimeout(3000)
       } else {
         await replyInput.press('Enter')
-        await this._page.waitForTimeout(3000)
       }
+      await this._page.waitForTimeout(2500)
 
       this.log(`Reply posted on ${threadUrl}`)
       return { success: true }
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error)
-      this.log(`Error replying on thread: ${msg}`)
       return { success: false, error: msg }
     }
   }
@@ -208,3 +245,12 @@ export class ThreadsPlaywrightAdapter implements IAdapter {
 }
 
 export default ThreadsPlaywrightAdapter
+
+function buildThreadsPostUrls(postUrlOrId: string): string[] {
+  if (postUrlOrId.startsWith('http')) return [postUrlOrId]
+  const id = postUrlOrId.trim()
+  return [
+    `https://www.threads.net/post/${id}`,
+    `https://www.threads.net/@_/post/${id}`,
+  ]
+}

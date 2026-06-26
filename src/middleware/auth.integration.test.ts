@@ -54,7 +54,7 @@ describe('JWT Auth Integration', () => {
 
   it('should allow access with valid JWT token', async () => {
     const JWT_SECRET = 'test-secret-key-at-least-32-chars'
-    const token = jwt.sign({ userId: 'test-user' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test-user' }, JWT_SECRET, { algorithm: 'HS256' })
     const res = await request(server)
       .get('/v1/accounts')
       .set('Authorization', `Bearer ${token}`)

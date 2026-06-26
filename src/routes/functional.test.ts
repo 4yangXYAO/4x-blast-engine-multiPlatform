@@ -3,10 +3,10 @@ import request from 'supertest'
 import express from 'express'
 import { initDatabase, runMigrations } from '../db/sqlite'
 import JobQueue from '../queue/job-queue'
-import { createCampaignsRouter } from './campaigns'
-import { accountsRouter } from './accounts'
+import { accountsRouter, getAccountsRepo } from './accounts'
+import { createCampaignsRouter, getCampaignsRepo } from './campaigns'
 import { trackRouter } from './track'
-import { webhooksRouter } from './webhooks'
+import { webhooksRouter, getLeadsRepo } from './webhooks'
 import cors from 'cors'
 
 describe('Functional Tests: Individual Features', () => {
@@ -14,6 +14,11 @@ describe('Functional Tests: Individual Features', () => {
   let queue: JobQueue
 
   beforeEach(async () => {
+    (getAccountsRepo as any)._reset?.()
+    ;(getCampaignsRepo as any)._reset?.()
+    ;(getLeadsRepo as any)._reset?.()
+    process.env.JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long'
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
     initDatabase(':memory:')
     runMigrations('./migrations')
     server = express()
@@ -168,7 +173,7 @@ describe('Functional Tests: Individual Features', () => {
         .post('/v1/webhooks/waha')
         .send({
           event: 'message',
-          data: { chatId: '123@c.us', from: '123', body: 'Hello' },
+          payload: { chatId: '123@c.us', from: '123', body: 'Hello' },
         })
       // Should return 200 or 201
       expect([200, 201, 400]).toContain(res.status)

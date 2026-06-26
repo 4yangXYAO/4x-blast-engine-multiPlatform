@@ -36,7 +36,7 @@ describe('authMiddleware', () => {
   })
 
   it('should call next() for valid token', () => {
-    const token = jwt.sign({ userId: '123' }, 'test-secret-key-at-least-32-chars')
+    const token = jwt.sign({ userId: '123' }, 'test-secret-key-at-least-32-chars', { algorithm: 'HS256' })
     req.headers.authorization = `Bearer ${token}`
     authMiddleware(req, res, next)
     expect(next).toHaveBeenCalled()

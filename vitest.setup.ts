@@ -6,6 +6,15 @@ import { initSqlJsDatabase, closeDatabase, runMigrations } from './src/db/sqlite
 // Provide a Jest-compatible alias for legacy tests.
 (globalThis as any).jest = vi;
 
+// Set default environment variables for tests
+process.env.DATABASE_PATH = process.env.DATABASE_PATH || 'data/test.db';
+process.env.API_PORT = process.env.API_PORT || '3000';
+process.env.API_HOST = process.env.API_HOST || 'localhost';
+process.env.DASHBOARD_PORT = process.env.DASHBOARD_PORT || '3001';
+process.env.JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long';
+process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars';
+process.env.LOG_LEVEL = process.env.LOG_LEVEL || 'error';
+
 vi.mock('axios', () => {
   const instance = {
     post: vi.fn().mockResolvedValue({ data: { status: 'ok' }, status: 200 }),

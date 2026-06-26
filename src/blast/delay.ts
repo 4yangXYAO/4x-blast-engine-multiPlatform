@@ -11,6 +11,22 @@
  * - comment: 20_000 – 40_000 ms
  * - chat:    35_000 – 60_000 ms
  */
+/**
+ * Random delay with optional custom range (seconds). Falls back to action defaults.
+ */
+export function getDelayWithRange(
+  action: 'comment' | 'chat' | 'like' | 'post',
+  minSec?: number,
+  maxSec?: number
+): number {
+  if (minSec != null && maxSec != null && maxSec >= minSec && minSec >= 1) {
+    const minMs = minSec * 1000
+    const maxMs = maxSec * 1000
+    return minMs + Math.floor(Math.random() * (maxMs - minMs + 1))
+  }
+  return getDelay(action)
+}
+
 export function getDelay(action: 'comment' | 'chat' | 'like' | 'post'): number {
   if (action === 'chat') {
     // 35–60 seconds

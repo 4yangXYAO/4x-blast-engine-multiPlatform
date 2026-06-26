@@ -15,6 +15,10 @@ export function getCampaignsRepo(db?: DB): CampaignsRepo {
   return campaignsRepo
 }
 
+;(getCampaignsRepo as any)._reset = () => {
+  campaignsRepo = null
+}
+
 export function createCampaignsRouter(queue: Pick<JobQueue, 'enqueuePostJob'>) {
   const router = Router()
 
@@ -99,28 +103,28 @@ export function createCampaignsRouter(queue: Pick<JobQueue, 'enqueuePostJob'>) {
           ? `${campaign.content}\n\n${trackUrl}`
           : campaign.content
 
-         const jobId = await queue.enqueuePostJob({
-           platform,
-           to: accountId,
-           message,
-           account_id: accountId,
-         } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
+        const jobId = await queue.enqueuePostJob({
+          platform,
+          to: accountId,
+          message,
+          account_id: accountId,
+        } as unknown as Omit<PostJob, 'id' | 'type'> & { platform: string })
 
-         // Persist to DB so dashboard GET /v1/jobs can display it
-         try {
-           const jobsRepo = new JobsRepo()
-           const db = jobsRepo['db'] ?? require('../db/sqlite').getDb()
-           db.prepare(
-             `INSERT OR IGNORE INTO jobs (id, account_id, platform, type, payload, attempts, max_attempts, status) VALUES (?, ?, ?, ?, ?, 0, 5, 'pending')`
-           ).run(jobId, accountId, platform, 'post', JSON.stringify({ message, campaign_id: campaign.id }))
-         } catch { /* non-fatal — queue still works */ }
+        // Persist to DB so dashboard GET /v1/jobs can display it
+        try {
+          const jobsRepo = new JobsRepo()
+          const db = jobsRepo['db'] ?? require('../db/sqlite').getDb()
+          db.prepare(
+            `INSERT OR IGNORE INTO jobs (id, account_id, platform, type, payload, attempts, max_attempts, status) VALUES (?, ?, ?, ?, ?, 0, 5, 'pending')`
+          ).run(jobId, accountId, platform, 'post', JSON.stringify({ message, campaign_id: campaign.id }))
+        } catch { /* non-fatal — queue still works */ }
 
-         repo.addPost(campaign.id, platform, jobId)
-         posts.push({ platform, job_id: jobId })
-       } catch (e: unknown) {
-         const errorMsg = e instanceof Error ? e.message : 'enqueue failed'
-         errors.push({ platform, error: errorMsg })
-       }
+        repo.addPost(campaign.id, platform, jobId)
+        posts.push({ platform, job_id: jobId })
+      } catch (e: unknown) {
+        const errorMsg = e instanceof Error ? e.message : 'enqueue failed'
+        errors.push({ platform, error: errorMsg })
+      }
     }
 
     repo.updateStatus(campaign.id, 'scheduled')

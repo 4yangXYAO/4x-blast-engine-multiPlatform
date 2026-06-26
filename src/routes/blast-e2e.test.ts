@@ -73,6 +73,7 @@ describe('Blast E2E', () => {
 
   beforeAll(async () => {
     process.env.JWT_SECRET = JWT_SECRET
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
     process.env.DATABASE_PATH = ':memory:'
     process.env.API_PORT = '0'
     process.env.API_HOST = '127.0.0.1'
@@ -108,7 +109,7 @@ describe('Blast E2E', () => {
   })
 
   it('should trigger a Facebook comment blast via HTTP', async () => {
-    const token = jwt.sign({ userId: 'test' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test' }, JWT_SECRET, { algorithm: 'HS256' })
     const res = await fetch(`${baseUrl}/blast/run`, {
       method: 'POST',
       headers: {
@@ -134,7 +135,7 @@ describe('Blast E2E', () => {
   it('should return 409 when blast already running', async () => {
     // First blast should work
     resetBlastState()
-    const token = jwt.sign({ userId: 'test' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test' }, JWT_SECRET, { algorithm: 'HS256' })
 
     // Start first blast (it will run quickly with mocks)
     await fetch(`${baseUrl}/blast/run`, {
@@ -163,7 +164,7 @@ describe('Blast E2E', () => {
   }, 10000)
 
   it('should return 400 for invalid platform', async () => {
-    const token = jwt.sign({ userId: 'test' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test' }, JWT_SECRET, { algorithm: 'HS256' })
     const res = await fetch(`${baseUrl}/blast/run`, {
       method: 'POST',
       headers: {
@@ -180,7 +181,7 @@ describe('Blast E2E', () => {
   }, 10000)
 
   it('should return 400 when missing required fields', async () => {
-    const token = jwt.sign({ userId: 'test' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test' }, JWT_SECRET, { algorithm: 'HS256' })
     const res = await fetch(`${baseUrl}/blast/run`, {
       method: 'POST',
       headers: {
@@ -208,7 +209,7 @@ describe('Blast E2E', () => {
   }, 10000)
 
   it('should return 400 for WhatsApp without targets', async () => {
-    const token = jwt.sign({ userId: 'test' }, JWT_SECRET)
+    const token = jwt.sign({ userId: 'test' }, JWT_SECRET, { algorithm: 'HS256' })
     const res = await fetch(`${baseUrl}/blast/run`, {
       method: 'POST',
       headers: {

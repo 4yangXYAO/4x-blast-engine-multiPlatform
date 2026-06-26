@@ -1,4 +1,4 @@
-﻿import crypto from "crypto";
+import crypto from "crypto";
 import { getConfig } from "../config/secrets";
 
 /**
@@ -7,11 +7,15 @@ import { getConfig } from "../config/secrets";
  */
 
 const getSecret = () => {
-  try {
-    return getConfig().JWT_SECRET || "fallback-secret-for-development-only";
-  } catch {
-    return "fallback-secret-for-development-only";
+  const cfg = getConfig();
+  const key = cfg.ENCRYPTION_KEY || cfg.JWT_SECRET;
+  if (!key || key.length < 32) {
+    throw new Error("Security keys must be at least 32 characters");
   }
+  if (!cfg.ENCRYPTION_KEY && cfg.JWT_SECRET) {
+    console.warn("[Crypto] Using JWT_SECRET as fallback for encryption. Please set ENCRYPTION_KEY.");
+  }
+  return key;
 };
 
 export const deriveKey = (secret: string): Buffer => {

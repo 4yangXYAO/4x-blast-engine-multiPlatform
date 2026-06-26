@@ -57,7 +57,7 @@ export async function threadsReply(
     const adapter = new ThreadsPlaywrightAdapter(cookie, { headless: opts?.headless, logger: opts?.logger })
     try {
       await adapter.connect()
-      const result = await adapter.commentOnPost(`https://www.threads.net/post/${postId}`, message)
+      const result = await adapter.commentOnPost(postId, message)
       if (result.success) return result
       // Browser failed — fall back to API
       opts?.logger?.(`[threads-comment] Browser failed: ${result.error}. Falling back to API.`)

@@ -1,5 +1,6 @@
 import type { Browser, BrowserContext, Page } from 'playwright'
 import { IAdapter, RateLimitStatus } from '../../../IAdapter'
+import { getActiveProxy, toPlaywrightProxy } from '../../../../proxy'
 
 export interface InstagramPlaywrightOptions {
   logger?: (message: string) => void
@@ -41,7 +42,11 @@ export class InstagramPlaywrightAdapter implements IAdapter {
       const { chromium: chr } = await import('playwright-extra')
       const stealthPlugin = (await import('puppeteer-extra-plugin-stealth')).default
       const browserWithStealth = chr.use(stealthPlugin())
-      this.browser = await browserWithStealth.launch({ headless: this.opts.headless ?? true })
+      const activeProxy = getActiveProxy()
+      this.browser = await browserWithStealth.launch({
+        headless: this.opts.headless ?? true,
+        proxy: activeProxy ? toPlaywrightProxy(activeProxy) : undefined,
+      })
       this.context = await this.browser.newContext()
       this._page = await this.context.newPage()
 
@@ -117,36 +122,69 @@ export class InstagramPlaywrightAdapter implements IAdapter {
    * Post a comment on an Instagram media item by navigating to the post page
    * and interacting with the comment input.
    */
-  async commentOnPost(postUrl: string, commentText: string): Promise<{ success: boolean; error?: string }> {
+  async commentOnPost(postUrlOrId: string, commentText: string): Promise<{ success: boolean; error?: string }> {
+    if (!this._page) throw new Error('Browser not connected')
+    const urls = buildInstagramPostUrls(postUrlOrId)
+    let lastError = 'Comment failed'
+
+    for (const url of urls) {
+      try {
+        const ok = await this.tryCommentOnUrl(url, commentText)
+        if (ok.success) return ok
+        lastError = ok.error ?? lastError
+      } catch (e) {
+        lastError = e instanceof Error ? e.message : String(e)
+      }
+    }
+    return { success: false, error: lastError }
+  }
+
+  private async tryCommentOnUrl(
+    postUrl: string,
+    commentText: string
+  ): Promise<{ success: boolean; error?: string }> {
     if (!this._page) throw new Error('Browser not connected')
     try {
-      await this._page.goto(postUrl, { waitUntil: 'domcontentloaded' })
-      await this._page.waitForTimeout(3000)
+      await this._page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+      await this._page.waitForTimeout(3500)
+      await this._page.mouse.wheel(0, 400)
+      await this._page.waitForTimeout(1000)
 
-      // Click the comment icon or find the comment textarea
-      // Instagram uses a contenteditable div for comments
-      const commentArea = await this._page.waitForSelector('textarea[aria-label="Add a comment…"], textarea[placeholder="Add a comment…"], form textarea', { timeout: 5000 }).catch(() => null)
+      const selectors = [
+        'textarea[aria-label*="Add a comment"]',
+        'textarea[aria-label*="Tambahkan komentar"]',
+        'textarea[placeholder*="Add a comment"]',
+        'textarea[placeholder*="Tambahkan komentar"]',
+        'form textarea',
+        'div[role="textbox"][contenteditable="true"]',
+      ]
 
-      if (!commentArea) {
-        // Try clicking the comment bubble icon first
-        const commentIcon = await this._page.$('svg[aria-label="Comment"], span[aria-label="Comment"]')
-        if (commentIcon) {
-          await commentIcon.click()
-          await this._page.waitForTimeout(1000)
+      let input = null
+      for (const sel of selectors) {
+        const loc = this._page.locator(sel).first()
+        if (await loc.count()) {
+          input = loc
+          break
         }
       }
 
-      // Find the comment input (may be textarea or contenteditable)
-      const input = await this._page.waitForSelector('textarea[aria-label*="comment" i], textarea[placeholder*="comment" i], form textarea, div[role="textbox"][contenteditable="true"]', { timeout: 5000 }).catch(() => null)
-
       if (!input) {
-        return { success: false, error: 'Comment input not found on page' }
+        const commentIcon = this._page.locator('svg[aria-label="Comment"], svg[aria-label="Komentar"]').first()
+        if (await commentIcon.count()) {
+          await commentIcon.click()
+          await this._page.waitForTimeout(1500)
+          input = this._page.locator('form textarea, div[role="textbox"][contenteditable="true"]').first()
+        }
       }
 
-      await input.fill(commentText)
-      await this._page.waitForTimeout(500)
+      if (!input || (await input.count()) === 0) {
+        return { success: false, error: 'Kotak komentar tidak ditemukan' }
+      }
 
-      // Press Enter to submit
+      await input.waitFor({ state: 'visible', timeout: 25_000 })
+      await input.click()
+      await input.fill(commentText)
+      await this._page.waitForTimeout(400)
       await input.press('Enter')
       await this._page.waitForTimeout(2000)
 
@@ -154,7 +192,6 @@ export class InstagramPlaywrightAdapter implements IAdapter {
       return { success: true }
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error)
-      this.log(`Error commenting on post: ${msg}`)
       return { success: false, error: msg }
     }
   }
@@ -198,3 +235,12 @@ export class InstagramPlaywrightAdapter implements IAdapter {
 }
 
 export default InstagramPlaywrightAdapter
+
+function buildInstagramPostUrls(postUrlOrId: string): string[] {
+  if (postUrlOrId.startsWith('http')) return [postUrlOrId]
+  const id = postUrlOrId.trim()
+  if (/^[A-Za-z0-9_-]{5,12}$/.test(id)) {
+    return [`https://www.instagram.com/p/${id}/`, `https://www.instagram.com/reel/${id}/`]
+  }
+  return [`https://www.instagram.com/p/${id}/`]
+}

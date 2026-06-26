@@ -137,7 +137,7 @@ describe('Webhooks: GET /leads', () => {
       body: JSON.stringify({ event: 'message', payload: { from: '62800leads@c.us', body: 'test' } }),
     })
     const res = await fetch(`${baseUrl}/v1/webhooks/leads`)
-    const body = (await res.json()) as any[]
+    const body = await res.json()
     await close()
     expect(res.status).toBe(200)
     expect(Array.isArray(body)).toBe(true)

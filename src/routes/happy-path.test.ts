@@ -14,6 +14,8 @@ describe('Happy Path Flow Test: Success Scenario', () => {
   let queue: JobQueue
 
   beforeEach(async () => {
+    process.env.JWT_SECRET = 'test-secret-must-be-at-least-32-chars-long'
+    process.env.ENCRYPTION_KEY = 'test-encryption-key-must-be-32-chars'
     initDatabase(':memory:')
     runMigrations('./migrations')
     server = express()
@@ -102,7 +104,7 @@ describe('Happy Path Flow Test: Success Scenario', () => {
       .post('/v1/webhooks/waha')
       .send({
         event: 'message',
-        data: {
+        payload: {
           from: '+62812345678',
           chatId: '+62812345678@c.us',
           body: 'Halo, aku tertarik',
@@ -115,6 +117,7 @@ describe('Happy Path Flow Test: Success Scenario', () => {
     console.log('\n📝 Step 8: Verifying lead creation...')
     const leads = await request(server).get('/v1/webhooks/leads')
     expect(leads.status).toBe(200)
+    expect(Array.isArray(leads.body)).toBe(true)
     console.log(`   ✓ Leads endpoint: ${leads.body.length} lead(s)`)
     if (leads.body.length > 0) {
       const lead = leads.body[0]

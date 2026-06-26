@@ -1,5 +1,6 @@
 import { FacebookPlaywrightAdapter } from '../../adapters/providers/meta/facebook/facebook-playwright'
 import { createHash } from 'crypto'
+import { assertPlaywrightChromiumInstalled } from '../../utils/playwright-check'
 
 interface CachedAdapter {
     adapter: FacebookPlaywrightAdapter
@@ -30,6 +31,8 @@ export function getFacebookAdapter(
         cached.adapter.disconnect().catch(() => {})
         cache.delete(key)
     }
+
+    assertPlaywrightChromiumInstalled()
 
     const adapter = new FacebookPlaywrightAdapter(cookie, {
         headless: true,

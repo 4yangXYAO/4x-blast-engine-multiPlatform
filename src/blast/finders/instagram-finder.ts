@@ -65,7 +65,8 @@ export async function findInstagramTargets(
         for (const item of medias) {
           const media = item?.media
           if (media?.pk) {
-            postIds.push(String(media.pk))
+            const id = media.code ? String(media.code) : String(media.pk)
+            postIds.push(id)
           }
           if (media?.user?.pk) {
             const uid = String(media.user.pk)
